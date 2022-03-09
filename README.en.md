@@ -1,3 +1,5 @@
+This README file is incomplete. Please refer to Chinese version.
+
 # CS225
 
 #### Description
