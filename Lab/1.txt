@@ -4,8 +4,4 @@ test2
 
 test 
 
-<<<<<<< HEAD
-test5
-=======
 test3
->>>>>>> 8e977ebb3911cf3acd69be5db2d4c5a09856666f
