@@ -8,10 +8,10 @@ template<class T> class Data
 {
 public:
     Data();
-    int timestamp[6]; // YY,MM,DD,HH,MM,SS
 
 private:
-    char id[8] = {"12345678"};//TODO:再说
+    int timestamp[6]; // YY,MM,DD,HH,MM,SS
+    char id[8] = {"12345678"};  //TODO:再说
     string name;
     Contact contact;
     int profession; // I to VIII
@@ -26,7 +26,7 @@ private:
     T phone;
     T WeChat;
     T email;
-}
+};
 
 template<class T> class Local : public Data
 {
@@ -36,8 +36,7 @@ public:
 
 private:
     T *queue;   // the queue of all local records
-
-}
+};
 
 template<class T> class Central
 {
@@ -45,6 +44,4 @@ public:
     Central();
     void Selection(); // select people with the higest priority
     void Report();
-
-
-}
+};
