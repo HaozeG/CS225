@@ -5,7 +5,7 @@ This respository is for Haowen Zheng, Yiheng Zhang, Wenpeng Zhang and Haoze Gao
 
 #### 使用说明
 
-1.  根据[生成ssh公钥](https://gitee.com/help/articles/4181)说明生成公钥，给自己的账户[添加个人公钥](https://gitee.com/profile/sshkeys)
+1.  根据[生成ssh公钥](https://gitee.com/help/articles/4181)说明生成公钥，把公钥发给我(或者给自己的账户[添加个人公钥](https://gitee.com/profile/sshkeys)(待测试可行性))
 2.  进入WSL环境并打开终端，`cd`到想要存放此仓库的地址下，例如`cd ~`
 3.  在终端输入`git clone git@gitee.com:haoze-gao/cs225.git`
 4.  在终端输入`git config user.name "(your name)"`, `git config user.email "(your email)"`以设置个人信息（方便别人查看代码段提交者信息）
