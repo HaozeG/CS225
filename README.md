@@ -17,7 +17,7 @@ This respository is for Haowen Zheng, Yiheng Zhang, Wenpeng Zhang and Haoze Gao
     建议在VSCode的`文件-打开文件夹..`中选择`cs225`（即`clone`下来的项目的根目录）文件夹，这样能保证*源代码管理*能够准确识别到项目
 3.  如果对文件进行了修改，修改过的文件会显示在*更改*分类之下
 
-    在文本框中输入comment，用文件名后的+号选择提交哪些更改，确认后点击✔提交即可！
+    在文本框中输入comment，用文件名后的+号选择提交哪些更改，确认后点击✔提交，点击↻右侧的···选择*推送*选项即可！
 ![example](./images/1.png)
 
 
