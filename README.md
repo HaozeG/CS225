@@ -11,6 +11,16 @@ This respository is for Haowen Zheng, Yiheng Zhang, Wenpeng Zhang and Haoze Gao
 4.  在终端输入`git config user.name "(your name)"`, `git config user.email "(your email)"`以设置个人信息（方便别人查看代码段提交者信息）
 5.  可安装git相关插件(例如Github Pull Requests and Issues, GitLens)后使用左侧工具栏的Source Control功能来进行pull, push等操作，也可用上学期Github基本使用方式来进行使用
 
+#### Git相关指令的使用~
+1.  在VSCode扩展中搜索*GitHub Pull Requests and Issues*，点击安装
+2.  安装完成后左侧工具栏应该会出现名为*源代码管理*的选项，如果检测到`.git`的配置文件（在完成上述使用说明后就会自动生成）此处会出现git相关操作以及产生变动的文件
+    建议在VSCode的`文件-打开文件夹..`中选择`cs225`（即`clone`下来的项目的根目录）文件夹，这样能保证*源代码管理*能够准确识别到项目
+3.  如果对文件进行了修改，修改过的文件会显示在*更改*分类之下
+
+    在文本框中输入comment，用文件名后的+号选择提交哪些更改，确认后点击✔提交即可！
+![example](./images/1.png)
+
+
 **That's it!** ╰(￣ω￣ｏ)
 
 > 使用ssh连接**无需注册Gitee账号**即可使用，公钥发送给别人不影响安全性，只需要保存好私钥即可
