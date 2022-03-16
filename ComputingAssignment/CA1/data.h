@@ -23,6 +23,7 @@ class Data
 {
 public:
     Data();
+    Appointment *appointment;
 
 private:
     int timestamp[6];          // YY,MM,DD,HH,MM,SS
@@ -32,7 +33,6 @@ private:
     int profession; // I to VIII
     long birth;     // format: YYMMDD
     int age_group;
-    Appointment *appointment;
 };
 
 class Local : public Data
