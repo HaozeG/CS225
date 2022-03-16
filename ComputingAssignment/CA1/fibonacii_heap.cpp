@@ -46,10 +46,10 @@ void Heap::insert(Node &node)
 // used to update information
 void Heap::update(Node &node, Data &new_data)
 {
-    Node temp;
-    temp.data = &new_data;
+    Node *temp = new Node;
+    temp->data = &new_data;
     // judge if the priority increases or decreases
-    bool flag = higher_priority(node, temp);
+    bool flag = higher_priority(node, *temp);
     if (flag)
     {
         decrease(node, new_data);
@@ -116,11 +116,11 @@ void Heap::delete_highest()
 void Heap::delete_node(Node &node)
 {
     // set the value of new_data to negative
-    Data new_data;
+    Data *new_data = new Data;
     Data *origin_data = node.data;
 
     // call decrease and delete_min
-    decrease(node, new_data);
+    decrease(node, *new_data);
     delete_highest();
     // TODO: 是否需要修改原来的数据
     // // keep the data unchanged
