@@ -51,13 +51,9 @@ void Heap::update(Node &node, Data &new_data)
     // judge if the priority increases or decreases
     bool flag = higher_priority(node, *temp);
     if (flag)
-    {
         decrease(node, new_data);
-    }
     else
-    {
         increase(node, new_data);
-    }
 }
 
 void Heap::increase(Node &node, Data &new_data)
@@ -98,6 +94,7 @@ void Heap::decrease(Node &node, Data &new_data)
 
 };
 
+// to get the data of the highest node, just H.min->data
 void Heap::delete_highest()
 {
     // check if the heap is empty
@@ -107,7 +104,25 @@ void Heap::delete_highest()
         return;
     }
     Heap::n--;
+
     // connect child nodes to root list
+    Node *node = Heap::highest->child;
+    Node *right_node = node->right;
+    Node *left_root_node = Heap::highest->left;
+    Node *right_root_node = Heap::highest->right;
+    node->parent = NULL;
+    node->right = right_root_node;
+    right_root_node->left = node;
+    right_node->left = left_root_node;
+    left_root_node->right = right_node;
+
+    // update H.min
+    while (node != left_root_node)
+    {
+        if (higher_priority(*node, *(Heap::highest)))
+            Heap::highest = node;
+        node = node->left;
+    }
 
     // rebalance
     consolidate();
@@ -138,6 +153,7 @@ void Heap::consolidate()
 
 };
 
+// TODO: 考虑一下定义一个函数比较好还是重载operator
 bool higher_priority(Node &node1, Node &node2)
 {
     // profession category, ranking of age group, time
