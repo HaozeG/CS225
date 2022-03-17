@@ -1,8 +1,8 @@
 #ifndef data_h
 #define data_h
 
+#include <stdio.h>
 #include <stdint.h>
-#include <string>
 using namespace std;
 
 class Contact
@@ -11,7 +11,7 @@ public:
     Contact();
 
 protected:
-    int addx; 
+    int addx;
     int addy;
     char phone[11] ;
     char WeChat[12] ;
@@ -58,7 +58,7 @@ class queue : public Data
 {
 public:
     queue();
-    void push(data* person);
+    void push(Data* person);
     Data* pop();
     int num = 0;
     Data* head = NULL;
