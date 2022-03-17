@@ -2,7 +2,7 @@
 #define data_h
 
 #include <stdint.h>
-#include <string>
+#include <stdio.h>
 using namespace std;
 
 class Contact
@@ -11,38 +11,49 @@ public:
     Contact();
 
 protected:
-    string address;
-    string phone;
-    string WeChat;
-    string email;
+    int addx;
+    int addy;
+    char phone[11] ;
+    char WeChat[12] ;
+    char email[18] ;
 };
 
 // basic queue data structure
-// TODO:存在外部文件中还是内存中
+//TODO:存在外部文件中还是内存中
 class Data
 {
 public:
     Data();
-    Appointment *appointment;
 
 private:
-    int timestamp[6];          // YY,MM,DD,HH,MM,SS
-    char id[9] = {"12345678"}; // TODO:再说
-    string name;
+    long timestamp; // YY,MM,DD,HH,MM,SS
+    char id[9] = {"12345678"};  //TODO:再说
+    char name[10];
     Contact *contact;
     int profession; // I to VIII
-    long birth;     // format: YYMMDD
+    long birth; // format: YYMMDD
     int age_group;
+    int risk;
+    Data* next = NULL;
 };
 
-class Local : public Data
+class queue : public Data
+{
+public:
+    queue();
+    void push(Data* person);
+    Data* pop();
+    int num = 0;
+    Data* head = NULL;
+    Data* tail = NULL;
+};
+
+class Local : public queue
 {
 public:
     Local();
-    int update(); // update to central
-
-private:
-    Data *queue; // the queue of all local records
+    Data* update();   // update to central
+    int registration();
 };
 
 class Central : public Data
@@ -53,15 +64,6 @@ public:
     void Report();
 };
 
-class Appointment
-{
-public:
-    Appointment();
 
-    bool registered; // TODO:是否有appointment. 若withdraw则false?
-    string address;
-    long date; // TODO:long?
-    int time;  // TODO: 和timeslot对应
-};
 
 #endif
