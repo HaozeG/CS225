@@ -25,9 +25,11 @@ class Data
 public:
     Data();
 
-private:
+    Appointment *appointment;
     long timestamp; // YY,MM,DD,HH,MM,SS
-    char id[9] = {"12345678"};  //TODO:再说
+    // TODO: 写成bias
+    bool withdrawn;
+    char id[9] = {"12345678"}; // TODO:再说
     char name[10];
     Contact *contact;
     int profession; // I to VIII
@@ -64,6 +66,15 @@ public:
     void Report();
 };
 
+class Appointment
+{
+public:
+    Appointment();
 
+    bool registered; // TODO:是否有appointment. 若withdraw则false?
+    string address;
+    long date; // TODO:long?
+    int time;  // TODO: 和timeslot对应
+};
 
 #endif
