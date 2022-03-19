@@ -32,7 +32,7 @@ public:
     void delete_highest();
     void consolidate();
     void update_degree(Node *node, int d);
-    void cascaded_cut(Node &node);
+    void cascaded_cut(Node *node);
 };
 
 bool higher_priority(Node &node1, Node &node2);
