@@ -34,7 +34,27 @@ Heap::~Heap()
     cout << "Delete heap\n";
 }
 
-void Heap::link_root(Node &node)
+/*
+    used to compare the priority between two nodes
+    input:
+        node1, node2: two nodes need to compare
+    output:
+        true: node1 has higher priority
+        false: node2 has higher priority
+*/
+inline bool higher_priority(Node &node1, Node &node2)
+{
+    // profession category, ranking of age group, time
+    return false;
+}
+
+/*
+    link one node to root list
+    input:
+        node: the node need to link
+    output: none
+*/
+inline void Heap::link_root(Node &node)
 {
     // link to root list
     node.left = highest;
@@ -236,20 +256,6 @@ void Heap::consolidate()
         }
     }
 };
-
-/*
-    used to compare the priority between two nodes
-    input:
-        node1, node2: two nodes need to compare
-    output:
-        true: node1 has higher priority
-        false: node2 has higher priority
-*/
-bool higher_priority(Node &node1, Node &node2)
-{
-    // profession category, ranking of age group, time
-    return false;
-}
 
 /*
     update degree
