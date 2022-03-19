@@ -18,6 +18,17 @@ protected:
     char email[18] ;
 };
 
+class Appointment
+{
+public:
+    Appointment();
+
+    bool registered; // TODO:是否有appointment. 若withdraw则false?
+    char address;
+    long date; // TODO:long?
+    int time;  // TODO: 和timeslot对应
+};
+
 // basic queue data structure
 //TODO:存在外部文件中还是内存中
 class Data
@@ -66,15 +77,6 @@ public:
     void Report();
 };
 
-class Appointment
-{
-public:
-    Appointment();
 
-    bool registered; // TODO:是否有appointment. 若withdraw则false?
-    string address;
-    long date; // TODO:long?
-    int time;  // TODO: 和timeslot对应
-};
 
 #endif
