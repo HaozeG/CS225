@@ -18,7 +18,7 @@ public:
     bool mark;
 };
 
-class Heap : public Node
+class Heap
 {
 public:
     Heap();
@@ -27,9 +27,7 @@ public:
 
     void insert(Node &node);
     void link_root(Node &node);
-    void update(Node &node, Data &new_data); // used to update information
-    void increase(Node &node, Data &new_data);
-    void decrease(Node &node, Data &new_data);
+    void update(Node &node); // used to update information
     void delete_node(Node &node);
     void delete_highest();
     void consolidate();
