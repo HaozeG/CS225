@@ -14,12 +14,24 @@ Node::Node()
     right = NULL;
     degree = 0;
     mark = false;
+    cout << "Add one node!\n";
 };
+
+Node::~Node()
+{
+    cout << "Delete one node!\n";
+}
 
 Heap::Heap()
 {
     highest = NULL;
     n = 0;
+    cout << "Build one empty heap!\n";
+}
+
+Heap::~Heap()
+{
+    cout << "Delete heap\n";
 }
 
 void Heap::link_root(Node &node)
@@ -39,13 +51,16 @@ void Heap::link_root(Node &node)
 /*
     insert new node into root
     input:
-        node: the node needs to insert
+        data: the data of the node
     output: none
 */
-void Heap::insert(Node &node)
+void Heap::insert(Data *data)
 {
-    link_root(node);
+    Node *node = new Node;
+    node->data = data;
+    link_root(*node);
     Heap::n++;
+    cout << "Insert one node!\n";
 };
 
 /*
@@ -85,6 +100,7 @@ void Heap::update(Node &node)
 
     // cascaded cut parent nodes
     cascaded_cut(parent_node);
+    cout << "Sucessfully update!\n";
 }
 
 // to get the data of the highest node, just H.highest->data
@@ -99,8 +115,7 @@ void Heap::delete_highest()
     Heap::n--;
     if (0 == n)
     {
-        highest->left = NULL;
-        highest->right = NULL;
+        delete highest;
         highest = NULL;
         return;
     }
@@ -122,9 +137,7 @@ void Heap::delete_highest()
         right_node->left = left_root_node;
         left_root_node->right = right_node;
     }
-    highest->child = NULL;
-    highest->left = NULL;
-    highest->right = NULL;
+    delete highest;
 
     // update H.highest
     highest = left_root_node;
@@ -163,9 +176,9 @@ void Heap::delete_node(Node &node)
 
     // call decrease and delete_min
     update(node);
-    delete_highest();
     // keep the data unchanged
     node.data = origin_data;
+    delete_highest();
     // TODO: Data的析构
     delete new_data;
 };

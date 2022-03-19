@@ -7,6 +7,7 @@ class Node
 {
 public:
     Node();
+    ~Node();
 
     Data* data;
     // define four pointers for each node
@@ -22,10 +23,11 @@ class Heap
 {
 public:
     Heap();
-    Node *highest;  // pointer to the highest priority node
+    ~Heap();
+    Node *highest; // pointer to the highest priority node
     int n;  // record the number of nodes in this heap
 
-    void insert(Node &node);
+    void insert(Data *data);
     void link_root(Node &node);
     void update(Node &node); // used to update information
     void delete_node(Node &node);
