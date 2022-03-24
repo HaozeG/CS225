@@ -8,7 +8,6 @@ class Node
 public:
     Node();
     ~Node();
-
     Data* data;
     // define four pointers for each node
     Node* parent;
