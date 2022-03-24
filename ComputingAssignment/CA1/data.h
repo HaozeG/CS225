@@ -11,13 +11,13 @@ class Contact
 {
 public:
     Contact();
-
-protected:
     int addx;
     int addy;
-    char phone[11] ;
-    char WeChat[12] ;
-    char email[18] ;
+
+protected:
+    char phone[11];
+    char WeChat[12];
+    char email[18];
 };
 
 class Appointment
@@ -25,15 +25,17 @@ class Appointment
 public:
     Appointment();
 
-    bool registered; // TODO:是否有appointment. 若withdraw则false?
-    char address;
+    bool registered; // 是否有appointment.
+    int addx;
+    int addy;
     long date; // TODO:long?
     int time;  // TODO: 和timeslot对应
+    int hospital_id;
     time_t timpe_app;
 };
 
 // basic queue data structure
-//TODO:存在外部文件中还是内存中
+// TODO:存在外部文件中还是内存中
 class Data
 {
 public:
@@ -48,28 +50,28 @@ public:
     char name[10];
     Contact *contact;
     int profession; // I to VIII
-    long birth; // format: YYMMDD
+    long birth;     // format: YYMMDD
     int age_group;
     int risk;
-    Data* next = NULL;
+    Data *next = NULL;
 };
 
 class queue : public Data
 {
 public:
     queue();
-    void push(Data* person);
-    Data* pop();
+    void push(Data *person);
+    Data *pop();
     int num = 0;
-    Data* head = NULL;
-    Data* tail = NULL;
+    Data *head = NULL;
+    Data *tail = NULL;
 };
 
 class Local : public queue
 {
 public:
     Local();
-    Data* update();   // update to central
+    Data *update(); // update to central
     int registration();
 };
 
@@ -80,7 +82,5 @@ public:
     void Selection(); // select people with the higest priority
     void Report();
 };
-
-
 
 #endif

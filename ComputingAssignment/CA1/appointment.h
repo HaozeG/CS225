@@ -20,8 +20,10 @@ class Hospital
 public:
     Hospital();
 
-    string address; // TODO: 怎么找closest
+    int addx;
+    int addy;
     int capacity;
+    int numpatient;
     int timeslot; // TODO:类型以及用途
 };
 
@@ -34,6 +36,7 @@ public:
 
     Data *appoint_list;
     int numitems;
+    const INFINITY = 10000;
 };
 
 #endif
