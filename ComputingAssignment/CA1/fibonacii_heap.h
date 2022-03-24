@@ -17,6 +17,7 @@ public:
     Node* right;
     int degree; // number of children
     bool mark;
+    bool Written = false;
 };
 
 class Heap
