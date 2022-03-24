@@ -8,7 +8,6 @@ class Node
 public:
     Node();
     ~Node();
-
     Data* data;
     // define four pointers for each node
     Node* parent;
@@ -17,6 +16,7 @@ public:
     Node* right;
     int degree;                     // number of children
     bool mark;
+    bool Written = false;
 };
 
 class Heap
