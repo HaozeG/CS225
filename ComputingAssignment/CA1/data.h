@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <time.h>
+#include <sys/_types/_time_t.h>
 using namespace std;
 
 class Contact
@@ -27,6 +29,7 @@ public:
     char address;
     long date; // TODO:long?
     int time;  // TODO: 和timeslot对应
+    time_t timpe_app;
 };
 
 // basic queue data structure
@@ -37,6 +40,7 @@ public:
     Data();
 
     Appointment *appointment;
+    time_t timep;
     long timestamp; // YY,MM,DD,HH,MM,SS
     // TODO: 写成bias
     bool withdrawn;
