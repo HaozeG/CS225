@@ -16,6 +16,7 @@ int main()
 
         // 存入斐波那契堆
         Heap H;
+     
 
         // 安排appointment
         Appoint_list Alist;  // Alist is appointment list.
@@ -27,4 +28,5 @@ int main()
         {
                 Alist.appoint(H, Hlist);
         }
+
 }
