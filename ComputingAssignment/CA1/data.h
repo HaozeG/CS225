@@ -38,8 +38,8 @@ class Data
 {
 public:
     Data();
-
     Appointment *appointment;
+    //natural time counter
     time_t timep;
     long timestamp; // YY,MM,DD,HH,MM,SS
     // TODO: 写成bias
