@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <iostream>
-#include "fibonacci_heap.h"
+#include "fibonacii_heap.h"
 #include "appointment.h"
 #include "data.h"
 using std::cin;
@@ -55,7 +55,7 @@ void Appoint_list::appoint(Heap &H, Hospital_list &Hlist)
     numitems++;
 }
 
-void Appoint_list::withdraw(Data &data)
+void Appoint_list::withdraw(Data &data, Heap &H)
 {
     data.withdrawn = true; // if register again, two weeks penalty
 
@@ -76,9 +76,7 @@ void Appoint_list::withdraw(Data &data)
     }
     else
     {
-        // 从斐波那契堆中去除？
+        // 从斐波那契堆中去除
+        H.delete_node(Node &node);
     }
-    
-
 }
-
