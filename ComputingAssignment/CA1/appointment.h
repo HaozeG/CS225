@@ -32,7 +32,7 @@ class Appoint_list
 public:
     Appoint_list();
     void appoint(Heap &H, Hospital_list &Hlist);
-    void withdraw(Data &data);
+    void withdraw(Data &data, Heap &H);
 
     Data *appoint_list;
     int numitems;
