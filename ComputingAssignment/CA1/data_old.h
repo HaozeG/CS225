@@ -1,19 +1,23 @@
 #ifndef data_h
 #define data_h
-#include <time.h>
+
 #include <stdint.h>
 #include <stdio.h>
+#include <time.h>
+// #include <sys/_types/_time_t.h>
+// using namespace std;
 
 class Contact
 {
 public:
     Contact();
-
     int addx;
     int addy;
-    char* phone;
-    char* WeChat;
-    char* email;
+
+protected:
+    char phone[11];
+    char WeChat[12];
+    char email[18];
 };
 
 class Appointment
@@ -27,48 +31,47 @@ public:
     long date;
     int time;  // TODO: 和timeslot对应
     int hospital_id;
-    time_t timpe_app; // TODO: ??到时候再改
+    time_t timpe_app;
 };
 
-// basic structure of one registry
+// basic queue data structure
 class Data
 {
 public:
-    Data(); // 这个要单独写一下，不然主程序编译有问题
-
+    // Data(); // TODO: 这个要写一下
     Appointment *appointment;
-    bool withdrawn;
+    //natural time counter
+    time_t timep;
     long timestamp; // YY,MM,DD,HH,MM,SS
-    char* id;  //TODO:再说
-    char* name;
+    // TODO: 写成bias
+    bool withdrawn;
+    char id[9] = {"12345678"}; // TODO:再说
+    char name[10];
     Contact *contact;
     int profession; // I to VIII
-    char* birth; // format: YYMMDD
+    long birth;     // format: YYMMDD
     int age_group;
     int risk;
-    Data* next = NULL;
+    Data *next = NULL;
 };
 
 class queue : public Data
 {
 public:
     queue();
-    void push(Data* person);
-    Data* pop();
+    void push(Data *person);
+    Data *pop();
     int num = 0;
-    Data* head = NULL;
-    Data* tail = NULL;
+    Data *head = NULL;
+    Data *tail = NULL;
 };
 
 class Local : public queue
 {
 public:
     Local();
-    queue* Queue;
-    queue* update(int time);   // update to central
+    Data *update(); // update to central
     int registration();
-    int readfile(const char* filename);
-    char str[60];
 };
 
 class Central : public Data
@@ -78,7 +81,5 @@ public:
     void Selection(); // select people with the higest priority
     void Report();
 };
-
-
 
 #endif

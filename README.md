@@ -21,9 +21,11 @@ This respository is for Haowen Zheng, Yiheng Zhang, Wenpeng Zhang and Haoze Gao
 ![example](./images/1.png)
 
 
+> 使用ssh连接**无需注册Gitee账号**即可使用，公钥发送给别人不影响安全性，只需要保存好私钥即可
+
 **That's it!** ╰(￣ω￣ｏ)
 
-> 使用ssh连接**无需注册Gitee账号**即可使用，公钥发送给别人不影响安全性，只需要保存好私钥即可
+> 如果怀疑自己的编译器有点问题，可以尝试更新一下Ubuntu中的包，输入'sudo apt-get update'后输入'sudo apt-get upgrade'，根据提示进行操作
 
 **下列方法是使用https进行连接的使用说明，更建议使用ssh连接**
 1.  完成注册Gitee账户后，点击这个页面右上角的*克隆/下载*按钮，复制HTTPS选项下的URL地址

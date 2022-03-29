@@ -1,7 +1,9 @@
+#include <runetype.h>
 #include <stdio.h>
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 #include <sys/_types/_time_t.h>
 #include <time.h>
 #include "fibonacii_heap.h"
@@ -12,42 +14,43 @@ using namespace std;
 //for weekly report, choose the order 
 int Report_system::weekly_choice(){
     char input[100];
-    cout << "A weekly report is generating\n" << endl;
-    cout << "choose the order: 1 for name, 2 for profession, 3 for age\n" << endl;
+    cout << "A weekly report is generating" << endl;
+    cout << "choose the order: 1 for name, 2 for profession, 3 for age" << endl;
     cin.getline(input,1);
     return (int)input[0];
 }
 //open file for weekly report
-void Report_system::open_file(){
+void Report_system::open_file(Data *data, int Choice, Brutal_node *ptr){
     ofstream outfile;
     outfile.open("Week.txt", ios::out | ios::trunc);
     cout << "WEEK REPORT\n" << endl;
+    cout << "-----people who has been treated-----" << endl;
+    Writing_weekly(data, Choice, 4, ptr);
+    cout << "-----people who has an appointment but not treated yet-----" << endl;
+    Writing_weekly(data, Choice, 5, ptr);
+    cout << "-----people who has registered but done nothing else-----" << endl;
+    Writing_weekly(data, Choice, 6, ptr);
+    cout << "Reporting has completed." << endl;
+    outfile.close();
+    return;
 }
 
-void Report_system::Writing_weekly(Node *node, int Choice){
-    int number_for_different_parts = 0;
-    cout << "-----people who has been treated-----" << endl;
-    number_for_different_parts = 4;
-    cout << "-----people who has an appointment but not treated yet-----" << endl;
-    number_for_different_parts = 5;
-    cout << "-----people who has registered but done nothing else-----" << endl;
-    number_for_different_parts = 6;
-    if (NULL == node->data){return;}
-    if (node->Written){return;}
+void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_node *ptr){
+    //first of all. copy a list
+    Copied_list(data, ptr);
     if (1 == Choice){
-        for (int i = 65; 90 >= i; i++){
-            cout << "first letter in one's name is "<< (char)i << ":" << endl;
-        }
+        sort_by_age(ptr, Choice_2);
     }
     else if (2 == Choice){
-
+        sort_by_profession(ptr, Choice_2);
     }
-    else{
-
+    else if (3 == Choice){
+        sort_by_age(ptr, Choice_2);
     }
-    node->Written = true;
-    return Writing_weekly(node->child, Choice);
-    return Writing_weekly(node->left,Choice);
+    else {
+        cout << "It seems that you did not choose a proper order." << endl;
+    }
+    return;
 }
 
 //open file for monthly report
@@ -57,6 +60,7 @@ void Report_system::file_month(){
     cout << "MONTH REPORT" << endl;
     std::stringstream ss;
 
+    //print out 
     ss << Regi_number;
     std::string Regi = ss.str();
     cout << "Till now, " << Regi << "have been registered."<< endl;
@@ -65,11 +69,11 @@ void Report_system::file_month(){
     std::string Wait = ss.str();
     cout << Wait << "is waiting for an appointment."<< endl;
 
-    ss << all_appointment_numebr;
+    ss << all_appointment_number;
     std::string Appo = ss.str();
     cout << Appo << "have received an appointment." << endl;
 
-    double i = RMS_waiting_time / (all_appointment_numebr * 60 * 60);
+    double i = RMS_waiting_time / (all_appointment_number * 60 * 60);
     ss << i;
     std::string average = ss.str();
     cout <<"Patients have an average waiting time of "<< average << "hours." << endl;
@@ -82,41 +86,83 @@ void Report_system::file_month(){
     outfile.close();
 }
 
-void Report_system::stat(Node *node){
-    if (NULL == node){return;}
-    Regi_number += 1;
-    if (node->data->withdrawn){withdraw_number += 1;}
-    if (node->data->appointment->registered){
-        all_appointment_numebr += 1;
-        RMS_waiting_time += difftime(node->data->appointment->timpe_app, node->data->timep);
-        }
-    else{all_waiting_number += 1;}
+void Report_system::stat(Data *data){
+    while (NULL != data){
+        //people registered
+        Regi_number += 1;
+        //people withdrawn once
+        if (data->withdrawn){withdraw_number += 1;}
+        //people ever made an appointment
+        if(data->appointment->registered){all_appointment_number += 1;}
+        data = data->next;
+    }
+    all_waiting_number = Regi_number - all_appointment_number;
     return;
 }
 
-//selection for name, profession, age
-void Report_system::selection(int number, int number_two, Heap &H){
-    if (1 == number){
-        sort_by_name(H, number_two);
-    }else if (2 == number){
-        sort_by_profession(H, number_two);
-    }else if (3 == number){
-        sort_by_age(H, number_two);
-    }else{
+//copy a list for sorting
+Brutal_node *Report_system::Copied_list(Data *data, Brutal_node *ptr){
+    //first node is a dummy
+    Brutal_node *pre = ptr;
+    Brutal_node *cur;
+    while(NULL != data){
+        cur->ptr = data;
+        ptr->next = cur;
+        ptr = cur;
+        cur = ptr->next;
+        data = data->next;
+    }
+    ptr = pre;
+    return ptr;
+}
+
+void Report_system::sort_by_name(Brutal_node *ptr, int number){
+    //people being treated
+    if (4 == number){
+
+
+    }
+    //people made an appointment
+    else if (5 == number){
+
+    }
+    //people registered
+    else {
 
     }
     return;
 }
 
-void Report_system::sort_by_name(Heap &H, int number){
-    
+void Report_system::sort_by_profession(Brutal_node *ptr, int number){
+    //people being treated
+    if (4 == number){
 
+
+    }
+    //people made an appointment
+    else if (5 == number){
+
+    }
+    //people registered
+    else {
+
+    }
+    return;
 }
 
-void Report_system::sort_by_profession(Heap &H, int number){
+void Report_system::sort_by_age(Brutal_node *ptr, int number){
+    //people being treated
+    if (4 == number){
 
-}
 
-void Report_system::sort_by_age(Heap &H, int number){
+    }
+    //people made an appointment
+    else if (5 == number){
 
+    }
+    //people registered
+    else {
+
+    }
+    return;
 }

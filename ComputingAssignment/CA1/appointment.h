@@ -4,17 +4,6 @@
 #include <stdint.h>
 #include <string>
 using namespace std;
-
-class Hospital_list
-{
-public:
-    Hospital_list();
-
-    Hospital *hospital_list;
-    int numitems;
-    int total_capacity;
-};
-
 class Hospital
 {
 public:
@@ -27,6 +16,17 @@ public:
     int timeslot; // TODO:类型以及用途
 };
 
+class Hospital_list
+{
+public:
+    Hospital_list();
+
+    Hospital *hospital_list;
+    int numitems;
+    int total_capacity;
+};
+
+
 class Appoint_list
 {
 public:
@@ -36,7 +36,7 @@ public:
 
     Data *appoint_list;
     int numitems;
-    const INFINITY = 10000;
+    const int INFINITY = 10000;
 };
 
 #endif
