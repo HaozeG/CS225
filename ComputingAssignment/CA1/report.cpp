@@ -1,7 +1,9 @@
+#include <runetype.h>
 #include <stdio.h>
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 #include <sys/_types/_time_t.h>
 #include <time.h>
 #include "fibonacii_heap.h"
@@ -18,36 +20,35 @@ int Report_system::weekly_choice(){
     return (int)input[0];
 }
 //open file for weekly report
-void Report_system::open_file(){
+void Report_system::open_file(Data *data, int Choice){
     ofstream outfile;
     outfile.open("Week.txt", ios::out | ios::trunc);
     cout << "WEEK REPORT\n" << endl;
+    cout << "-----people who has been treated-----" << endl;
+    Writing_weekly(data, Choice, 4);
+    cout << "-----people who has an appointment but not treated yet-----" << endl;
+    Writing_weekly(data, Choice, 5);
+    cout << "-----people who has registered but done nothing else-----" << endl;
+    Writing_weekly(data, Choice, 6);
+    cout << "Reporting has completed." << endl;
+    outfile.close();
+    return;
 }
 
-void Report_system::Writing_weekly(Node *node, int Choice){
-    int number_for_different_parts = 0;
-    cout << "-----people who has been treated-----" << endl;
-    number_for_different_parts = 4;
-    cout << "-----people who has an appointment but not treated yet-----" << endl;
-    number_for_different_parts = 5;
-    cout << "-----people who has registered but done nothing else-----" << endl;
-    number_for_different_parts = 6;
-    if (NULL == node->data){return;}
-    if (node->Written){return;}
+void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2){
     if (1 == Choice){
-        for (int i = 65; 90 >= i; i++){
-            cout << "first letter in one's name is "<< (char)i << ":" << endl;
-        }
+
     }
     else if (2 == Choice){
 
     }
-    else{
+    else if (3 == Choice){
 
     }
-    node->Written = true;
-    return Writing_weekly(node->child, Choice);
-    return Writing_weekly(node->left,Choice);
+    else {
+        cout << "It seems that you did not choose a proper order." << endl;
+    }
+    return;
 }
 
 //open file for monthly report
@@ -57,6 +58,7 @@ void Report_system::file_month(){
     cout << "MONTH REPORT" << endl;
     std::stringstream ss;
 
+    //print out 
     ss << Regi_number;
     std::string Regi = ss.str();
     cout << "Till now, " << Regi << "have been registered."<< endl;
@@ -108,15 +110,59 @@ void Report_system::selection(int number, int number_two, Heap &H){
     return;
 }
 
-void Report_system::sort_by_name(Heap &H, int number){
-    
+
+Brutal_node *Report_system::Copied_list(Data *data, Brutal_node *ptr){
+    //first node is a dummy
+    Brutal_node *pre = ptr;
+    Brutal_node *cur;
+    while(NULL != data){
+        cur->ptr = data;
+        pre->next = cur;
+        pre = cur;
+        cur = pre->next;
+        data = data->next;
+    }
+    return ptr;
+}
+
+void Report_system::sort_by_name(Brutal_node *ptr, int number){
+    //people being treated
+    if (4 == number){
+
+    }
+    //people made an appointment
+    if (5 == number){
+
+    }
+    //people registered
+    if (6 == number){
+
+    }
 
 }
 
-void Report_system::sort_by_profession(Heap &H, int number){
+void Report_system::sort_by_profession(Brutal_node *ptr, int number){
+    if (4 == number){
+
+    }
+    if (5 == number){
+
+    }
+    if (6 == number){
+
+    }
 
 }
 
-void Report_system::sort_by_age(Heap &H, int number){
+void Report_system::sort_by_age(Brutal_node *ptr, int number){
+    if (4 == number){
+
+    }
+    if (5 == number){
+
+    }
+    if (6 == number){
+
+    }
 
 }
