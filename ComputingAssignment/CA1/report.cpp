@@ -39,13 +39,13 @@ void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_
     //first of all. copy a list
     Copied_list(data, ptr);
     if (1 == Choice){
-
+        sort_by_age(ptr, Choice_2);
     }
     else if (2 == Choice){
-
+        sort_by_profession(ptr, Choice_2);
     }
     else if (3 == Choice){
-
+        sort_by_age(ptr, Choice_2);
     }
     else {
         cout << "It seems that you did not choose a proper order." << endl;
@@ -69,11 +69,11 @@ void Report_system::file_month(){
     std::string Wait = ss.str();
     cout << Wait << "is waiting for an appointment."<< endl;
 
-    ss << all_appointment_numebr;
+    ss << all_appointment_number;
     std::string Appo = ss.str();
     cout << Appo << "have received an appointment." << endl;
 
-    double i = RMS_waiting_time / (all_appointment_numebr * 60 * 60);
+    double i = RMS_waiting_time / (all_appointment_number * 60 * 60);
     ss << i;
     std::string average = ss.str();
     cout <<"Patients have an average waiting time of "<< average << "hours." << endl;
@@ -86,14 +86,17 @@ void Report_system::file_month(){
     outfile.close();
 }
 
-void Report_system::stat(Node *node){
-    if (NULL == node){return;}
-    Regi_number += 1;
-    if (node->data->withdrawn){withdraw_number += 1;}
-    if (node->data->appointment->registered){
-        all_appointment_numebr += 1;
-        }
-    else{all_waiting_number += 1;}
+void Report_system::stat(Data *data){
+    while (NULL != data){
+        //people registered
+        Regi_number += 1;
+        //people withdrawn once
+        if (data->withdrawn){withdraw_number += 1;}
+        //people ever made an appointment
+        if(data->appointment->registered){all_appointment_number += 1;}
+        data = data->next;
+    }
+    all_waiting_number = Regi_number - all_appointment_number;
     return;
 }
 
@@ -117,46 +120,49 @@ void Report_system::sort_by_name(Brutal_node *ptr, int number){
     //people being treated
     if (4 == number){
 
+
     }
     //people made an appointment
-    if (5 == number){
+    else if (5 == number){
 
     }
     //people registered
-    if (6 == number){
+    else {
 
     }
-
+    return;
 }
 
 void Report_system::sort_by_profession(Brutal_node *ptr, int number){
     //people being treated
     if (4 == number){
 
+
     }
     //people made an appointment
-    if (5 == number){
+    else if (5 == number){
 
     }
     //people registered
-    if (6 == number){
+    else {
 
     }
-
+    return;
 }
 
 void Report_system::sort_by_age(Brutal_node *ptr, int number){
     //people being treated
     if (4 == number){
 
+
     }
     //people made an appointment
-    if (5 == number){
+    else if (5 == number){
 
     }
     //people registered
-    if (6 == number){
+    else {
 
     }
-
+    return;
 }
