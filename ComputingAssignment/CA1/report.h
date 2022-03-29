@@ -23,7 +23,7 @@ class Report_system : public Brutal_node
 public:
     long Regi_number = 0;
     long all_waiting_number = 0;
-    long all_appointment_numebr = 0;
+    long all_appointment_number = 0;
     double RMS_waiting_time = 0;
     long withdraw_number = 0;
     //choose the order of weekly report
@@ -34,7 +34,7 @@ public:
     //open and write for monthly report
     void file_month();
     //count different category number for one node
-    void stat(Node *node);
+    void stat(Data *data);
     //copy list
     Brutal_node *Copied_list(Data *data, Brutal_node *ptr);
     //choose which operation to use
