@@ -106,7 +106,7 @@ Brutal_node *Report_system::Copied_list(Data *data, Brutal_node *ptr){
     Brutal_node *pre = ptr;
     Brutal_node *cur;
     while(NULL != data){
-        cur->ptr = data;
+        cur->ptr_to_data = data;
         ptr->next = cur;
         ptr = cur;
         cur = ptr->next;
@@ -119,50 +119,191 @@ Brutal_node *Report_system::Copied_list(Data *data, Brutal_node *ptr){
 void Report_system::sort_by_name(Brutal_node *ptr, int number){
     //people being treated
     if (4 == number){
+        while (NULL != ptr){
+            //如果此人没有被治疗过直接跳到下一个
+            if (!ptr->ptr_to_data->treated){
+                ptr = ptr->next;
+                continue;
+            }
 
 
+
+        }
     }
     //people made an appointment
     else if (5 == number){
+        while (NULL != ptr){
+            //如果此人没有登记治疗过直接跳到下一个
+            if (!ptr->ptr_to_data->appo){
+                ptr = ptr->next;
+                continue;
+            }
+
+
+        }
 
     }
     //people registered
     else {
+        while (NULL != ptr){
 
+
+        }
     }
     return;
 }
 
-void Report_system::sort_by_profession(Brutal_node *ptr, int number){
+
+Brutal_node *Report_system::sort_by_profession(Brutal_node *ptr, int number){
+    Brutal_node *I, *II, *III, *IV, *V, *VI, *VII, *VIII;
+    Brutal_node *I_pre, *II_pre, *III_pre, *IV_pre, *V_pre, *VI_pre, *VII_pre, *VIII_pre;
+    Brutal_node *keepI = I, *keepII = II, *keepIII = III, *keepIV = IV, *keepV = V;
+    Brutal_node *keepVI = VI;
+    Brutal_node *keepVII = VII;
+    Brutal_node *keepVIII = VIII;
+
     //people being treated
     if (4 == number){
-
-
+        while (NULL != ptr){
+            //如果此人没有被治疗过直接跳到下一个
+            if (!ptr->ptr_to_data->treated){ptr = ptr->next; continue;}
+            //根据profession分别塞入不同的链表中
+            switch(ptr->ptr_to_data->profession){
+                case 1:
+                    I->ptr_to_data = ptr->ptr_to_data; I_pre = I; I = I->next;
+                    break;
+                case 2:
+                    II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
+                    break; 
+                case 3:
+                    III->ptr_to_data = ptr->ptr_to_data; III_pre = III; III = III->next;
+                    break;
+                case 4:
+                    IV->ptr_to_data = ptr->ptr_to_data; IV_pre = IV; IV = IV->next;
+                    break;   
+                case 5:
+                    V->ptr_to_data = ptr->ptr_to_data; V_pre = V; V = V->next;
+                    break;
+                case 6:
+                    VI->ptr_to_data = ptr->ptr_to_data; VI_pre = VI; VI = VI->next;
+                    break;
+                case 7:
+                    VII->ptr_to_data = ptr->ptr_to_data; VII_pre = VII; VII = VII->next;
+                    break; 
+                case 8:
+                    VIII->ptr_to_data = ptr->ptr_to_data; VIII_pre = VIII; VIII = VIII->next;
+                    break;
+                default:
+                    cout << "A fetal error occurs" << endl;          
+            }
+            //移到下一个元素
+            ptr = ptr->next;
+        }
+    }else if (5 == number){
+        while (NULL != ptr){
+            //如果此人没有登记过,或者撤回了，直接跳到下一个
+            if (!ptr->ptr_to_data->appo || ptr->ptr_to_data->withdrawn){ptr = ptr->next; continue;}
+            //根据profession分别塞入不同的链表中
+            switch(ptr->ptr_to_data->profession){
+                case 1:
+                    I->ptr_to_data = ptr->ptr_to_data; I_pre = I; I = I->next;
+                    break;
+                case 2:
+                    II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
+                    break; 
+                case 3:
+                    III->ptr_to_data = ptr->ptr_to_data; III_pre = III; III = III->next;
+                    break;
+                case 4:
+                    IV->ptr_to_data = ptr->ptr_to_data; IV_pre = IV; IV = IV->next;
+                    break;   
+                case 5:
+                    V->ptr_to_data = ptr->ptr_to_data; V_pre = V; V = V->next;
+                    break;
+                case 6:
+                    VI->ptr_to_data = ptr->ptr_to_data; VI_pre = VI; VI = VI->next;
+                    break;
+                case 7:
+                    VII->ptr_to_data = ptr->ptr_to_data; VII_pre = VII; VII = VII->next;
+                    break; 
+                case 8:
+                    VIII->ptr_to_data = ptr->ptr_to_data; VIII_pre = VIII; VIII = VIII->next;
+                    break;
+                default:
+                    cout << "A fetal error occurs" << endl;          
+            }
+            //移到下一个元素
+            ptr = ptr->next;
+        }
+    }else{
+        while (NULL != ptr){
+            //根据profession分别塞入不同的链表中
+            switch(ptr->ptr_to_data->profession){
+                case 1:
+                    I->ptr_to_data = ptr->ptr_to_data; I_pre = I; I = I->next;
+                    break;
+                case 2:
+                    II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
+                    break; 
+                case 3:
+                    III->ptr_to_data = ptr->ptr_to_data; III_pre = III; III = III->next;
+                    break;
+                case 4:
+                    IV->ptr_to_data = ptr->ptr_to_data; IV_pre = IV; IV = IV->next;
+                    break;   
+                case 5:
+                    V->ptr_to_data = ptr->ptr_to_data; V_pre = V; V = V->next;
+                    break;
+                case 6:
+                    VI->ptr_to_data = ptr->ptr_to_data; VI_pre = VI; VI = VI->next;
+                    break;
+                case 7:
+                    VII->ptr_to_data = ptr->ptr_to_data; VII_pre = VII; VII = VII->next;
+                    break; 
+                case 8:
+                    VIII->ptr_to_data = ptr->ptr_to_data; VIII_pre = VIII; VIII = VIII->next;
+                    break;
+                default:
+                    cout << "A fetal error occurs" << endl;          
+            }
+            //移到下一个元素
+            ptr = ptr->next;
+        }
     }
-    //people made an appointment
-    else if (5 == number){
-
-    }
-    //people registered
-    else {
-
-    }
-    return;
+    //合成大西瓜！
+    I_pre->next = keepII;
+    II_pre->next = keepIII;
+    III_pre->next = keepIV;
+    IV_pre->next = keepV;
+    V_pre->next = keepVI;
+    VI_pre->next = keepVII;
+    VII_pre->next = keepVIII;
+    //返回已合成链表的头节点
+    return keepI;
 }
 
 void Report_system::sort_by_age(Brutal_node *ptr, int number){
     //people being treated
     if (4 == number){
+        while (NULL != ptr){
+            //如果此人没有被治疗过直接跳到下一个
+            if (!ptr->ptr_to_data->treated){ptr = ptr->next;continue;}
 
 
-    }
-    //people made an appointment
-    else if (5 == number){
+        }
+    }else if (5 == number){
+        while (NULL != ptr){
+            //如果此人没有登记治疗过直接跳到下一个
+            if (!ptr->ptr_to_data->appo){ptr = ptr->next;continue;}
 
-    }
-    //people registered
-    else {
 
+        }
+
+    }else {
+        while (NULL != ptr){
+
+
+        }
     }
     return;
 }

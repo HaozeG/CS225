@@ -15,7 +15,7 @@ class Brutal_node
 {
 public:
     Brutal_node *next;
-    Data *ptr;
+    Data *ptr_to_data;
 };
 //used for reporting  process,strcmp()!!!!!!!, 用建构函数写数据的初始化
 class Report_system : public Brutal_node
@@ -44,7 +44,7 @@ public:
     //sort by name
     void sort_by_name(Brutal_node *ptr, int number);
     //sort by profession
-    void sort_by_profession(Brutal_node *ptr, int number);
+    Brutal_node *sort_by_profession(Brutal_node *ptr, int number);
     //sort by age
     void sort_by_age(Brutal_node *ptr, int number);
 };
