@@ -4,9 +4,9 @@
 #include <time.h>
 #include "fibonacii_heap.h"
 #include "data.h"
-#include "appointment.h"
-using std::cout;
+#include "appoint.h"
 using std::cin;
+using std::cout;
 
 int main()
 {
@@ -32,31 +32,28 @@ int main()
             cout << "6: manual reporting\n";
             cout << "7: GO TO NEXT DAY\n";
             cin >> op;
-        }
-        while ((op < 0 && op > 7));
+        } while ((op < 0 && op > 7));
         switch (op)
         {
-            case 0:
-            {
-                delete h;
-                return 0;
-            }
-            case 1:
-            {
-                // update();
-            }
-            case 2:
-            {
-                // 读入，形成链表
-            }
-            case 3:
-            {
-                // 手动更新某人的信息
-            }
-
+        case 0:
+        {
+            delete h;
+            return 0;
         }
-    }
-    while (op != 0);
+        case 1:
+        {
+            // update();
+        }
+        case 2:
+        {
+            // 读入，形成链表
+        }
+        case 3:
+        {
+            // 手动更新某人的信息
+        }
+        }
+    } while (op != 0);
     return 0;
 
     // above is the basic structure for main program
@@ -81,33 +78,40 @@ int main()
     手动开启每月报告
     */
 
-            // Data a;
-            // printf(a.id[0]);
-            // return 0;
-            char a[5] = "123\n";
-        a[3] = '\0';
-        cout << a;
 
-        // 导入数据，存入local registry queue，合并为centralized queue
-
-        // 存入斐波那契堆
-        Heap H;
+    // Data a;
+    // printf(a.id[0]);
+    // return 0;
+    char a[5] = "123\n";
+    a[3] = '\0';
+    cout << a;
 
 
-        // 安排appointment
-        Appoint_list Alist;  // Alist is appointment list.
-        Hospital_list Hlist; // Hlist is hospital list.
-        bool available;
-        available = (Alist.numitems < Hlist.total_capacity ? true : false);
 
-        while (available)
-        {
-                Alist.appoint(H, Hlist);
-        }
+    // appoint
+    Alist alist;
+    Hlist hlist;
+    Hospital hospital1(114, 514, 1000), hospital2(100, 200, 500);
+    hlist.append(&hospital1);
+    hlist.append(&hospital2);
 
-        // 询问有无删除或更改
-        // if() update or withdraw
+    bool available = false;
+    available = (alist.numitems < hlist.tot_capacity ? true : false);
 
-        // 当天结束
-        Alist.numitems = 0;
+    while (available)
+    {
+        alist.appoint(h, hlist);
+    }
+
+
+
+    // withdraw
+    Data *inputdata;
+
+    if (inputdata->appointment->in_alist)
+        alist.withdraw(inputdata);
+    else
+        cout << "0\n";
+    // TODO: withdraw
+    // h->delete_node(?)
 }
