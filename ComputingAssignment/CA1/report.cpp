@@ -14,28 +14,30 @@ using namespace std;
 //for weekly report, choose the order 
 int Report_system::weekly_choice(){
     char input[100];
-    cout << "A weekly report is generating\n" << endl;
-    cout << "choose the order: 1 for name, 2 for profession, 3 for age\n" << endl;
+    cout << "A weekly report is generating" << endl;
+    cout << "choose the order: 1 for name, 2 for profession, 3 for age" << endl;
     cin.getline(input,1);
     return (int)input[0];
 }
 //open file for weekly report
-void Report_system::open_file(Data *data, int Choice){
+void Report_system::open_file(Data *data, int Choice, Brutal_node *ptr){
     ofstream outfile;
     outfile.open("Week.txt", ios::out | ios::trunc);
     cout << "WEEK REPORT\n" << endl;
     cout << "-----people who has been treated-----" << endl;
-    Writing_weekly(data, Choice, 4);
+    Writing_weekly(data, Choice, 4, ptr);
     cout << "-----people who has an appointment but not treated yet-----" << endl;
-    Writing_weekly(data, Choice, 5);
+    Writing_weekly(data, Choice, 5, ptr);
     cout << "-----people who has registered but done nothing else-----" << endl;
-    Writing_weekly(data, Choice, 6);
+    Writing_weekly(data, Choice, 6, ptr);
     cout << "Reporting has completed." << endl;
     outfile.close();
     return;
 }
 
-void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2){
+void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_node *ptr){
+    //first of all. copy a list
+    Copied_list(data, ptr);
     if (1 == Choice){
 
     }
@@ -90,27 +92,12 @@ void Report_system::stat(Node *node){
     if (node->data->withdrawn){withdraw_number += 1;}
     if (node->data->appointment->registered){
         all_appointment_numebr += 1;
-        RMS_waiting_time += difftime(node->data->appointment->timpe_app, node->data->timep);
         }
     else{all_waiting_number += 1;}
     return;
 }
 
-//selection for name, profession, age
-void Report_system::selection(int number, int number_two, Heap &H){
-    if (1 == number){
-        sort_by_name(H, number_two);
-    }else if (2 == number){
-        sort_by_profession(H, number_two);
-    }else if (3 == number){
-        sort_by_age(H, number_two);
-    }else{
-
-    }
-    return;
-}
-
-
+//copy a list for sorting
 Brutal_node *Report_system::Copied_list(Data *data, Brutal_node *ptr){
     //first node is a dummy
     Brutal_node *pre = ptr;

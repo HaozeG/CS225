@@ -29,8 +29,8 @@ public:
     //choose the order of weekly report
     int weekly_choice();
     //open file for weekly report
-    void open_file(Data *data, int Choice);
-    void Writing_weekly(Data *data, int choice, int Choice_2);
+    void open_file(Data *data, int Choice, Brutal_node *ptr);
+    void Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_node *ptr);
     //open and write for monthly report
     void file_month();
     //count different category number for one node
