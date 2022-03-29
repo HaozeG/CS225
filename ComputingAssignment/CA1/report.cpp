@@ -117,11 +117,12 @@ Brutal_node *Report_system::Copied_list(Data *data, Brutal_node *ptr){
     Brutal_node *cur;
     while(NULL != data){
         cur->ptr = data;
-        pre->next = cur;
-        pre = cur;
-        cur = pre->next;
+        ptr->next = cur;
+        ptr = cur;
+        cur = ptr->next;
         data = data->next;
     }
+    ptr = pre;
     return ptr;
 }
 
@@ -142,12 +143,15 @@ void Report_system::sort_by_name(Brutal_node *ptr, int number){
 }
 
 void Report_system::sort_by_profession(Brutal_node *ptr, int number){
+    //people being treated
     if (4 == number){
 
     }
+    //people made an appointment
     if (5 == number){
 
     }
+    //people registered
     if (6 == number){
 
     }
@@ -155,12 +159,15 @@ void Report_system::sort_by_profession(Brutal_node *ptr, int number){
 }
 
 void Report_system::sort_by_age(Brutal_node *ptr, int number){
+    //people being treated
     if (4 == number){
 
     }
+    //people made an appointment
     if (5 == number){
 
     }
+    //people registered
     if (6 == number){
 
     }
