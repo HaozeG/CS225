@@ -142,4 +142,9 @@ int main()
                 Alist.appoint(H, Hlist);
         }
 
+        // 询问有无删除或更改
+        // if() update or withdraw
+
+        // 当天结束
+        Alist.numitems = 0;
 }

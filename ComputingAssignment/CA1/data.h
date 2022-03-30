@@ -38,15 +38,21 @@ public:
     Data();
 
     Appointment *appointment;
-    bool withdrawn;
+
+    bool withdrawn = false;
+    bool appo = false;
+    bool treated = false;
+
     long timestamp; // YY,MM,DD,HH,MM,SS
     char* id;  //TODO:再说
-    char* name;
-    Contact *contact;
-    int profession; // I to VIII
     char* birth; // format: YYMMDD
-    int age_group;
     int risk;
+
+    char* name;
+    int profession; // I to VIII
+    int age_group;
+
+    Contact *contact;
     Data* next = NULL;
 };
 
