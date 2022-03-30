@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdint.h>
 #include <stdio.h>
+using namespace std;
 
 class Contact
 {
@@ -34,7 +35,7 @@ public:
 class Data
 {
 public:
-    Data(); // 这个要单独写一下，不然主程序编译有问题
+    Data();
 
     Appointment *appointment;
     bool withdrawn;
@@ -49,21 +50,24 @@ public:
     Data* next = NULL;
 };
 
-class queue : public Data
+class queue
 {
 public:
     queue();
-    void push(Data* person);
+    ~queue();
+    // void push(Data* person);
     Data* pop();
     int num = 0;
     Data* head = NULL;
     Data* tail = NULL;
 };
 
-class Local : public queue
+class Local
 {
 public:
     Local();
+    ~Local();
+
     queue* Queue;
     queue* update(int time);   // update to central
     int registration();
