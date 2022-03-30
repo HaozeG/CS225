@@ -5,8 +5,14 @@
 #include <cstdlib>
 #include <stdint.h>
 #include <string>
+#include <runetype.h>
+#include <stdio.h>
+#include <sstream>
+#include <iostream>
+#include <fstream>
 #include "data.h"
 using namespace std;
+
 
 
 class Brutal_node
@@ -15,7 +21,15 @@ public:
     Brutal_node *next;
     Data *ptr_to_data;
 };
-//used for reporting  process,strcmp()!!!!!!!, 用建构函数写数据的初始化
+
+class list_sort : public Brutal_node
+{
+public:
+    Brutal_node *sortList(Brutal_node *ptr);
+    Brutal_node *merge(Brutal_node *ptr);
+    Brutal_node *split(Brutal_node *ptr);
+};
+
 class Report_system : public Brutal_node
 {
 public:
@@ -28,21 +42,13 @@ public:
     int weekly_choice();
     void open_file_weekly(Data *data, int Choice, Brutal_node *ptr);
     void Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_node *ptr);
+
     Brutal_node *Copied_list(Data *data, Brutal_node *ptr);
     Brutal_node *sort_by_name(Brutal_node *ptr, int number);
     Brutal_node *sort_by_profession(Brutal_node *ptr, int number);
     Brutal_node *sort_by_age(Brutal_node *ptr, int number);
 
-    //open and write for monthly report
     void Writing_monthly();
-    //count different category number for one node
     void stat(Data *data);
-
-};
-//usde for counting time
-class Counting_system
-{
-public:
-    time_t timep;  
 };
 #endif

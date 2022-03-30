@@ -1,10 +1,3 @@
-#include <runetype.h>
-#include <stdio.h>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <cstdlib>
-#include "data.h"
 #include "report.h"
 
 using namespace std;
@@ -40,6 +33,8 @@ void Report_system::open_file_weekly(Data *data, int Choice, Brutal_node *ptr){
 }
 
 void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_node *ptr){
+    Brutal_node *print;
+
     //first of all. copy a list
     Copied_list(data, ptr);
 
@@ -47,10 +42,48 @@ void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_
         sort_by_age(ptr, Choice_2);
     }
     else if (2 == Choice){
-        sort_by_profession(ptr, Choice_2);
+        print = sort_by_profession(ptr, Choice_2);
+        std::stringstream ss;
+        while (NULL != print){
+
+            ss << print->ptr_to_data->profession;
+            std::string profession = ss.str();
+            cout << profession << endl;
+
+            cout << "\f" << print->ptr_to_data->name << endl;
+
+            ss << print->ptr_to_data->age_group;
+            std::string age = ss.str();
+            cout << "\f" << age << endl;
+
+            ss << print->ptr_to_data->risk;
+            std::string risk = ss.str();
+            cout << "\f" << risk << endl;
+
+            print = print->next;
+        }
     }
     else if (3 == Choice){
-        sort_by_age(ptr, Choice_2);
+        print = sort_by_age(ptr, Choice_2);
+        std::stringstream ss;
+        while (NULL != print){
+
+            ss << print->ptr_to_data->age_group;
+            std::string age = ss.str();
+            cout << age << endl;
+
+            cout << "\f" << print->ptr_to_data->name << endl;
+
+            ss << print->ptr_to_data->profession;
+            std::string profession = ss.str();
+            cout << "\f" << profession << endl;
+
+            ss << print->ptr_to_data->risk;
+            std::string risk = ss.str();
+            cout << "\f" << risk << endl;
+
+            print = print->next;
+        }
     }
     else {
         cout << "It seems that you did not choose a proper order." << endl;
@@ -58,7 +91,6 @@ void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_
     return;
 }
 
-//open file for monthly report
 void Report_system::Writing_monthly(){
     ofstream outfile;
     outfile.open("Month.txt", ios::out | ios::trunc);
@@ -105,7 +137,6 @@ void Report_system::stat(Data *data){
     return;
 }
 
-//copy a list for sorting
 Brutal_node *Report_system::Copied_list(Data *data, Brutal_node *ptr){
     //first node is a dummy
     Brutal_node *pre = ptr;
@@ -122,27 +153,29 @@ Brutal_node *Report_system::Copied_list(Data *data, Brutal_node *ptr){
 }
 
 Brutal_node *Report_system::sort_by_name(Brutal_node *ptr, int number){
+    Brutal_node *name_list;
+    Brutal_node *keep = name_list;
     //people being treated
     if (4 == number){
+        int counting = 0;
         while (NULL != ptr){
             //如果此人没有被治疗过直接跳到下一个
-            if (!ptr->ptr_to_data->treated){
-                ptr = ptr->next;
-                continue;
-            }
-
-
-
+            if (!ptr->ptr_to_data->treated){ptr = ptr->next; continue;}
+            //copy a name list
+            name_list->ptr_to_data = ptr->ptr_to_data;
+            name_list = name_list->next;
+            ptr = ptr->next;
+            counting += 1;
+        }
+        for (int i = 1; i <= counting - 1; i++){
+            
         }
     }
     //people made an appointment
     else if (5 == number){
         while (NULL != ptr){
             //如果此人没有登记治疗过直接跳到下一个
-            if (!ptr->ptr_to_data->appo){
-                ptr = ptr->next;
-                continue;
-            }
+            if (!ptr->ptr_to_data->appo){ptr = ptr->next; continue;}
 
 
         }
@@ -155,11 +188,11 @@ Brutal_node *Report_system::sort_by_name(Brutal_node *ptr, int number){
 
         }
     }
-    return;
+    return keep;
 }
 
-
 Brutal_node *Report_system::sort_by_profession(Brutal_node *ptr, int number){
+
     Brutal_node *I, *II, *III, *IV, *V, *VI, *VII, *VIII;
     Brutal_node *I_pre, *II_pre, *III_pre, *IV_pre, *V_pre, *VI_pre, *VII_pre, *VIII_pre;
     Brutal_node *keepI = I, *keepII = II, *keepIII = III, *keepIV = IV, *keepV = V;
@@ -288,29 +321,114 @@ Brutal_node *Report_system::sort_by_profession(Brutal_node *ptr, int number){
 }
 
 Brutal_node *Report_system::sort_by_age(Brutal_node *ptr, int number){
+
+    Brutal_node *I, *II, *III, *IV, *V, *VI, *VII;
+    Brutal_node *I_pre, *II_pre, *III_pre, *IV_pre, *V_pre, *VI_pre, *VII_pre;
+    Brutal_node *keepI = I, *keepII = II, *keepIII = III, *keepIV = IV, *keepV = V;
+    Brutal_node *keepVI = VI;
+    Brutal_node *keepVII = VII;
+
     //people being treated
     if (4 == number){
         while (NULL != ptr){
             //如果此人没有被治疗过直接跳到下一个
             if (!ptr->ptr_to_data->treated){ptr = ptr->next;continue;}
-
-
+            switch(ptr->ptr_to_data->age_group){
+                case 1:
+                    I->ptr_to_data = ptr->ptr_to_data; I_pre = I; I = I->next;
+                    break;
+                case 2:
+                    II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
+                    break; 
+                case 3:
+                    III->ptr_to_data = ptr->ptr_to_data; III_pre = III; III = III->next;
+                    break;
+                case 4:
+                    IV->ptr_to_data = ptr->ptr_to_data; IV_pre = IV; IV = IV->next;
+                    break;   
+                case 5:
+                    V->ptr_to_data = ptr->ptr_to_data; V_pre = V; V = V->next;
+                    break;
+                case 6:
+                    VI->ptr_to_data = ptr->ptr_to_data; VI_pre = VI; VI = VI->next;
+                    break;
+                case 7:
+                    VII->ptr_to_data = ptr->ptr_to_data; VII_pre = VII; VII = VII->next;
+                    break; 
+                default:
+                    cout << "A fetal error occurs" << endl;          
+            }
+            ptr = ptr->next;
         }
     }else if (5 == number){
         while (NULL != ptr){
             //如果此人没有登记治疗过直接跳到下一个
             if (!ptr->ptr_to_data->appo){ptr = ptr->next;continue;}
-
-
+            switch(ptr->ptr_to_data->age_group){
+                case 1:
+                    I->ptr_to_data = ptr->ptr_to_data; I_pre = I; I = I->next;
+                    break;
+                case 2:
+                    II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
+                    break; 
+                case 3:
+                    III->ptr_to_data = ptr->ptr_to_data; III_pre = III; III = III->next;
+                    break;
+                case 4:
+                    IV->ptr_to_data = ptr->ptr_to_data; IV_pre = IV; IV = IV->next;
+                    break;   
+                case 5:
+                    V->ptr_to_data = ptr->ptr_to_data; V_pre = V; V = V->next;
+                    break;
+                case 6:
+                    VI->ptr_to_data = ptr->ptr_to_data; VI_pre = VI; VI = VI->next;
+                    break;
+                case 7:
+                    VII->ptr_to_data = ptr->ptr_to_data; VII_pre = VII; VII = VII->next;
+                    break; 
+                default:
+                    cout << "A fetal error occurs" << endl;          
+            }
+            ptr = ptr->next;
         }
 
     }else {
         while (NULL != ptr){
-
-
+            switch(ptr->ptr_to_data->age_group){
+                case 1:
+                    I->ptr_to_data = ptr->ptr_to_data; I_pre = I; I = I->next;
+                    break;
+                case 2:
+                    II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
+                    break; 
+                case 3:
+                    III->ptr_to_data = ptr->ptr_to_data; III_pre = III; III = III->next;
+                    break;
+                case 4:
+                    IV->ptr_to_data = ptr->ptr_to_data; IV_pre = IV; IV = IV->next;
+                    break;   
+                case 5:
+                    V->ptr_to_data = ptr->ptr_to_data; V_pre = V; V = V->next;
+                    break;
+                case 6:
+                    VI->ptr_to_data = ptr->ptr_to_data; VI_pre = VI; VI = VI->next;
+                    break;
+                case 7:
+                    VII->ptr_to_data = ptr->ptr_to_data; VII_pre = VII; VII = VII->next;
+                    break; 
+                default:
+                    cout << "A fetal error occurs" << endl;          
+            }
+            ptr = ptr->next;
         }
     }
-    return;
+    I_pre->next = keepII;
+    II_pre->next = keepIII;
+    III_pre->next = keepIV;
+    IV_pre->next = keepV;
+    V_pre->next = keepVI;
+    VI_pre->next = keepVII;
+    return keepI;
 }
 
 
