@@ -88,9 +88,9 @@ void Hlist::removeh(int index)
 
 Alist::Alist() : List(20) {}
 
-void Alist::appoint(Heap H, Hlist hlist)
+void Alist::appoint(Heap *H, Hlist hlist)
 {
-    Data *data = H.get_highest(); // TODO: delete_highest?
+    Data *data = H->get_highest(); // TODO: delete_highest?
 
     // add to Alist
     append(data);

@@ -22,7 +22,7 @@ class Appointment
 public:
     Appointment();
 
-    bool registered; // 是否有appointment.
+    bool in_alist; // whether in Alist or not
     int addx;
     int addy;
     long date;

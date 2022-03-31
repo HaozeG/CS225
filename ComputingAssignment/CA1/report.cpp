@@ -1,4 +1,7 @@
 #include "report.h"
+#include <algorithm>
+#include <cstddef>
+#include <new>
 
 using namespace std;
 //for weekly report, choose the order 
@@ -39,7 +42,26 @@ void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_
     Copied_list(data, ptr);
 
     if (1 == Choice){
-        sort_by_age(ptr, Choice_2);
+        print = sort_by_name(ptr, Choice_2);
+        std::stringstream ss;
+        while (NULL != print){
+
+            cout <<  print->ptr_to_data->name << endl;
+            
+            ss << print->ptr_to_data->profession;
+            std::string profession = ss.str();
+            cout << "\f" << profession << endl;
+
+            ss << print->ptr_to_data->age_group;
+            std::string age = ss.str();
+            cout << "\f" << age << endl;
+
+            ss << print->ptr_to_data->risk;
+            std::string risk = ss.str();
+            cout << "\f" << risk << endl;
+
+            print = print->next;
+        }
     }
     else if (2 == Choice){
         print = sort_by_profession(ptr, Choice_2);
@@ -157,7 +179,6 @@ Brutal_node *Report_system::sort_by_name(Brutal_node *ptr, int number){
     Brutal_node *keep = name_list;
     //people being treated
     if (4 == number){
-        int counting = 0;
         while (NULL != ptr){
             //如果此人没有被治疗过直接跳到下一个
             if (!ptr->ptr_to_data->treated){ptr = ptr->next; continue;}
@@ -165,10 +186,6 @@ Brutal_node *Report_system::sort_by_name(Brutal_node *ptr, int number){
             name_list->ptr_to_data = ptr->ptr_to_data;
             name_list = name_list->next;
             ptr = ptr->next;
-            counting += 1;
-        }
-        for (int i = 1; i <= counting - 1; i++){
-            
         }
     }
     //people made an appointment
@@ -176,19 +193,23 @@ Brutal_node *Report_system::sort_by_name(Brutal_node *ptr, int number){
         while (NULL != ptr){
             //如果此人没有登记治疗过直接跳到下一个
             if (!ptr->ptr_to_data->appo){ptr = ptr->next; continue;}
-
-
+            //copy a name list
+            name_list->ptr_to_data = ptr->ptr_to_data;
+            name_list = name_list->next;
+            ptr = ptr->next;
         }
 
     }
     //people registered
     else {
         while (NULL != ptr){
-
-
+            //copy a name list
+            name_list->ptr_to_data = ptr->ptr_to_data;
+            name_list = name_list->next;
+            ptr = ptr->next;
         }
     }
-    return keep;
+    return sortList(keep);
 }
 
 Brutal_node *Report_system::sort_by_profession(Brutal_node *ptr, int number){
@@ -431,6 +452,43 @@ Brutal_node *Report_system::sort_by_age(Brutal_node *ptr, int number){
     return keepI;
 }
 
+Brutal_node *Report_system::sortList(Brutal_node *ptr){
+    if (nullptr == ptr || nullptr == ptr->next){return ptr;}
+    Brutal_node* head1 = ptr;
+    Brutal_node* head2 = split(ptr);
+    head1 = sortList(head1);        //一条链表分成两段分别递归排序
+    head2 = sortList(head2);
+    return merge(head1, head2); 
+}
+//第一个节点是空节点
+Brutal_node *Report_system::merge(Brutal_node *ptr1, Brutal_node *ptr2){
+    Brutal_node *p;
+    Brutal_node *keep = p;
+    while (nullptr != ptr1 && nullptr != ptr2){
+        if (0 > strcmp(ptr1->ptr_to_data->name, ptr2->ptr_to_data->name)){
+            p->next = ptr1;
+            p = p->next;
+            ptr1 = ptr1->next;
+        }else{
+            p->next = ptr2;
+            p = p->next;
+            ptr2 = ptr2->next;
+        }
+    }
+    if (nullptr != ptr1){p->next = ptr1;}
+    if (nullptr != ptr2){p->next = ptr2;}
+    return p->next;
+}
+
+Brutal_node *Report_system::split(Brutal_node *ptr){
+    Brutal_node *slow = ptr;
+    Brutal_node *fast = ptr->next;
+    while (fast != nullptr && fast->next != nullptr)
+    {slow = slow->next; fast = fast->next->next;}
+    Brutal_node* mid = slow->next;
+    slow->next = nullptr;           //断尾
+    return mid;
+}
 
 
 /*
