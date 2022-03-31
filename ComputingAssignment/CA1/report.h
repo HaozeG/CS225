@@ -3,33 +3,21 @@
 
 #include <ratio>
 #include <cstdlib>
-#include <stdint.h>
 #include <string>
+#include <string.h>
 #include <runetype.h>
-#include <stdio.h>
 #include <sstream>
 #include <iostream>
 #include <fstream>
 #include "data.h"
+
 using namespace std;
-
-
-
 class Brutal_node
 {
 public:
     Brutal_node *next;
     Data *ptr_to_data;
 };
-
-class list_sort : public Brutal_node
-{
-public:
-    Brutal_node *sortList(Brutal_node *ptr);
-    Brutal_node *merge(Brutal_node *ptr);
-    Brutal_node *split(Brutal_node *ptr);
-};
-
 class Report_system : public Brutal_node
 {
 public:
@@ -47,6 +35,10 @@ public:
     Brutal_node *sort_by_name(Brutal_node *ptr, int number);
     Brutal_node *sort_by_profession(Brutal_node *ptr, int number);
     Brutal_node *sort_by_age(Brutal_node *ptr, int number);
+
+    Brutal_node *sortList(Brutal_node *ptr);
+    Brutal_node *merge(Brutal_node *ptr1, Brutal_node *ptr2);
+    Brutal_node *split(Brutal_node *ptr);
 
     void Writing_monthly();
     void stat(Data *data);
