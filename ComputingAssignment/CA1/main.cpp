@@ -4,7 +4,7 @@
 #include <time.h>
 #include "fibonacii_heap.h"
 #include "data.h"
-#include "appointment.h"
+#include "appoint.h"
 using std::cout;
 using std::cin;
 
@@ -18,19 +18,21 @@ int main()
     local[2] = new Local; // cout << "Create new local"
     Heap *h = new Heap;
     queue *q = new queue;   // central
+    // queue的析构要改（单链表）
 
     do
     {
         cout << "---NEW DAY---\n";
         // 输出今天是几月几日
-
+        cout << "Today is " << timebias << "\n";
+        cout << "-------------\n";
         do
         {
             cout << "Choose an operation:\n";
             cout << "0: quit\n";
             cout << "1: do registration to local\n";
             cout << "2: update registry to central\n";
-            cout << "3: update information of registry\n";
+            cout << "3: manual update information\n";
             cout << "4: withdraw while waiting\n";
             cout << "5: make appointments\n";
             cout << "6: manual reporting\n";
@@ -46,24 +48,30 @@ int main()
                 delete local[0];
                 delete local[1];
                 delete local[2];
+                delete q;
                 delete h;
                 return 0;
             }
             case 1:
             {
+                char *filename;
+                cout << "Specify the directory of the input file:\n";
+                cin >> filename;
                 do
                 {
                     cout << "Choose one local registry from 1 to 3: ";
                     cin >> f;
                 }
                 while (f < 1 && f > 3);
-                local[f - 1]->registration();
+                local[f - 1]->readfile(filename);
+                cout << "This queue has " << local[f - 1]->Queue->num << " items now\n";
+                break;
             }
             case 2:
             {
                 int i = 0;
                 Data *temp = NULL;
-                while (i <= 3)
+                while (i < 3)
                 {
                     while (local[i]->Queue->num != 0)
                     {
@@ -74,23 +82,44 @@ int main()
                             q->tail->next = temp;
                         q->tail = temp;
                         q->num++;
+                        h->insert(temp);
                     }
                     i++;
                 }
+                cout << "Collect information from local registry\n";
+                break;
             }
             case 3:
             {
                 // 手动更新某人的信息
+                do
+                {
+                    cout << "Choose one local registry from 1 to 3: ";
+                    cin >> f;
+                }
+                while (f < 1 && f > 3);
+                local[f - 1]->registration();
+                break;
             }
             case 4:
             {
 
+                break;
+            }
+            case 5:
+            {
+
+                break;
+            }
+            case 6:
+            {
+                break;
             }
             case 7:
             {
                 timebias += 24; // +24h
+                break;
             }
-
         }
     }
     while (op != 0);
@@ -117,6 +146,8 @@ int main()
     手动开启（每周一个）报告，给选项，生成一个report文件
     手动开启每月报告
     */
+
+   /*
 
             // Data a;
             // printf(a.id[0]);
@@ -147,4 +178,5 @@ int main()
 
         // 当天结束
         Alist.numitems = 0;
+        */
 }

@@ -61,7 +61,8 @@ class queue
 public:
     queue();
     ~queue();
-    // void push(Data* person);
+
+    void push(Data* person);
     Data* pop();
     int num = 0;
     Data* head = NULL;
