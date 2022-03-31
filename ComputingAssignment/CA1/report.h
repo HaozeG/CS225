@@ -15,6 +15,7 @@ using namespace std;
 class Brutal_node
 {
 public:
+    Brutal_node();
     Brutal_node *next;
     Data *ptr_to_data;
 };
@@ -31,7 +32,7 @@ public:
     void open_file_weekly(Data *data, int Choice, Brutal_node *ptr);
     void Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_node *ptr);
 
-    Brutal_node *Copied_list(Data *data, Brutal_node *ptr);
+    Brutal_node *Copied_list(Data *data);
     Brutal_node *sort_by_name(Brutal_node *ptr, int number);
     Brutal_node *sort_by_profession(Brutal_node *ptr, int number);
     Brutal_node *sort_by_age(Brutal_node *ptr, int number);
