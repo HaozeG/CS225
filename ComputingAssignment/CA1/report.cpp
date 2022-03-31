@@ -4,12 +4,14 @@
 #include <new>
 using namespace std;
 
-//for weekly report, choose the order
+//for weekly report, choose the order，加入do, while循环来保证输入了123
 int Report_system::weekly_choice(){
     int choose;
     cout << "A weekly report is generating" << endl;
-    cout << "choose the order: 1 for name, 2 for profession, 3 for age" << endl;
-    cin >> choose;
+    do{
+        cout << "choose the order: 1 for name, 2 for profession, 3 for age" << endl;
+        cin >> choose;
+    }while( 1 != choose || 2 != choose || 3 != choose);
     return choose;
 }
 //open file for weekly report； choice = 排序顺序； ptr = 从data复制的单链表
@@ -41,7 +43,7 @@ void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_
     //如果选择用名字排序，A在前
     if (1 == Choice){
         //获得排序后到链表
-        print = sort_by_name(Copied_list(data, ptr), Choice_2);
+        print = sort_by_name(Copied_list(data), Choice_2);
         //将数字转换为字符串的前置条件
         std::stringstream ss;
         //当指针不为空时继续，注意头节点不能是dummy，目前没有排除这种情况
@@ -69,14 +71,14 @@ void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_
             std::string risk = ss.str();
             //输出风险级
             cout << "\f" << risk << endl;
-            
+
             //移到下一个节点
             print = print->next;
         }
     }
     //如果选择用职业排序，职业1～8
     else if (2 == Choice){
-        print = sort_by_profession(Copied_list(data, ptr), Choice_2);
+        print = sort_by_profession(Copied_list(data), Choice_2);
         std::stringstream ss;
         while (NULL != print){
 
@@ -99,7 +101,7 @@ void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_
     }
     //如果选择用年龄排序，默认年龄是1～7
     else if (3 == Choice){
-        print = sort_by_age(Copied_list(data, ptr), Choice_2);
+        print = sort_by_age(Copied_list(data), Choice_2);
         std::stringstream ss;
         while (NULL != print){
 
@@ -121,24 +123,21 @@ void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_
         }
     }
     else {
+        //为了保证这种情况不会发生，也许需要在一开始选择顺序时加一个循环
         cout << "It seems that you did not choose a proper order." << endl;
     }
     return;
 }
-
-Brutal_node *Report_system::Copied_list(Data *data, Brutal_node *ptr){
-    //first node is a dummy
-    Brutal_node *pre = ptr;
-    Brutal_node *cur;
-    while(NULL != data){
-        cur->ptr_to_data = data;
-        ptr->next = cur;
-        ptr = cur;
-        cur = ptr->next;
+//从data拷贝一份单链表,改完了，但是有一大堆new
+Brutal_node *Report_system::Copied_list(Data *data){
+    Brutal_node *head = new Brutal_node();
+    Brutal_node *ptr = head;
+    while(nullptr != data){
+        ptr->ptr_to_data = data;
+        ptr = ptr->next = new Brutal_node();
         data = data->next;
     }
-    ptr = pre;
-    return ptr;
+    return head;
 }
 
 Brutal_node *Report_system::sort_by_name(Brutal_node *ptr, int number){
@@ -178,7 +177,7 @@ Brutal_node *Report_system::sort_by_name(Brutal_node *ptr, int number){
     }
     return sortList(keep);
 }
-
+//名字排序的主函数，返回一个排好的链表的头指针
 Brutal_node *Report_system::sortList(Brutal_node *ptr){
     if (nullptr == ptr || nullptr == ptr->next){return ptr;}
     Brutal_node* head1 = ptr;
@@ -187,7 +186,7 @@ Brutal_node *Report_system::sortList(Brutal_node *ptr){
     head2 = sortList(head2);
     return merge(head1, head2); 
 }
-//第一个节点是空节点
+//第一个节点是空节点，两个链表比较大小再整合进一个链表中
 Brutal_node *Report_system::merge(Brutal_node *ptr1, Brutal_node *ptr2){
     Brutal_node *p;
     Brutal_node *keep = p;
@@ -206,7 +205,7 @@ Brutal_node *Report_system::merge(Brutal_node *ptr1, Brutal_node *ptr2){
     if (nullptr != ptr2){p->next = ptr2;}
     return p->next;
 }
-
+//将链表从中间拆开
 Brutal_node *Report_system::split(Brutal_node *ptr){
     Brutal_node *slow = ptr;
     Brutal_node *fast = ptr->next;
@@ -216,7 +215,7 @@ Brutal_node *Report_system::split(Brutal_node *ptr){
     slow->next = nullptr;           //断尾
     return mid;
 }
-
+//分拆成8个链表，再从1到8连起来
 Brutal_node *Report_system::sort_by_profession(Brutal_node *ptr, int number){
 
     Brutal_node *I, *II, *III, *IV, *V, *VI, *VII, *VIII;
@@ -345,7 +344,7 @@ Brutal_node *Report_system::sort_by_profession(Brutal_node *ptr, int number){
     //返回已合成链表的头节点
     return keepI;
 }
-
+//分拆成7个链表，再从1到7连起来
 Brutal_node *Report_system::sort_by_age(Brutal_node *ptr, int number){
 
     Brutal_node *I, *II, *III, *IV, *V, *VI, *VII;
@@ -502,14 +501,18 @@ void Report_system::stat(Data *data){
     all_waiting_number = Regi_number - all_appointment_number;
     return;
 }
+//构造函数,用于构造dummy头节点
+Brutal_node::Brutal_node(){
+    ptr_to_data = nullptr;
+    next = nullptr;
+}
 /*
-
 便于统一修改shit mountain 代码
         while (NULL != ptr){
             //根据profession分别塞入不同的链表中
             switch(ptr->ptr_to_data->profession){
                 case 1:
-                    I->ptr_to_data = ptr->ptr_to_data; I_pre = I; I = I->next;
+                    I->ptr_to_data = ptr->ptr_to_data; I = I->next;
                     break;
                 case 2:
                     II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
@@ -549,10 +552,4 @@ void Report_system::stat(Data *data){
     VII_pre->next = keepVIII;
     //返回已合成链表的头节点
     return keepI;
-
-
-
-
-
-
 */
