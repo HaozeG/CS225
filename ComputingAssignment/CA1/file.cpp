@@ -84,6 +84,21 @@ Data* queue::pop()
     return head;
 }
 
+void queue::push(Data *person)
+{
+    if (0 == num)
+    {
+        queue::head = person;
+        queue::tail = person;
+    }
+    else
+    {
+        queue::tail->next = person;
+        queue::tail = person;
+    }
+    queue::num++;
+}
+
 int Local::registration()
 {
     FILE *fp; char filename[8] ;
@@ -122,10 +137,10 @@ int Local::registration()
     }
 }
 
-int Local::readfile(const char* filename)
+int Local::readfile(const char* filename,long timeoffset)
 {
     FILE *fp;
-    fp = fopen("testfile.txt" , "r");
+    fp = fopen(filename, "r");
     if(fp == NULL) {
      perror("打开文件时发生错误");
      return(-1);
@@ -186,7 +201,7 @@ int Local::readfile(const char* filename)
         {
             str[1]='\0';
             int a = atoi(str);
-            person->timestamp = a;
+            person->timestamp = a + timeoffset;
         }
         else return 0;
         //time_t curtime;
@@ -198,7 +213,7 @@ int Local::readfile(const char* filename)
             person->age_group = a;
         }
         else return 0;
-        // Queue->push(person);
+        Queue->push(person);
     }
     fclose(fp);
     return 1;
@@ -216,7 +231,7 @@ queue* Local::update(int time)
     while (Queue->num > 0 && tem->timestamp <= time)
     {
         tem = tem->next;
-        // pack->push(Queue->pop());
+        pack->push(Queue->pop());
     }
     return pack;
 }
