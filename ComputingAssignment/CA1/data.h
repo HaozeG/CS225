@@ -31,6 +31,8 @@ public:
     time_t timpe_app; // TODO: ??到时候再改
 };
 
+class Node;
+
 // basic structure of one registry
 class Data
 {
@@ -53,7 +55,8 @@ public:
     int age_group;
 
     Contact *contact;
-    Data* next = NULL;
+    Data *next = NULL;
+    Node *node = NULL;
 };
 
 class queue
@@ -78,11 +81,11 @@ public:
     queue* Queue;
     queue* update(int time);   // update to central
     int registration();
-    int readfile(const char* filename);
+    int readfile(const char* filename, long timeoffset);
     char str[60];
 };
 
-class Central : public Data
+class Central
 {
 public:
     Central();
