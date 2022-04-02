@@ -38,6 +38,7 @@ class Data
 {
 public:
     Data();
+    ~Data();
 
     Appointment *appointment;
 
@@ -55,8 +56,8 @@ public:
     int age_group;
 
     Contact *contact;
-    Data *next = NULL;
-    Node *node = NULL;
+    Data *next;
+    Node *node;
 };
 
 class queue
