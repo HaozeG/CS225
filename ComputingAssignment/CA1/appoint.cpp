@@ -7,6 +7,11 @@
 using std::cin;
 using std::cout;
 
+Appointment::Appointment()
+{
+    in_alist = false;
+}
+
 template <class T>
 List<T>::List(int value)
 {
