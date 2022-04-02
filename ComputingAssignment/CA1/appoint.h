@@ -23,7 +23,7 @@ class Alist : public List<Data *>
 public:
     Alist();
 
-    void appoint(Heap *H, Hlist hlist);
+    // void appoint(Heap *H, Hlist hlist);
     void withdraw(Data *data);
     void clear();
     const int INFINITY = 10000;
