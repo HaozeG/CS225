@@ -11,38 +11,32 @@ using std::cout;
 int main()
 {
     int op, f;
-    long timebias = 0;
-    Local *local[3];
+    long timeoffset = 0;
+    Local *local[2];
     local[0] = new Local; // cout << "Create new local"
     local[1] = new Local; // cout << "Create new local"
-    local[2] = new Local; // cout << "Create new local"
     Heap *h = new Heap;
     queue *q = new queue;   // central
+    // TODO: queue的析构要改（单链表）
 
     do
     {
         cout << "---NEW DAY---\n";
         // 输出今天是几月几日
-
+        cout << "Today is " << int(timeoffset/24) << "\n";
+        cout << "-------------\n";
         do
         {
             cout << "Choose an operation:\n";
             cout << "0: quit\n";
             cout << "1: do registration to local\n";
             cout << "2: update registry to central\n";
-            cout << "3: update information of registry\n";
+            cout << "3: manual update information\n";
             cout << "4: withdraw while waiting\n";
             cout << "5: make appointments\n";
             cout << "6: manual reporting\n";
             cout << "7: GO TO NEXT DAY\n";
             cin >> op;
-        } while ((op < 0 && op > 7));
-        switch (op)
-        {
-        case 0:
-        {
-            delete h;
-            return 0;
         }
         while (op < 0 && op > 7);
         switch (op)
@@ -52,67 +46,124 @@ int main()
                 // destroy before exit
                 delete local[0];
                 delete local[1];
-                delete local[2];
+                delete q;
                 delete h;
                 return 0;
             }
             case 1:
             {
+                // char filename;
+                // cout << "Specify the directory of the input file:\n";
+                // cin >> filename;
+                // cin.get();
                 do
                 {
-                    cout << "Choose one local registry from 1 to 3: ";
+                    cout << "Choose one local registry from 1 to 2: ";
                     cin >> f;
                 }
-                while (f < 1 && f > 3);
-                local[f - 1]->registration();
+                while (f < 1 && f > 2);
+                local[f - 1]->readfile("testfile2", timeoffset);
+                cout << "This queue has " << local[f - 1]->Queue->num << " items now\n";
+                break;
             }
             case 2:
             {
                 int i = 0;
                 Data *temp = NULL;
-                while (i <= 3)
+                while (i < 2)
                 {
                     while (local[i]->Queue->num != 0)
                     {
                         temp = local[i]->Queue->pop();
                         if (0 == q->num)
+                        {
                             q->head = temp;
+                            q->tail = temp;
+                            q->num++;
+                            h->insert(temp);
+                        }
                         else
-                            q->tail->next = temp;
-                        q->tail = temp;
-                        q->num++;
+                        {
+                            // check if it has registered
+                            Data *d_prev = q->head;
+                            Data *d = d_prev->next;
+                            // check the first data
+                            if (*d_prev->id == *temp->id)
+                            {
+                                temp->next = d;
+                                q->head = temp;
+                                delete d_prev->node->data;
+                                d_prev->node->data = temp;
+                                h->update(*d_prev->node);
+                                continue;
+                            }
+                            cout << "test\n";
+                            while (NULL != d)
+                            {
+                                if (*d->id == *temp->id)
+                                {
+                                    d_prev->next = temp;
+                                    temp->next = d->next;
+                                    delete d->node->data;
+                                    d->node->data = temp;
+                                    h->update(*d->node);
+                                    continue;
+                                }
+                                d_prev = d_prev->next;
+                                d = d->next;
+                            }
+                            // if it is new data
+                            if (NULL == d)
+                            {
+                                q->tail->next = temp;
+                                q->tail = temp;
+                                q->num++;
+                                h->insert(temp);
+                            }
+                        }
                     }
                     i++;
                 }
+                cout << "Collect information from local registry\n";
+                break;
             }
             case 3:
             {
                 // 手动更新某人的信息
+                // do
+                // {
+                //     cout << "Choose one local registry from 1 to 3:";
+                //     cin >> f;
+                // }
+                // while (f < 1 && f > 3);
+                // local[f - 1]->readfile("updateinfo", timeoffset);
+                // break;
             }
             case 4:
             {
-
+                break;
+            }
+            case 5:
+            {
+                Data *p = NULL;
+                p = h->get_highest();
+                if (NULL != p)
+                    cout << p->name << "\n";
+                break;
+            }
+            case 6:
+            {
+                break;
             }
             case 7:
             {
-                timebias += 24; // +24h
+                timeoffset += 24; // +24h
+                break;
             }
+        }
 
-        }
-        case 1:
-        {
-            // update();
-        }
-        case 2:
-        {
-            // 读入，形成链表
-        }
-        case 3:
-        {
-            // 手动更新某人的信息
-        }
-        }
-    } while (op != 0);
+    }
+    while (op != 0);
     return 0;
 
     // above is the basic structure for main program
@@ -137,7 +188,7 @@ int main()
     手动开启每月报告
     */
 
-
+    /*
     // Data a;
     // printf(a.id[0]);
     // return 0;
@@ -173,4 +224,5 @@ int main()
         cout << "0\n";
     // TODO: withdraw
     // h->delete_node(?)
+    */
 }

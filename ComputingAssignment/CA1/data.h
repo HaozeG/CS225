@@ -30,6 +30,8 @@ public:
     int hospital_id;
 };
 
+class Node;
+
 // basic structure of one registry
 class Data
 {
@@ -52,7 +54,8 @@ public:
     int age_group;
 
     Contact *contact;
-    Data* next = NULL;
+    Data *next = NULL;
+    Node *node = NULL;
 };
 
 class queue
@@ -60,7 +63,8 @@ class queue
 public:
     queue();
     ~queue();
-    // void push(Data* person);
+
+    void push(Data* person);
     Data* pop();
     int num = 0;
     Data* head = NULL;
@@ -76,11 +80,11 @@ public:
     queue* Queue;
     queue* update(int time);   // update to central
     int registration();
-    int readfile(const char* filename);
+    int readfile(const char* filename, long timeoffset);
     char str[60];
 };
 
-class Central : public Data
+class Central
 {
 public:
     Central();

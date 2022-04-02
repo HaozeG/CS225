@@ -45,7 +45,29 @@ Heap::~Heap()
 inline bool higher_priority(Node &node1, Node &node2)
 {
     // profession category, ranking of age group, time
-    return false;
+    // profession category : int 越小越高
+    // ranking of age group: 越小越高
+    // time:
+    Data *data1 = node1.data;
+    Data *data2 = node2.data;
+    if (data1->profession < data2->profession)
+        return true;
+    else if (data1->profession > data2->profession)
+        return false;
+    else
+    {
+        if (data1->age_group < data2->age_group)
+            return true;
+        else if (data1->age_group > data2->age_group)
+            return false;
+        else
+        {
+            if (data1->timestamp < data2->timestamp)
+                return true;
+            else
+                return false;
+        }
+    }
 }
 
 /*
@@ -56,6 +78,8 @@ inline bool higher_priority(Node &node1, Node &node2)
 */
 inline void Heap::link_root(Node &node)
 {
+    if (NULL == highest)
+        highest = &node;
     // link to root list
     node.left = highest;
     node.right = highest->right;
@@ -80,6 +104,8 @@ void Heap::insert(Data *data)
     node->data = data;
     link_root(*node);
     Heap::n++;
+    data->node = node;
+    // TODO: Data中指向Node的指针需要更新
     cout << "Insert one node!\n";
 };
 
@@ -123,7 +149,25 @@ void Heap::update(Node &node)
     cout << "Sucessfully update!\n";
 }
 
-// to get the data of the highest node, just H.highest->data
+/*
+    get data pointer of the highest node
+    input: none
+    output: data pointer
+*/
+Data *Heap::get_highest()
+{
+    Data *data = NULL;
+    if (NULL != highest)
+        data = highest->data;
+    Heap::delete_highest();
+    return data;
+}
+
+/*
+    delete the highest node
+    input: none
+    ouput: none
+*/
 void Heap::delete_highest()
 {
     // check if the heap is empty
@@ -139,35 +183,53 @@ void Heap::delete_highest()
         highest = NULL;
         return;
     }
-
     // connect child nodes to root list
     Node *node = highest->child;
-    Node *right_node = node->right;
-    Node *left_root_node = highest->left;
-    Node *right_root_node = highest->right;
-    if (highest->left == highest)
+    // TODO: 只有root list的情况
+    if (NULL == node)
     {
-        // only one node in root list
-        left_root_node = highest->child;
+        Node *left_node = highest->left;
+        highest->left->right = highest->right;
+        highest->right->left = highest->left;
+        delete highest;
+        highest = left_node;
+        node = left_node->left;
+        while (node != left_node)
+        {
+            node->parent = NULL;    // make sure all nodes in root list have parent == NULL
+            if (higher_priority(*node, *highest))
+                highest = node;
+            node = node->left;
+        }
     }
     else
     {
-        node->right = right_root_node;
-        right_root_node->left = node;
-        right_node->left = left_root_node;
-        left_root_node->right = right_node;
-    }
-    delete highest;
-
-    // update H.highest
-    highest = left_root_node;
-    node = left_root_node->left;
-    while (node != left_root_node)
-    {
-        node->parent = NULL;    // make sure all nodes in root list have parent == NULL
-        if (higher_priority(*node, *highest))
-            highest = node;
-        node = node->left;
+        Node *right_node = node->right;
+        Node *left_root_node = highest->left;
+        Node *right_root_node = highest->right;
+        if (highest->left == highest)
+        {
+            // only one node in root list
+            left_root_node = highest->child;
+        }
+        else
+        {
+            node->right = right_root_node;
+            right_root_node->left = node;
+            right_node->left = left_root_node;
+            left_root_node->right = right_node;
+        }
+        delete highest;
+        // update H.highest
+        highest = left_root_node;
+        node = left_root_node->left;
+        while (node != left_root_node)
+        {
+            node->parent = NULL;    // make sure all nodes in root list have parent == NULL
+            if (higher_priority(*node, *highest))
+                highest = node;
+            node = node->left;
+        }
     }
 
     // rebalance
@@ -208,26 +270,43 @@ void Heap::delete_node(Node &node)
 */
 void Heap::consolidate()
 {
+    // degree定义为child数量，此处计算degree时需要全部加1
     // compute max degree and prepare hash map
-    int maxdegree = int(log2(n)) + 1;
-    Node *m[maxdegree];
-    for (int i = 0; i < maxdegree; i++)
+    int maxdegree = int(log2(n));
+    cout << maxdegree << "\n";
+    Node *m[maxdegree + 1];
+    for (int i = 0; i <= maxdegree; i++)
         m[i] = NULL;
     // iterate through root list
-    while (highest->right != highest)
+    while (NULL != highest)
     {
         // find the root node with the smallest degree
-        int mindegree = highest->degree;
+        int mindegree = highest->degree + 1;
         Node *min_p = highest;
         Node *p = highest->right;
         while (p != highest)
         {
-            if (p->degree <= mindegree && p != m[int(log2(mindegree))])
+            if ((p->degree + 1) <= mindegree)
             {
-                mindegree = p->degree;
+                mindegree = p->degree + 1;
                 min_p = p;
             }
             p = p->right;
+        }
+        // delete from root list
+        if (p == p->right)
+        {
+            highest = NULL;
+        }
+        else
+        {
+            // update H.highest if needed
+            if (p == highest)
+                highest = p->right;
+            p->right->left = p->left;
+            p->left->right = p->right;
+            p->right = p;
+            p->left = p;
         }
 
         mindegree = int(log2(mindegree));
@@ -237,24 +316,30 @@ void Heap::consolidate()
         }
         else
         {
-            // delete from root list
-            p->left->right = p->right;
-            p->right->left = p->left;
-            // merge two trees
-            p->parent = m[mindegree];
-            p->right = m[mindegree]->child->right;
-            p->left = m[mindegree]->child;
-            m[mindegree]->child->right = p;
-            p->right->left = p;
-            m[mindegree]->degree += p->degree;
-            m[mindegree + 1] = m[mindegree];    // merging two tree with same degree -> new tree with degree + 1
-            m[mindegree] = NULL;
-
-            // update H.highest if needed
-            if (p == highest)
-                highest = m[mindegree + 1];
+            do
+            {
+                p->parent = m[mindegree];
+                if (NULL != m[mindegree]->child)
+                {
+                    // connect with other child node
+                    p->right = m[mindegree]->child->right;
+                    p->left = m[mindegree]->child;
+                    m[mindegree]->child->right = p;
+                    p->right->left = p;
+                }
+                m[mindegree]->child = p;
+                m[mindegree]->degree += p->degree;
+                p = m[mindegree];   // update pointer to the root node
+                m[mindegree] = NULL;
+                mindegree++;
+            } while (NULL != m[mindegree]);
+            m[mindegree] = p;    // merging two tree with same degree -> new tree with degree + 1
         }
     }
+
+    // connect heaps together
+    for (int i = 0; i <= maxdegree; i++)
+        if (NULL != m[i]) link_root(*m[i]);
 };
 
 /*
