@@ -95,7 +95,7 @@ void queue::push(Data *person)
         queue::tail = person;
     }
     queue::num++;
-    cout << "test" << "\n";
+    cout << head->next << "\n";
 }
 
 
