@@ -90,7 +90,9 @@ Alist::Alist() : List(20) {}
 
 void Alist::appoint(Heap *H, Hlist hlist)
 {
-    Data *data = H->get_highest(); // TODO: delete_highest?
+    Data *data = H->get_highest();
+    if (data!=NULL)
+        cout << data->name << "\n";
 
     // add to Alist
     append(data);
@@ -119,10 +121,12 @@ void Alist::appoint(Heap *H, Hlist hlist)
     data->appo = true;
     data->appointment->in_alist = true;
     data->appointment->hospital_id = min_id;
-    data->appointment->time = 0; // TODO: 有关时间，date? time?
+    data->appointment->time = 8 + 10 * (hlist.array[min_id]->numpatient / hlist.array[min_id]->capacity); // 从8到18点分配一个整数时间
+    // data->appointment->date = 
+    // TODO: 有关时间，date? time?
 }
 
-void Alist::withdraw(Data *data) // TODO: 另一个withdraw的位置，main函数里可以if判断选择两个withdraw
+void Alist::withdraw(Data *data) // withdraw在Alist里的元素
 {
     data->withdrawn = true;
     data->appointment->in_alist = false;
@@ -141,11 +145,15 @@ void Alist::withdraw(Data *data) // TODO: 另一个withdraw的位置，main函�
     remove(index);
 }
 
+void Alist::clear()
+{
+    numitems = 0;
+}
+
 Hospital::Hospital(int x, int y, int c)
 {
     numpatient = 0;
     addx = x;
     addy = y;
     capacity = c;
-    // TODO: timeslot?
 }
