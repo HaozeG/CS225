@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <time.h>
+#include <string.h>
 #include "fibonacii_heap.h"
 #include "data.h"
 #include "appoint.h"
@@ -18,6 +19,7 @@ int main()
     Heap *h = new Heap;
     queue *q = new queue;   // central
     // TODO: queue的析构要改（单链表）
+    Alist alist;
 
     do
     {
@@ -75,6 +77,7 @@ int main()
                     while (local[i]->Queue->num != 0)
                     {
                         temp = local[i]->Queue->pop();
+                        cout << temp->id << "\n";
                         if (0 == q->num)
                         {
                             q->head = temp;
@@ -88,26 +91,29 @@ int main()
                             Data *d_prev = q->head;
                             Data *d = d_prev->next;
                             // check the first data
-                            if (*d_prev->id == *temp->id)
+                            cout << d_prev->id << "\n";
+                            if (!strcmp(d_prev->id, temp->id))
                             {
                                 temp->next = d;
                                 q->head = temp;
                                 delete d_prev->node->data;
+                                cout << "update first one\n";
                                 d_prev->node->data = temp;
                                 h->update(*d_prev->node);
                                 continue;
                             }
-                            cout << "test\n";
+                            // cout << "test\n";
                             while (NULL != d)
                             {
-                                if (*d->id == *temp->id)
+                                // cout << "OMG\n";
+                                if (!strcmp(d->id, temp->id))
                                 {
                                     d_prev->next = temp;
                                     temp->next = d->next;
                                     delete d->node->data;
                                     d->node->data = temp;
                                     h->update(*d->node);
-                                    continue;
+                                    break;
                                 }
                                 d_prev = d_prev->next;
                                 d = d->next;
@@ -141,14 +147,68 @@ int main()
             }
             case 4:
             {
+                char a[10];
+                bool flag = false;
+                cout << "Enter an ID to withdraw\n";
+                cin >> a;
+
+                // search queue to find data with certain id
+                Data *pNode = q->head;
+                if (strcmp(q->tail->id,a)==0)
+                {
+                    cout << "find the data\n";
+                    pNode = q->tail;
+                    flag = true;
+                }
+                else
+                {
+                    while (pNode->next!=NULL)
+                    {
+                        if (strcmp(pNode->id,a)==0)
+                        {
+                            cout << "find the data\n";
+                            flag = true;
+                            break;
+                        }
+                        pNode = pNode->next;
+                    }
+                }
+
+                // withdraw that data
+                if (flag)
+                {
+                    if (pNode->appointment->in_alist)
+                    {
+                        alist.withdraw(pNode);
+                    }
+                    else
+                        h->delete_node(*(pNode->node));
+                }
+                else
+                    cout << "ID not found\n";
+
                 break;
             }
             case 5:
             {
-                Data *p = NULL;
-                p = h->get_highest();
-                if (NULL != p)
-                    cout << p->name << "\n";
+                // Data *p = NULL;
+                // p = h->get_highest();
+                // if (NULL != p)
+                //     cout << p->name << "\n";
+
+                // input hospital information
+                Hlist hlist;
+                Hospital hospital1(114, 514, 1000), hospital2(100, 200, 500);
+                hlist.append(&hospital1);
+                hlist.append(&hospital2);
+
+                bool available = false;
+                available = (alist.numitems < hlist.tot_capacity ? true : false);
+
+                while (available)
+                {
+                    alist.appoint(h, hlist);
+                }
                 break;
             }
             case 6:
@@ -222,7 +282,7 @@ int main()
         alist.withdraw(inputdata);
     else
         cout << "0\n";
-    // TODO: withdraw
+    // 
     // h->delete_node(?)
     */
 }

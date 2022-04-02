@@ -1,11 +1,16 @@
 #include <stdio.h>
 #include <iostream>
-#include "fibonacii_heap.h"
+// #include "fibonacii_heap.h"
 #include "appoint.h"
 #include "data.h"
 #include "math.h"
 using std::cin;
 using std::cout;
+
+Appointment::Appointment()
+{
+    in_alist = false;
+}
 
 template <class T>
 List<T>::List(int value)
@@ -90,20 +95,22 @@ Alist::Alist() : List(20) {}
 
 void Alist::appoint(Heap *H, Hlist hlist)
 {
-    Data *data = H->get_highest(); // TODO: delete_highest?
+    Data *data = H->get_highest();
+    if (data != NULL)
+        cout << data->name << "\n";
 
     // add to Alist
     append(data);
 
     // find a Hospital
     int dist;
-    int min_dist = INFINITY;
+    int min_dist = 10000;
     int min_id = 0;
     for (int i = 0; i < hlist.numitems; i++)
     {
         if (hlist.array[i]->capacity > hlist.array[i]->numpatient)
         {
-            dist = sqrt((hlist.array[i]->addx - data->contact->addx) ^ 2 + (hlist.array[i]->addy - data->contact->addy) ^ 2);
+            dist = (int)sqrt((hlist.array[i]->addx - data->contact->addx) ^ 2 + (hlist.array[i]->addy - data->contact->addy) ^ 2);
             if (dist < min_dist)
             {
                 min_dist = dist;
@@ -119,10 +126,12 @@ void Alist::appoint(Heap *H, Hlist hlist)
     data->appo = true;
     data->appointment->in_alist = true;
     data->appointment->hospital_id = min_id;
-    data->appointment->time = 0; // TODO: 有关时间，date? time?
+    data->appointment->time = 8 + 10 * (hlist.array[min_id]->numpatient / hlist.array[min_id]->capacity); // 从8到18点分配一个整数时间
+    // data->appointment->date =
+    // TODO: 有关时间，date? time?
 }
 
-void Alist::withdraw(Data *data) // TODO: 另一个withdraw的位置，main函数里可以if判断选择两个withdraw
+void Alist::withdraw(Data *data) // withdraw在Alist里的元素
 {
     data->withdrawn = true;
     data->appointment->in_alist = false;
@@ -141,11 +150,15 @@ void Alist::withdraw(Data *data) // TODO: 另一个withdraw的位置，main函�
     remove(index);
 }
 
+void Alist::clear()
+{
+    numitems = 0;
+}
+
 Hospital::Hospital(int x, int y, int c)
 {
     numpatient = 0;
     addx = x;
     addy = y;
     capacity = c;
-    // TODO: timeslot?
 }

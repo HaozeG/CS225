@@ -1,6 +1,8 @@
 #ifndef appoint_h
 #define appoint_h
 
+#include "fibonacii_heap.h"
+
 template <class T>
 class List
 {
@@ -18,26 +20,16 @@ public:
     T *array;
 };
 
-class Alist : public List<Data *>
-{
-public:
-    Alist();
-
-    void appoint(Heap *H, Hlist hlist);
-    void withdraw(Data *data);
-    const int INFINITY = 10000;
-};
-
 class Hospital
 {
 public:
-    Hospital(int x,int y,int c);
+    Hospital(int x, int y, int c);
 
     int addx;
     int addy;
     int capacity;
     int numpatient;
-    int timeslot; // TODO:类型以及用途
+    int timeslot; // 医院默认早上8点开始工作，18点结束
 };
 
 class Hlist : public List<Hospital *>
@@ -48,6 +40,17 @@ public:
     void removeh(int index);
 
     int tot_capacity;
+};
+
+class Alist : public List<Data *>
+{
+public:
+    Alist();
+
+    void appoint(Heap *H, Hlist hlist);
+    void withdraw(Data *data);
+    void clear();
+    const int INFINITY = 10000;
 };
 
 #endif
