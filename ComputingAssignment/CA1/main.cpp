@@ -19,6 +19,7 @@ int main()
     Heap *h = new Heap;
     queue *q = new queue;   // central
     // TODO: queue的析构要改（单链表）
+    Alist alist;
 
     do
     {
@@ -146,14 +147,68 @@ int main()
             }
             case 4:
             {
+                char a[10];
+                bool flag = false;
+                cout << "Enter an ID to withdraw\n";
+                cin >> a;
+
+                // search queue to find data with certain id
+                Data *pNode = q->head;
+                if (strcmp(q->tail->id,a)==0)
+                {
+                    cout << "find the data\n";
+                    pNode = q->tail;
+                    flag = true;
+                }
+                else
+                {
+                    while (pNode->next!=NULL)
+                    {
+                        if (strcmp(pNode->id,a)==0)
+                        {
+                            cout << "find the data\n";
+                            flag = true;
+                            break;
+                        }
+                        pNode = pNode->next;
+                    }
+                }
+
+                // withdraw that data
+                if (flag)
+                {
+                    if (pNode->appointment->in_alist)
+                    {
+                        alist.withdraw(pNode);
+                    }
+                    else
+                        h->delete_node(*(pNode->node));
+                }
+                else
+                    cout << "ID not found\n";
+
                 break;
             }
             case 5:
             {
-                Data *p = NULL;
-                p = h->get_highest();
-                if (NULL != p)
-                    cout << p->name << "\n";
+                // Data *p = NULL;
+                // p = h->get_highest();
+                // if (NULL != p)
+                //     cout << p->name << "\n";
+
+                // input hospital information
+                Hlist hlist;
+                Hospital hospital1(114, 514, 1000), hospital2(100, 200, 500);
+                hlist.append(&hospital1);
+                hlist.append(&hospital2);
+
+                bool available = false;
+                available = (alist.numitems < hlist.tot_capacity ? true : false);
+
+                while (available)
+                {
+                    alist.appoint(h, hlist);
+                }
                 break;
             }
             case 6:
@@ -227,7 +282,7 @@ int main()
         alist.withdraw(inputdata);
     else
         cout << "0\n";
-    // TODO: withdraw
+    // 
     // h->delete_node(?)
     */
 }

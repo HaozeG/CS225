@@ -25,6 +25,7 @@ public:
 
     void appoint(Heap *H, Hlist hlist);
     void withdraw(Data *data);
+    void clear();
     const int INFINITY = 10000;
 };
 
@@ -37,7 +38,7 @@ public:
     int addy;
     int capacity;
     int numpatient;
-    int timeslot; // TODO:类型以及用途
+    int timeslot; // 医院默认早上8点开始工作，18点结束
 };
 
 class Hlist : public List<Hospital *>

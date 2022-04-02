@@ -26,9 +26,8 @@ public:
     int addx;
     int addy;
     long date;
-    int time;  // TODO: 和timeslot对应
+    long time;  // TODO: 和timestamp对应
     int hospital_id;
-    time_t timpe_app; // TODO: ??到时候再改
 };
 
 class Node;
