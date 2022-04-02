@@ -1,6 +1,8 @@
 #include "report.h"
+#include "data.h"
 #include <algorithm>
 #include <cstddef>
+#include <i386/types.h>
 #include <new>
 using namespace std;
 
@@ -15,7 +17,7 @@ int Report_system::weekly_choice(){
     return choose;
 }
 //open file for weekly report； choice = 排序顺序； ptr = 从data复制的单链表
-void Report_system::open_file_weekly(Data *data, int Choice, Brutal_node *ptr){
+void Report_system::open_file_weekly(Data *data, int Choice, Brutal_node *ptr, long timestamp, int length){
     //文件输出流
     ofstream outfile;
     //打开文件，不能防止文件已存在
@@ -24,22 +26,23 @@ void Report_system::open_file_weekly(Data *data, int Choice, Brutal_node *ptr){
     cout << "————————————WEEK REPORT————————————\n" << endl;
     //已经被治疗的人，即：data->treated = true
     cout << "\f-----people who has been treated-----" << endl;
-    Writing_weekly(data, Choice, 4, ptr);
+    Writing_weekly(data, Choice, 4, ptr, timestamp, length);
     //已经做了预约但是没有治疗的人，排除withdraw的人
     cout << "-----people who has an appointment but not treated yet-----" << endl;
-    Writing_weekly(data, Choice, 5, ptr);
+    Writing_weekly(data, Choice, 5, ptr, timestamp, length);
     //做了登记但是没有预约也没有被治疗， 即：appo = false && treated = false 或 appo = true && withdraw = true
     cout << "-----people who has registered but done nothing else-----" << endl;
-    Writing_weekly(data, Choice, 6, ptr);
+    Writing_weekly(data, Choice, 6, ptr, timestamp, length);
     //结尾
     cout << "\fReporting has completed." << endl;
     //关闭文件
     outfile.close();
 }
 //open_file_weekly里面调用了3次的函数，choice = 排序顺序， choice_2 = treated || appointed || registered
-void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_node *ptr){
+void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_node *ptr, long timestamp, int length){
     //临时链表，在每个if状态中都用了一次，用于存储排序好的链表
     Brutal_node *print;
+    Data *paste;
     //如果选择用名字排序，A在前
     if (1 == Choice){
         //获得排序后到链表
@@ -78,21 +81,21 @@ void Report_system::Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_
     }
     //如果选择用职业排序，职业1～8
     else if (2 == Choice){
-        print = sort_by_profession(Copied_list(data), Choice_2);
+        paste = sort_by_profession(Copied_list(data), Choice_2, length);
         std::stringstream ss;
         while (NULL != print){
 
-            ss << print->ptr_to_data->profession;
+            ss << paste->profession;
             std::string profession = ss.str();
             cout << profession << endl;
 
-            cout << "\f" << print->ptr_to_data->name << endl;
+            cout << "\f" << paste->name << endl;
 
-            ss << print->ptr_to_data->age_group;
+            ss << paste->age_group;
             std::string age = ss.str();
             cout << "\f" << age << endl;
 
-            ss << print->ptr_to_data->risk;
+            ss << paste->risk;
             std::string risk = ss.str();
             cout << "\f" << risk << endl;
 
@@ -216,133 +219,33 @@ Brutal_node *Report_system::split(Brutal_node *ptr){
     return mid;
 }
 //分拆成8个链表，再从1到8连起来
-Brutal_node *Report_system::sort_by_profession(Brutal_node *ptr, int number){
-
-    Brutal_node *I, *II, *III, *IV, *V, *VI, *VII, *VIII;
-    Brutal_node *I_pre, *II_pre, *III_pre, *IV_pre, *V_pre, *VI_pre, *VII_pre, *VIII_pre;
-    Brutal_node *keepI = I, *keepII = II, *keepIII = III, *keepIV = IV, *keepV = V;
-    Brutal_node *keepVI = VI;
-    Brutal_node *keepVII = VII;
-    Brutal_node *keepVIII = VIII;
-
-    //people being treated
+Data *Report_system::sort_by_profession(Brutal_node *ptr, int number, int length){
+    Data *temp[length];
+    Data *keep = temp[0];
+    int i = 0;
     if (4 == number){
-        while (NULL != ptr){
-            //如果此人没有被治疗过直接跳到下一个
+        while (nullptr != ptr){
             if (!ptr->ptr_to_data->treated){ptr = ptr->next; continue;}
-            //根据profession分别塞入不同的链表中
-            switch(ptr->ptr_to_data->profession){
-                case 1:
-                    I->ptr_to_data = ptr->ptr_to_data; I_pre = I; I = I->next;
-                    break;
-                case 2:
-                    II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
-                    break; 
-                case 3:
-                    III->ptr_to_data = ptr->ptr_to_data; III_pre = III; III = III->next;
-                    break;
-                case 4:
-                    IV->ptr_to_data = ptr->ptr_to_data; IV_pre = IV; IV = IV->next;
-                    break;   
-                case 5:
-                    V->ptr_to_data = ptr->ptr_to_data; V_pre = V; V = V->next;
-                    break;
-                case 6:
-                    VI->ptr_to_data = ptr->ptr_to_data; VI_pre = VI; VI = VI->next;
-                    break;
-                case 7:
-                    VII->ptr_to_data = ptr->ptr_to_data; VII_pre = VII; VII = VII->next;
-                    break; 
-                case 8:
-                    VIII->ptr_to_data = ptr->ptr_to_data; VIII_pre = VIII; VIII = VIII->next;
-                    break;
-                default:
-                    cout << "A fetal error occurs" << endl;          
-            }
-            //移到下一个元素
+            temp[i] = ptr->ptr_to_data;
+            i += 1;
             ptr = ptr->next;
         }
     }else if (5 == number){
-        while (NULL != ptr){
-            //如果此人没有登记过,或者撤回了，直接跳到下一个
-            if (!ptr->ptr_to_data->appo || ptr->ptr_to_data->withdrawn){ptr = ptr->next; continue;}
-            //根据profession分别塞入不同的链表中
-            switch(ptr->ptr_to_data->profession){
-                case 1:
-                    I->ptr_to_data = ptr->ptr_to_data; I_pre = I; I = I->next;
-                    break;
-                case 2:
-                    II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
-                    break; 
-                case 3:
-                    III->ptr_to_data = ptr->ptr_to_data; III_pre = III; III = III->next;
-                    break;
-                case 4:
-                    IV->ptr_to_data = ptr->ptr_to_data; IV_pre = IV; IV = IV->next;
-                    break;   
-                case 5:
-                    V->ptr_to_data = ptr->ptr_to_data; V_pre = V; V = V->next;
-                    break;
-                case 6:
-                    VI->ptr_to_data = ptr->ptr_to_data; VI_pre = VI; VI = VI->next;
-                    break;
-                case 7:
-                    VII->ptr_to_data = ptr->ptr_to_data; VII_pre = VII; VII = VII->next;
-                    break; 
-                case 8:
-                    VIII->ptr_to_data = ptr->ptr_to_data; VIII_pre = VIII; VIII = VIII->next;
-                    break;
-                default:
-                    cout << "A fetal error occurs" << endl;          
-            }
-            //移到下一个元素
+        while (nullptr != ptr){
+            if (!ptr->ptr_to_data->appo){ptr = ptr->next; continue;}
+            temp[i] = ptr->ptr_to_data;
+            i += 1;
             ptr = ptr->next;
         }
     }else{
-        while (NULL != ptr){
-            //根据profession分别塞入不同的链表中
-            switch(ptr->ptr_to_data->profession){
-                case 1:
-                    I->ptr_to_data = ptr->ptr_to_data; I_pre = I; I = I->next;
-                    break;
-                case 2:
-                    II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
-                    break; 
-                case 3:
-                    III->ptr_to_data = ptr->ptr_to_data; III_pre = III; III = III->next;
-                    break;
-                case 4:
-                    IV->ptr_to_data = ptr->ptr_to_data; IV_pre = IV; IV = IV->next;
-                    break;   
-                case 5:
-                    V->ptr_to_data = ptr->ptr_to_data; V_pre = V; V = V->next;
-                    break;
-                case 6:
-                    VI->ptr_to_data = ptr->ptr_to_data; VI_pre = VI; VI = VI->next;
-                    break;
-                case 7:
-                    VII->ptr_to_data = ptr->ptr_to_data; VII_pre = VII; VII = VII->next;
-                    break; 
-                case 8:
-                    VIII->ptr_to_data = ptr->ptr_to_data; VIII_pre = VIII; VIII = VIII->next;
-                    break;
-                default:
-                    cout << "A fetal error occurs" << endl;          
-            }
-            //移到下一个元素
+        while(nullptr != ptr){
+            temp[i] = ptr->ptr_to_data;
+            i += 1;
             ptr = ptr->next;
         }
     }
-    //合成大西瓜！
-    I_pre->next = keepII;
-    II_pre->next = keepIII;
-    III_pre->next = keepIV;
-    IV_pre->next = keepV;
-    V_pre->next = keepVI;
-    VI_pre->next = keepVII;
-    VII_pre->next = keepVIII;
-    //返回已合成链表的头节点
-    return keepI;
+    sort(keep, keep + length, cmp_profession);
+    return keep;
 }
 //分拆成7个链表，再从1到7连起来
 Brutal_node *Report_system::sort_by_age(Brutal_node *ptr, int number){
@@ -455,8 +358,7 @@ Brutal_node *Report_system::sort_by_age(Brutal_node *ptr, int number){
     VI_pre->next = keepVII;
     return keepI;
 }
-
-void Report_system::Writing_monthly(){
+void Report_system::Writing_monthly(long timestamp){
     ofstream outfile;
     outfile.open("Month.txt", ios::out | ios::trunc);
     cout << "MONTH REPORT" << endl;
@@ -487,24 +389,38 @@ void Report_system::Writing_monthly(){
     cout << "_____________ENDING_____________" << endl;
     outfile.close();
 }
-
-void Report_system::stat(Data *data){
+int *Report_system::stat(Data *data){
+    //0:registered, 1:withdraw, 2:appo, 3:waiting, 4:treated, 5:waiting time
+    int keep[6];
+    for (int i = 0; i <= 5; i++){keep[i] = 0;}
+    int *returnNumber = keep;
     while (NULL != data){
         //people registered
+        keep[0] += 1;
         Regi_number += 1;
         //people withdrawn once
-        if (data->withdrawn){withdraw_number += 1;}
+        if (data->withdrawn){withdraw_number += 1; keep[1] += 1;}
         //people ever made an appointment
-        if(data->appo){all_appointment_number += 1;}
+        if(data->appo){all_appointment_number += 1; keep[2] += 1;}
+        if (data->treated){keep[4] += 1;}
+        keep[5] += (data->appointment->time - data->timestamp);
         data = data->next;
     }
-    all_waiting_number = Regi_number - all_appointment_number;
-    return;
+    all_waiting_number = Regi_number - all_appointment_number + withdraw_number;
+    keep[3] = keep[0] - keep[2] + keep[1];
+    keep[5] = keep[5] / keep[4];
+    return returnNumber;
 }
 //构造函数,用于构造dummy头节点
 Brutal_node::Brutal_node(){
     ptr_to_data = nullptr;
     next = nullptr;
+}
+bool Report_system::cmp_profession(Data *a, Data *b){
+    return ((Data *)a)->profession < ((Data *)b)->profession ? -1 : 1;
+}
+bool Report_system::cmp_age(Data *a, Data *b){
+    return ((Data *)a)->age_group < ((Data *)b)->age_group ? -1 : 1;
 }
 /*
 便于统一修改shit mountain 代码
@@ -552,4 +468,34 @@ Brutal_node::Brutal_node(){
     VII_pre->next = keepVIII;
     //返回已合成链表的头节点
     return keepI;
+
+
+
+
+                    case 1:
+                    I->ptr_to_data = ptr->ptr_to_data; I = I->next = new Brutal_node();
+                    break;
+                case 2:
+                    II->ptr_to_data = ptr->ptr_to_data; II = II->next = new Brutal_node();
+                    break; 
+                case 3:
+                    III->ptr_to_data = ptr->ptr_to_data; III = III->next = new Brutal_node();
+                    break;
+                case 4:
+                    IV->ptr_to_data = ptr->ptr_to_data; IV = IV->next = new Brutal_node();
+                    break;   
+                case 5:
+                    V->ptr_to_data = ptr->ptr_to_data; V = V->next = new Brutal_node();
+                    break;
+                case 6:
+                    VI->ptr_to_data = ptr->ptr_to_data; VI = VI->next = new Brutal_node();
+                    break;
+                case 7:
+                    VII->ptr_to_data = ptr->ptr_to_data; VII = VII->next = new Brutal_node();
+                    break; 
+                case 8:
+                    VIII->ptr_to_data = ptr->ptr_to_data; VIII = VIII->next = new Brutal_node();
+                    break;
+                default:
+                    cout << "A fetal error occurs" << endl;   
 */

@@ -29,19 +29,21 @@ public:
     long withdraw_number = 0;
 
     int weekly_choice();
-    void open_file_weekly(Data *data, int Choice, Brutal_node *ptr);
-    void Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_node *ptr);
+    void open_file_weekly(Data *data, int Choice, Brutal_node *ptr, long timestamp, int length);
+    void Writing_weekly(Data *data, int Choice, int Choice_2, Brutal_node *ptr, long timestamp, int length);
 
     Brutal_node *Copied_list(Data *data);
     Brutal_node *sort_by_name(Brutal_node *ptr, int number);
-    Brutal_node *sort_by_profession(Brutal_node *ptr, int number);
+    Data *sort_by_profession(Brutal_node *ptr, int number, int length);
     Brutal_node *sort_by_age(Brutal_node *ptr, int number);
 
     Brutal_node *sortList(Brutal_node *ptr);
     Brutal_node *merge(Brutal_node *ptr1, Brutal_node *ptr2);
     Brutal_node *split(Brutal_node *ptr);
 
-    void Writing_monthly();
-    void stat(Data *data);
+    void Writing_monthly(long timestamp);
+    int *stat(Data *data);
+    static bool cmp_profession(Data *a, Data *b);
+    static bool cmp_age(Data *a, Data *b);
 };
 #endif
