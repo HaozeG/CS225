@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <iostream>
-#include "fibonacii_heap.h"
+// #include "fibonacii_heap.h"
 #include "appoint.h"
 #include "data.h"
 #include "math.h"
@@ -91,7 +91,7 @@ Alist::Alist() : List(20) {}
 void Alist::appoint(Heap *H, Hlist hlist)
 {
     Data *data = H->get_highest();
-    if (data!=NULL)
+    if (data != NULL)
         cout << data->name << "\n";
 
     // add to Alist
@@ -99,13 +99,13 @@ void Alist::appoint(Heap *H, Hlist hlist)
 
     // find a Hospital
     int dist;
-    int min_dist = INFINITY;
+    int min_dist = 10000;
     int min_id = 0;
     for (int i = 0; i < hlist.numitems; i++)
     {
         if (hlist.array[i]->capacity > hlist.array[i]->numpatient)
         {
-            dist = sqrt((hlist.array[i]->addx - data->contact->addx) ^ 2 + (hlist.array[i]->addy - data->contact->addy) ^ 2);
+            dist = (int)sqrt((hlist.array[i]->addx - data->contact->addx) ^ 2 + (hlist.array[i]->addy - data->contact->addy) ^ 2);
             if (dist < min_dist)
             {
                 min_dist = dist;
@@ -122,7 +122,7 @@ void Alist::appoint(Heap *H, Hlist hlist)
     data->appointment->in_alist = true;
     data->appointment->hospital_id = min_id;
     data->appointment->time = 8 + 10 * (hlist.array[min_id]->numpatient / hlist.array[min_id]->capacity); // 从8到18点分配一个整数时间
-    // data->appointment->date = 
+    // data->appointment->date =
     // TODO: 有关时间，date? time?
 }
 
