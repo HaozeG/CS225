@@ -45,6 +45,12 @@ Data::Data()
     age_group = 0;
     risk = 0;
     next = NULL;
+    node = NULL;
+}
+
+Data::~Data()
+{
+    cout << "delete data\n";
 }
 
 queue::queue()
@@ -60,30 +66,22 @@ queue::~queue()
     cout << "Delete queue\n";
 }
 
-Data* queue::pop()
-{
-    if (0 == num)
-    {
-        return NULL;
-    }
-    else
-    {
-        Data *temp = queue::head;
-        int i = 1;
-        while (i < num)
-        {
-            temp = temp->next;
-            i++;
-        }
-        num--;
-        temp->next = NULL;
-        queue::tail = (0 == num ? NULL : temp);
-        queue::head = (0 == num ? NULL : queue::head);
-        return temp;
-    }
-    return head;
-}
-
+// void queue::push(Data* person)
+// {
+//     if (head == NULL && tail == NULL)
+//     {
+//         head = person;
+//         tail = person;
+//         num += 1;
+//     }
+//     else
+//     {
+//         tail->next = person;
+//         tail = person;
+//         num += 1;
+//     }
+//     return;
+// }
 void queue::push(Data *person)
 {
     if (0 == num)
@@ -97,7 +95,48 @@ void queue::push(Data *person)
         queue::tail = person;
     }
     queue::num++;
+    cout << "test" << "\n";
 }
+
+
+Data* queue::pop()
+{
+    if (num == 0)
+    {
+        cout<<"queue is empty now!"<<endl;
+        return NULL;
+    }
+    num -= 1;
+    Data* element = head;
+    head = (0 == num ? NULL : head->next);
+    tail = (0 == num ? NULL : tail);
+    element->next = NULL;
+    return element;
+}
+// Data* queue::pop()
+// {
+//     if (0 == num)
+//     {
+//         return NULL;
+//     }
+//     else
+//     {
+//         Data *temp = queue::head;
+//         int i = 1;
+//         while (i < num)
+//         {
+//             temp = temp->next;
+//             i++;
+//         }
+//         num--;
+//         temp->next = NULL;
+//         queue::tail = (0 == num ? NULL : temp);
+//         queue::head = (0 == num ? NULL : queue::head);
+//         return temp;
+//     }
+//     return head;
+// }
+
 
 int Local::registration()
 {
