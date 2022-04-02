@@ -7,6 +7,7 @@
 #include <new>
 using namespace std;
 
+//对于每周报告，主程序中只需要调用Open——file
 //open file for weekly report； 
 //timeoffset = 当前时间
 //length = data中链表的长度
@@ -37,6 +38,75 @@ void Report_system::Open_file(Data *head, long timeoffset, int length){
     cout << "Reporting has completed." << endl;
     outfile.close();
 }
+//对于每月报告，主程序中需要调用stat，用于统计各项数据
+//返回值是一个包含各项数据的链表，可用可不用，我的report.h里面也有
+int *Report_system::stat(Data *data){
+    //0:registered
+    //1:withdraw
+    //2:appo
+    //3:waiting
+    //4:treated
+    //5:waiting time
+    int *keep = new int[6];
+    for (int i = 0; i <= 5; i++){keep[i] = 0;}
+    int *returnNumber = keep;
+    while (NULL != data){
+        //people registered
+        keep[0] += 1;
+        Regi_number += 1;
+        //people withdrawn once
+        if (data->withdrawn){withdraw_number += 1; keep[1] += 1;}
+        //people ever made an appointment
+        if(data->appo){all_appointment_number += 1; keep[2] += 1;}
+        if (data->treated){
+            keep[4] += 1;
+            keep[5] += (data->appointment->time - data->timestamp);
+        }
+        data = data->next;
+    }
+
+    keep[3] = keep[0] - keep[2] + keep[1];
+    all_waiting_number = Regi_number - all_appointment_number + withdraw_number;
+
+    keep[5] = keep[5] / keep[4];
+    Waiting_time = keep[5];
+
+    return returnNumber;
+}
+//对于每月报告，主程序中需要调用month
+//timeoffset:当前时间
+void Report_system::Month(long timeoffset){
+    ofstream outfile;
+    outfile.open("Month.txt", ios::out | ios::trunc);
+    cout << "MONTH REPORT" << endl;
+    std::stringstream ss;
+
+    //print out 
+    ss << Regi_number;
+    std::string Regi = ss.str();
+    cout << "Till now, " << Regi << "have been registered."<< endl;
+
+    ss << all_waiting_number;
+    std::string Wait = ss.str();
+    cout << Wait << "is waiting for an appointment."<< endl;
+
+    ss << all_appointment_number;
+    std::string Appo = ss.str();
+    cout << Appo << "have received an appointment." << endl;
+
+    ss << withdraw_number;
+    std::string Without = ss.str();
+    cout << "There are " << Without << "patients who had withdrawn their appointment." << endl;
+
+
+
+    cout << "_____________ENDING_____________" << endl;
+    outfile.close();
+}
+
+
+
+
 //choice = 排序顺序
 //choice_2 = treated || appointed || registered
 //offset = 当前时间
@@ -156,37 +226,6 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
     }
     return;
 }
-//timeoffset:当前时间
-void Report_system::Month(long timeoffset){
-    ofstream outfile;
-    outfile.open("Month.txt", ios::out | ios::trunc);
-    cout << "MONTH REPORT" << endl;
-    std::stringstream ss;
-
-    //print out 
-    ss << Regi_number;
-    std::string Regi = ss.str();
-    cout << "Till now, " << Regi << "have been registered."<< endl;
-
-    ss << all_waiting_number;
-    std::string Wait = ss.str();
-    cout << Wait << "is waiting for an appointment."<< endl;
-
-    ss << all_appointment_number;
-    std::string Appo = ss.str();
-    cout << Appo << "have received an appointment." << endl;
-
-    ss << withdraw_number;
-    std::string Without = ss.str();
-    cout << "There are " << Without << "patients who had withdrawn their appointment." << endl;
-
-
-
-    cout << "_____________ENDING_____________" << endl;
-    outfile.close();
-}
-
-//Supporting functions,不需要在主程序中调用
 Data *Report_system::Sorting(Data *head, int number, int length, bool NAME){
     Data *ptr = head;
     Data *temp = new Data[length];
@@ -224,39 +263,7 @@ Data *Report_system::Sorting(Data *head, int number, int length, bool NAME){
 }
 bool Report_system::cmp(Data *a, Data *b){return a->profession < b->profession ? -1 : 1;}
 bool Report_system::cmp_name(Data *a, Data *b){return strcmp(a->name, b->name);}
-//0:registered
-//1:withdraw
-//2:appo
-//3:waiting
-//4:treated
-//5:waiting time
-int *Report_system::stat(Data *data){
-    int keep[6];
-    for (int i = 0; i <= 5; i++){keep[i] = 0;}
-    int *returnNumber = keep;
-    while (NULL != data){
-        //people registered
-        keep[0] += 1;
-        Regi_number += 1;
-        //people withdrawn once
-        if (data->withdrawn){withdraw_number += 1; keep[1] += 1;}
-        //people ever made an appointment
-        if(data->appo){all_appointment_number += 1; keep[2] += 1;}
-        if (data->treated){
-            keep[4] += 1;
-            keep[5] += (data->appointment->time - data->timestamp);
-        }
-        data = data->next;
-    }
 
-    keep[3] = keep[0] - keep[2] + keep[1];
-    all_waiting_number = Regi_number - all_appointment_number + withdraw_number;
-
-    keep[5] = keep[5] / keep[4];
-    Waiting_time = keep[5];
-
-    return returnNumber;
-}
 
 /*
 便于统一修改shit mountain 代码
