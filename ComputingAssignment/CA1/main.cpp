@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <time.h>
+#include <string.h>
 #include "fibonacii_heap.h"
 #include "data.h"
 #include "appoint.h"
@@ -75,6 +76,7 @@ int main()
                     while (local[i]->Queue->num != 0)
                     {
                         temp = local[i]->Queue->pop();
+                        cout << temp->id << "\n";
                         if (0 == q->num)
                         {
                             q->head = temp;
@@ -88,26 +90,29 @@ int main()
                             Data *d_prev = q->head;
                             Data *d = d_prev->next;
                             // check the first data
-                            if (*d_prev->id == *temp->id)
+                            cout << d_prev->id << "\n";
+                            if (!strcmp(d_prev->id, temp->id))
                             {
                                 temp->next = d;
                                 q->head = temp;
                                 delete d_prev->node->data;
+                                cout << "update first one\n";
                                 d_prev->node->data = temp;
                                 h->update(*d_prev->node);
                                 continue;
                             }
-                            cout << "test\n";
+                            // cout << "test\n";
                             while (NULL != d)
                             {
-                                if (*d->id == *temp->id)
+                                // cout << "OMG\n";
+                                if (!strcmp(d->id, temp->id))
                                 {
                                     d_prev->next = temp;
                                     temp->next = d->next;
                                     delete d->node->data;
                                     d->node->data = temp;
                                     h->update(*d->node);
-                                    continue;
+                                    break;
                                 }
                                 d_prev = d_prev->next;
                                 d = d->next;
