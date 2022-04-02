@@ -46,6 +46,7 @@ Data::Data()
     risk = 0;
     next = NULL;
     node = NULL;
+    cout << "create new data\n";
 }
 
 Data::~Data()
@@ -91,11 +92,11 @@ void queue::push(Data *person)
     }
     else
     {
-        queue::tail->next = person;
-        queue::tail = person;
+        person->next = head;
+        head = person;
     }
     queue::num++;
-    cout << head->next << "\n";
+    cout << "push one data\n";
 }
 
 
@@ -108,7 +109,7 @@ Data* queue::pop()
     }
     num -= 1;
     Data* element = head;
-    head = (0 == num ? NULL : head->next);
+    head = head->next;
     tail = (0 == num ? NULL : tail);
     element->next = NULL;
     return element;
