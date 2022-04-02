@@ -36,6 +36,7 @@ Contact::Contact()
 
 Data::Data()
 {
+    appointment = new Appointment();
     timestamp = 0;
     id = new char[10];
     name = new char[5];
