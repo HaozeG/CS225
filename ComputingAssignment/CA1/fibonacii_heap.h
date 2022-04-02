@@ -14,7 +14,7 @@ public:
     Node* child;
     Node* left;
     Node* right;
-    int degree;                     // number of children
+    int node_num;                     // number of nodes in subtree
     bool mark;
     bool Written = false;
 };
