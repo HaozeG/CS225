@@ -23,8 +23,6 @@ public:
     Appointment();
 
     bool in_alist; // whether in Alist or not
-    int addx;
-    int addy;
     long date;
     long time;  // TODO: 和timestamp对应
     int hospital_id;
