@@ -51,6 +51,7 @@ public:
     char* name;
     int profession; // I to VIII
     int age_group;
+    int priority;
 
     Contact *contact;
     Data *next;
@@ -79,7 +80,7 @@ public:
     queue* Queue;
     queue* update(int time);   // update to central
     int registration();
-    int readfile(const char* filename, long timeoffset);
+    int readfile(const char* filename);
     char str[60];
 };
 
