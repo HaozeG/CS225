@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
+#include "timeoffset.h"
 #include "fibonacii_heap.h"
 using std::cout;
 using std::cin;
@@ -44,7 +45,7 @@ Heap::~Heap()
         true: node1 has higher priority
         false: node2 has higher priority
 */
-inline bool higher_priority(Node &node1, Node &node2)
+inline bool Heap::higher_priority(Node &node1, Node &node2)
 {
     // TODO: penalty
     // profession category, ranking of age group, time
@@ -53,22 +54,48 @@ inline bool higher_priority(Node &node1, Node &node2)
     // time:
     Data *data1 = node1.data;
     Data *data2 = node2.data;
+    // add risk status judgement
+    bool risk_data1 = false;
+    if (0 == data1->risk || 1 == data1->risk)
+        risk_data1 = true;
+    else
+    {
+        if (3 == data1->risk && 0 == n)
+            risk_data1 = true;
+        if (2 == data1->risk && 30*24 >= (timeoffset - data1->timestamp))
+            risk_data1 = true;
+    }
+    bool risk_data2 = false;
+    if (0 == data2->risk || 1 == data2->risk)
+        risk_data2 = true;
+    else
+    {
+        if (3 == data2->risk && 0 == n)
+            risk_data2 = true;
+        if (2 == data2->risk && 30*24 >= (timeoffset - data2->timestamp))
+            risk_data2 = true;
+    }
+
     if (data1->profession < data2->profession)
-        return true;
+        return risk_data1;
     else if (data1->profession > data2->profession)
-        return false;
+        return risk_data2;
     else
     {
         if (data1->age_group < data2->age_group)
-            return true;
+            return risk_data1;
         else if (data1->age_group > data2->age_group)
-            return false;
+            return risk_data2;
         else
         {
-            if (data1->timestamp < data2->timestamp)
-                return true;
+            // penalty for withdraw
+            long d1, d2;
+            d1 = (true == data1->withdrawn && (0 == data1->risk || 1 == data1->risk) ? 24 * 7 : 0);
+            d2 = (true == data2->withdrawn && (0 == data2->risk || 1 == data2->risk) ? 24 * 7 : 0);
+            if ((data1->timestamp + d1)< (data2->timestamp + d2))
+                return risk_data1;
             else
-                return false;
+                return risk_data2;
         }
     }
 }
@@ -170,10 +197,11 @@ void Heap::update(Node &node)
     }
     node.node_num = 1;
     node.child = nullptr;
+    // cout << "test\n";
 
     // cascaded cut parent nodes
     cascaded_cut(parent_node);
-    cout << "Sucessfully update!\n";
+    cout << "Sucessfully update " << node.data->name << "\n";
 }
 
 /*
@@ -294,6 +322,7 @@ void Heap::delete_node(Node &node)
     // TODO: withdraw标签
     node.data = origin_data;
     delete new_data;
+    cout << "Delete " << node.data->name << "\n";
 };
 
 /*
@@ -315,7 +344,6 @@ void Heap::consolidate()
         int mindegree = highest->node_num;
         Node *min_p = highest;
         Node *p = highest->left;
-        // TODO: 死循环
         while (p != highest)
         {
             // cout << highest->data->name << "\n";
@@ -418,9 +446,17 @@ void Heap::cascaded_cut(Node *node)
     if (nullptr == node)
         return;
     Node *parent = node->parent;
+    // if in root list
+    if (nullptr == parent)
+    {
+        node->mark = false;
+        cout << "Finish cascaded cut\n";
+        return;
+    }
     if (false == parent->mark)
     {
         node->mark = true;
+        cout << "Finish cascaded cut\n";
         return;
     }
     while (true == node->mark && nullptr != parent)
