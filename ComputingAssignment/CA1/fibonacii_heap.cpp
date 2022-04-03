@@ -50,10 +50,11 @@ inline bool Heap::higher_priority(Node &node1, Node &node2)
     // profession category, ranking of age group, time
     // profession category : int 越小越高
     // ranking of age group: 越小越高
-    // time:
+    // time: 越小越高
     Data *data1 = node1.data;
     Data *data2 = node2.data;
     // add risk status judgement
+    // one month extension: 30天后再考虑提高优先级
     bool risk_data1 = false;
     if (0 == data1->risk || 1 == data1->risk)
         risk_data1 = true;
@@ -175,7 +176,6 @@ void Heap::update(Node &node)
             highest = &node;
     }
 
-    // TODO: 处理没有child的情况
     Node *child_node = node.child;
     Node *left_root_node = highest;
     Node *right_root_node = highest->right;
@@ -244,7 +244,6 @@ void Heap::delete_highest()
     }
     // connect child nodes to root list
     Node *node = highest->child;
-    // TODO: 没有child的情况
     if (nullptr == node)
     {
         Node *left_node = highest->left;
@@ -321,7 +320,6 @@ void Heap::delete_node(Node &node)
     node.data = new_data;
 
     // call decrease and delete_min
-    // TODO: update无效
     update(node);
     Data *p = highest->data;
     delete_highest();
@@ -335,7 +333,6 @@ void Heap::delete_node(Node &node)
 */
 void Heap::consolidate()
 {
-    // degree定义为child数量，此处计算degree时需要全部加1
     // compute max node_num and prepare hash map
     int maxdegree = int(log2(n));
     // cout << maxdegree << "\n";
@@ -386,7 +383,7 @@ void Heap::consolidate()
         {
             do
             {
-                // swap if needed
+                // swap root nodes of two heaps based on priority
                 if (higher_priority(*p, *m[mindegree]))
                 {
                     Node *temp;
@@ -405,13 +402,12 @@ void Heap::consolidate()
                 }
                 m[mindegree]->child = p;
                 m[mindegree]->node_num += p->node_num;
-                p = m[mindegree];   // update pointer to the root node
+                p = m[mindegree];           // update pointer to the root node
                 m[mindegree] = nullptr;
-                mindegree++;
+                mindegree++;                // check next position
             } while (nullptr != m[mindegree]);
-            m[mindegree] = p;    // merging two tree with same node_num -> new tree with node_num + 1
+            m[mindegree] = p;
         }
-        // cout << mindegree << "\n";
     }
 
     // connect heaps together
@@ -446,8 +442,7 @@ void Heap::update_degree(Node *node, int d)
 */
 void Heap::cascaded_cut(Node *node)
 {
-    // TODO: 剪掉后是否更新child数值
-    // return if its root node
+    // return if it's root node
     if (nullptr == node)
         return;
     Node *parent = node->parent;
