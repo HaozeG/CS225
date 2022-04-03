@@ -53,12 +53,6 @@ inline bool Heap::higher_priority(Node &node1, Node &node2)
     // time:
     Data *data1 = node1.data;
     Data *data2 = node2.data;
-    // add priority judgement
-    if (-1 == data1->priority && -1 != data2->priority)
-        return true;
-    else if (-1 != data1->priority && -1 == data2->priority)
-        return false;
-
     // add risk status judgement
     bool risk_data1 = false;
     if (0 == data1->risk || 1 == data1->risk)
@@ -175,6 +169,11 @@ void Heap::update(Node &node)
     // link to root list if it's not in root list
     if (nullptr != parent_node)
         link_root(node);
+    else
+    {
+        if (higher_priority(node, *highest))
+            highest = &node;
+    }
 
     // TODO: 处理没有child的情况
     Node *child_node = node.child;
@@ -315,19 +314,20 @@ void Heap::delete_node(Node &node)
     // }
     // set the value of new_data to negative
     Data *new_data = new Data;
-    new_data->profession = -1;       // make sure it has the highest priority
+    new_data->name = node.data->name;
+    new_data->profession = -1; // make sure it has the highest priority
     new_data->risk = 0;
     Data *origin_data = node.data; // preserve original data
     node.data = new_data;
 
     // call decrease and delete_min
+    // TODO: update无效
     update(node);
-    // keep the data unchanged
+    Data *p = highest->data;
     delete_highest();
-    // TODO: withdraw标签
-    node.data = origin_data;
+    // keep the data unchanged
     delete new_data;
-    cout << "Delete " << node.data->name << "\n";
+    cout << "Delete " << p->name << "\n";
 };
 
 /*
