@@ -38,9 +38,10 @@ void Report_system::Open_file(Data *head, long timeoffset, int length){
     cout << "Reporting has completed." << endl;
     outfile.close();
 }
-//对于每月报告，主程序中需要调用stat，用于统计各项数据
-//返回值是一个包含各项数据的链表，可用可不用，我的report.h里面也有
-int *Report_system::stat(Data *data){
+//对于每月报告，主程序中需要调用month
+//head: data头节点
+//timeoffset:当前时间
+void Report_system::Month(Data *head, long timeoffset){
     //0:registered
     //1:withdraw
     //2:appo
@@ -50,32 +51,26 @@ int *Report_system::stat(Data *data){
     int *keep = new int[6];
     for (int i = 0; i <= 5; i++){keep[i] = 0;}
     int *returnNumber = keep;
-    while (NULL != data){
+    Data *temp = head;
+    while (NULL != temp){
         //people registered
         keep[0] += 1;
         Regi_number += 1;
         //people withdrawn once
-        if (data->withdrawn){withdraw_number += 1; keep[1] += 1;}
+        if (temp->withdrawn){withdraw_number += 1; keep[1] += 1;}
         //people ever made an appointment
-        if(data->appo){all_appointment_number += 1; keep[2] += 1;}
-        if (data->treated){
+        if(temp->appo){all_appointment_number += 1; keep[2] += 1;}
+        if (temp->treated){
             keep[4] += 1;
-            keep[5] += (data->appointment->time - data->timestamp);
+            keep[5] += (temp->appointment->time - temp->timestamp);
         }
-        data = data->next;
+        temp = temp->next;
     }
-
     keep[3] = keep[0] - keep[2] + keep[1];
     all_waiting_number = Regi_number - all_appointment_number + withdraw_number;
-
     keep[5] = keep[5] / keep[4];
     Waiting_time = keep[5];
 
-    return returnNumber;
-}
-//对于每月报告，主程序中需要调用month
-//timeoffset:当前时间
-void Report_system::Month(long timeoffset){
     ofstream outfile;
     outfile.open("Month.txt", ios::out | ios::trunc);
     cout << "MONTH REPORT" << endl;
@@ -98,11 +93,15 @@ void Report_system::Month(long timeoffset){
     std::string Without = ss.str();
     cout << "There are " << Without << "patients who had withdrawn their appointment." << endl;
 
-
+    long W = Waiting_time / 24;
+    ss << W;
+    std::string avg = ss.str();
+    cout << "The average waiting time is " << avg << "days." << endl;
 
     cout << "_____________ENDING_____________" << endl;
     outfile.close();
 }
+
 
 
 
@@ -121,7 +120,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
 
         std::stringstream ss;
         while (nullptr != paste){
-            cout <<  paste->name << endl;
+            cout <<  paste->name;
 
             ss << paste->profession;
             std::string profession = ss.str();
@@ -160,7 +159,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             std::string profession = ss.str();
             cout << profession << endl;
 
-            cout << "Name:" << "\f" << paste->name << endl;
+            cout << "Name:" << "\f" << paste->name;
 
             ss << paste->age_group;
             std::string age = ss.str();
@@ -195,7 +194,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             std::string age = ss.str();
             cout << age << endl;
 
-            cout <<"Name:" << "\f" << paste->name << endl;
+            cout <<"Name:" << "\f" << paste->name;
 
             ss << paste->profession;
             std::string profession = ss.str();

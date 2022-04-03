@@ -25,7 +25,7 @@ public:
 
     void Open_file(Data *head, long timeoffset, int length);
     void Week(Data *head, int Choice, int Choice_2, long timeoffset, int length, bool treating);
-    void Month(long timeoffset);
+    void Month(Data *head, long timeoffset);
 
     Data *Sorting(Data *head, int number, int length, bool NAME);
     static bool cmp(Data *a, Data *b);
