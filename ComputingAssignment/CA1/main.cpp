@@ -23,7 +23,9 @@ int main()
     // TODO: queue的析构要改（单链表）
     Alist alist;
     Hlist hlist;
-
+    Hospital hospital1(100, 100, 1), hospital2(500, 500, 1);
+    hlist.addh(&hospital1);
+    hlist.addh(&hospital2);
     do
     {
         cout << "---NEW DAY---\n";
@@ -81,6 +83,7 @@ int main()
             }
             case 2:
             {
+                // TODO: 二次进堆
                 int i = 0;
                 Data *temp = nullptr;
                 while (i < 2)
@@ -271,9 +274,7 @@ int main()
 
                 // input hospital information
                 // TODO: 一天可以appoint多次
-                Hospital hospital1(100, 100, 1), hospital2(500, 500, 1);
-                hlist.addh(&hospital1);
-                hlist.addh(&hospital2);
+
 
                 cout << "tot_capacity = " << hlist.tot_capacity << "\n";
 
