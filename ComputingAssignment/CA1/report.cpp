@@ -6,9 +6,6 @@
 #include <i386/types.h>
 #include <new>
 using namespace std;
-
-//对于每周报告，主程序中只需要调用Open——file
-//open file for weekly report； 
 //timeoffset = 当前时间
 //length = data中链表的长度
 void Report_system::Open_file(Data *head, long timeoffset, int length){
@@ -38,7 +35,6 @@ void Report_system::Open_file(Data *head, long timeoffset, int length){
     cout << "Reporting has completed." << endl;
     outfile.close();
 }
-//对于每月报告，主程序中需要调用month
 //head: data头节点
 //timeoffset:当前时间
 void Report_system::Month(Data *head, long timeoffset){
@@ -74,38 +70,21 @@ void Report_system::Month(Data *head, long timeoffset){
     ofstream outfile;
     outfile.open("Month.txt", ios::out | ios::trunc);
     cout << "MONTH REPORT" << endl;
-    std::stringstream ss;
 
-    //print out 
-    ss << Regi_number;
-    std::string Regi = ss.str();
-    cout << "Till now, " << Regi << "have been registered."<< endl;
+    cout << "Till now, " << Regi_number << "have been registered."<< endl;
 
-    ss << all_waiting_number;
-    std::string Wait = ss.str();
-    cout << Wait << "is waiting for an appointment."<< endl;
+    cout << all_waiting_number << "is waiting for an appointment."<< endl;
 
-    ss << all_appointment_number;
-    std::string Appo = ss.str();
-    cout << Appo << "have received an appointment." << endl;
+    cout << all_appointment_number << "have received an appointment." << endl;
 
-    ss << withdraw_number;
-    std::string Without = ss.str();
-    cout << "There are " << Without << "patients who had withdrawn their appointment." << endl;
+    cout << "There are " << withdraw_number << "patients who had withdrawn their appointment." << endl;
 
     long W = Waiting_time / 24;
-    ss << W;
-    std::string avg = ss.str();
-    cout << "The average waiting time is " << avg << "days." << endl;
+    cout << "The average waiting time is " << W << "days." << endl;
 
     cout << "_____________ENDING_____________" << endl;
     outfile.close();
 }
-
-
-
-
-
 //choice = 排序顺序
 //choice_2 = treated || appointed || registered
 //offset = 当前时间
@@ -113,287 +92,107 @@ void Report_system::Month(Data *head, long timeoffset){
 //treating: 是否已经被治疗了
 void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, int length, bool treating){
     Data *paste;
-    int TIME;
-    //名字
-    if (1 == Choice){
-        paste = Sorting(head, Choice_2, length, true);
+    long TIME;
+    switch(Choice){
+        case 1:
+            paste = Sorting(head, Choice_2, length, true);
 
-        std::stringstream ss;
-        while (nullptr != paste){
-            cout <<  paste->name;
+            while (nullptr != paste){
+                cout <<  paste->name;
+                cout << "Profession:" << "\f" << paste->profession << endl;
+                cout << "Age:" << "\f" << paste->age_group << endl;
+                cout << "Risk status:" << "\f" << paste->risk << endl;
+                if (treating){
+                    TIME = timeoffset - paste->timestamp;
+                    cout << "Total waiting time:" << "\f" << TIME << endl;
+                }else{
+                    TIME = paste->appointment->time;
+                    cout << "Waiting time till now" << "\f" << TIME << endl;
+                }      
+                paste = paste->next;
+            }
+            break;
 
-            ss << paste->profession;
-            std::string profession = ss.str();
-            cout << "Profession:" << "\f" << profession << endl;
+        case 2:
+            paste = Sorting(head, Choice_2, length, false);
 
-            ss << paste->age_group;
-            std::string age = ss.str();
-            cout << "Age:" << "\f" << age << endl;
+            while (nullptr != paste){
+                cout << paste->profession << endl;
+                cout << "Name:" << "\f" << paste->name;
+                cout << "Age:" << "\f" << paste->age_group << endl;
+                cout << "Risk status:" << "\f" << paste->risk << endl;
+                if (treating){
+                    TIME = timeoffset - paste->timestamp;
+                    cout << "Total waiting time:" << "\f" << TIME << endl;
+                }else{
+                    TIME = paste->appointment->time;
+                    cout << "Waiting time till now:" << "\f" << TIME << endl;
+                } 
+                paste = paste->next;     
+            }
+            break;
 
-            ss << paste->risk;
-            std::string risk = ss.str();
-            cout << "Risk status:" << "\f" << risk << endl;
+        case 3:
+             paste = Sorting(head, Choice_2, length, false);
 
-            if (treating){
-                TIME = timeoffset - paste->timestamp;
-                ss << TIME;
-                std::string TIME = ss.str();
-                cout << "Total waiting time:" << "\f" << TIME << endl;
-            }else{
-                TIME = paste->appointment->time;
-                ss << TIME;
-                std::string TIME = ss.str();
-                cout << "Waiting time till now" << "\f" << TIME << endl;
-            }      
+            while (nullptr != paste){
+                cout << paste->age_group << endl;
+                cout <<"Name:" << "\f" << paste->name;
+                cout <<"Profession:" << "\f" << paste->profession << endl;
+                cout <<"Risk status:" << "\f" << paste->risk << endl;
+                if (treating){
+                    TIME = timeoffset - paste->timestamp;
+                    cout <<"Total waiting time:" << "\f" << TIME << endl;
+                }else{
+                    TIME = paste->appointment->time;
+                    cout <<"Waiting time till now:" << "\f" << TIME << endl;
+                }      
+                paste = paste->next;
+            }
+            break;
 
-            paste = paste->next;
-        }
+        default:
+            cout << "It seems that you did not choose a proper order." << endl;
     }
-    //职业
-    else if (2 == Choice){
-        paste = Sorting(head, Choice_2, length, false);
-        std::stringstream ss;
-        while (nullptr != paste){
-
-            ss << paste->profession;
-            std::string profession = ss.str();
-            cout << profession << endl;
-
-            cout << "Name:" << "\f" << paste->name;
-
-            ss << paste->age_group;
-            std::string age = ss.str();
-            cout << "Age:" << "\f" << age << endl;
-
-            ss << paste->risk;
-            std::string risk = ss.str();
-            cout << "Risk status:" << "\f" << risk << endl;
-
-            if (treating){
-                TIME = timeoffset - paste->timestamp;
-                ss << TIME;
-                std::string TIME = ss.str();
-                cout << "Total waiting time:" << "\f" << TIME << endl;
-            }else{
-                TIME = paste->appointment->time;
-                ss << TIME;
-                std::string TIME = ss.str();
-                cout << "Waiting time till now:" << "\f" << TIME << endl;
-            } 
-
-            paste = paste->next;     
-        }
-    }
-    //如果选择用年龄排序，默认年龄是1～7
-    else if (3 == Choice){
-        paste = Sorting(head, Choice_2, length, false);
-        std::stringstream ss;
-        while (nullptr != paste){
-
-            ss << paste->age_group;
-            std::string age = ss.str();
-            cout << age << endl;
-
-            cout <<"Name:" << "\f" << paste->name;
-
-            ss << paste->profession;
-            std::string profession = ss.str();
-            cout <<"Profession:" << "\f" << profession << endl;
-
-            ss << paste->risk;
-            std::string risk = ss.str();
-            cout <<"Risk status:" << "\f" << risk << endl;
-
-            if (treating){
-                TIME = timeoffset - paste->timestamp;
-                ss << TIME;
-                std::string TIME = ss.str();
-                cout <<"Total waiting time:" << "\f" << TIME << endl;
-            }else{
-                TIME = paste->appointment->time;
-                ss << TIME;
-                std::string TIME = ss.str();
-                cout <<"Waiting time till now:" << "\f" << TIME << endl;
-            }      
-
-            paste = paste->next;
-        }
-    }
-    else {
-        //为了保证这种情况不会发生，也许需要在一开始选择顺序时加一个循环
-        cout << "It seems that you did not choose a proper order." << endl;
-    }
-    return;
 }
 Data *Report_system::Sorting(Data *head, int number, int length, bool NAME){
     Data *ptr = head;
     Data *temp = new Data[length];
-    Data *keep = temp;
     int i = 0;
-
-    if (4 == number){
-        while (nullptr != ptr){
+    switch(number){
+        case 4:
+            while (nullptr != ptr){
             if (!ptr->treated){ptr = ptr->next; continue;}
             temp[i] = *ptr;
             i += 1;
             ptr = ptr->next;
-        }
-    }else if (5 == number){
-        while (nullptr != ptr){
+            }
+            break;
+
+        case 5:
+            while (nullptr != ptr){
             if (!ptr->appo || ptr->treated || ptr->withdrawn){ptr = ptr->next; continue;}
             temp[i] = *ptr;
             i += 1;
             ptr = ptr->next;
-        }
-    }else{
-        while(nullptr != ptr){
+            }
+            break;
+            
+        case 6:
+            while(nullptr != ptr){
             if (ptr->appo && !ptr->withdrawn){ptr = ptr->next; continue;}
             temp[i] = *ptr;
             i += 1;
             ptr = ptr->next;
-        }
+            }
+            break;
     }
     if (NAME){
-        sort(keep, keep + length, cmp_name);
+        sort(temp, temp + length, cmp_name);
     }else{
-        sort(keep, keep + length, cmp);
+        sort(temp, temp + length, cmp);
     }
-    return keep;
+    return temp;
 }
-bool Report_system::cmp(Data *a, Data *b){return a->profession < b->profession ? -1 : 1;}
-bool Report_system::cmp_name(Data *a, Data *b){return strcmp(a->name, b->name);}
-
-
-/*
-便于统一修改shit mountain 代码
-        while (NULL != ptr){
-            //根据profession分别塞入不同的链表中
-            switch(ptr->ptr_to_data->profession){
-                case 1:
-                    I->ptr_to_data = ptr->ptr_to_data; I = I->next;
-                    break;
-                case 2:
-                    II->ptr_to_data = ptr->ptr_to_data; II_pre = II; II = II->next;
-                    break; 
-                case 3:
-                    III->ptr_to_data = ptr->ptr_to_data; III_pre = III; III = III->next;
-                    break;
-                case 4:
-                    IV->ptr_to_data = ptr->ptr_to_data; IV_pre = IV; IV = IV->next;
-                    break;   
-                case 5:
-                    V->ptr_to_data = ptr->ptr_to_data; V_pre = V; V = V->next;
-                    break;
-                case 6:
-                    VI->ptr_to_data = ptr->ptr_to_data; VI_pre = VI; VI = VI->next;
-                    break;
-                case 7:
-                    VII->ptr_to_data = ptr->ptr_to_data; VII_pre = VII; VII = VII->next;
-                    break; 
-                case 8:
-                    VIII->ptr_to_data = ptr->ptr_to_data; VIII_pre = VIII; VIII = VIII->next;
-                    break;
-                default:
-                    cout << "A fetal error occurs" << endl;          
-            }
-            //移到下一个元素
-            ptr = ptr->next;
-        }
-    }
-    //合成大西瓜！
-    I_pre->next = keepII;
-    II_pre->next = keepIII;
-    III_pre->next = keepIV;
-    IV_pre->next = keepV;
-    V_pre->next = keepVI;
-    VI_pre->next = keepVII;
-    VII_pre->next = keepVIII;
-    //返回已合成链表的头节点
-    return keepI;
-
-
-
-
-                    case 1:
-                    I->ptr_to_data = ptr->ptr_to_data; I = I->next = new Brutal_node();
-                    break;
-                case 2:
-                    II->ptr_to_data = ptr->ptr_to_data; II = II->next = new Brutal_node();
-                    break; 
-                case 3:
-                    III->ptr_to_data = ptr->ptr_to_data; III = III->next = new Brutal_node();
-                    break;
-                case 4:
-                    IV->ptr_to_data = ptr->ptr_to_data; IV = IV->next = new Brutal_node();
-                    break;   
-                case 5:
-                    V->ptr_to_data = ptr->ptr_to_data; V = V->next = new Brutal_node();
-                    break;
-                case 6:
-                    VI->ptr_to_data = ptr->ptr_to_data; VI = VI->next = new Brutal_node();
-                    break;
-                case 7:
-                    VII->ptr_to_data = ptr->ptr_to_data; VII = VII->next = new Brutal_node();
-                    break; 
-                case 8:
-                    VIII->ptr_to_data = ptr->ptr_to_data; VIII = VIII->next = new Brutal_node();
-                    break;
-                default:
-                    cout << "A fetal error occurs" << endl;   
-
-                        Brutal_node *name_list;
-    Brutal_node *keep = name_list;
-    //people being treated
-    if (4 == number){
-        while (NULL != ptr){
-            //如果此人没有被治疗过直接跳到下一个
-            if (!ptr->ptr_to_data->treated){ptr = ptr->next; continue;}
-            //copy a name list
-            name_list->ptr_to_data = ptr->ptr_to_data;
-            name_list = name_list->next;
-            ptr = ptr->next;
-        }
-    }
-    //people made an appointment
-    else if (5 == number){
-        while (NULL != ptr){
-            //如果此人没有登记治疗过直接跳到下一个
-            if ((!ptr->ptr_to_data->appo) || ptr->ptr_to_data->treated || ptr->ptr_to_data->withdrawn){ptr = ptr->next; continue;}
-            //copy a name list
-            name_list->ptr_to_data = ptr->ptr_to_data;
-            name_list = name_list->next;
-            ptr = ptr->next;
-        }
-
-    }
-    //people registered
-    else {
-        while (NULL != ptr){
-            if (ptr->ptr_to_data->appo || ptr->ptr_to_data->withdrawn){ptr = ptr->next; continue;}
-            name_list->ptr_to_data = ptr->ptr_to_data;
-            name_list = name_list->next;
-            ptr = ptr->next;
-        }
-    }
-    return sortList(keep);
-
-
-
-    Brutal_node *Report_system::Copied_list(Data *data){
-    Brutal_node *head = new Brutal_node();
-    Brutal_node *ptr = head;
-    while(nullptr != data){
-        ptr->ptr_to_data = data;
-        ptr = ptr->next = new Brutal_node();
-        data = data->next;
-    }
-    return head;
-
-
-
-Brutal_node::Brutal_node(){
-    ptr_to_data = nullptr;
-    next = nullptr;
-}
-}
-*/
+bool Report_system::cmp(Data a, Data b){return a.profession < b.profession ? -1 : 1;}
+bool Report_system::cmp_name(Data a, Data b){return strcmp(a.name, b.name);}

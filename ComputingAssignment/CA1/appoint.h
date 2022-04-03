@@ -50,7 +50,7 @@ public:
     void appoint(Heap *H, Hlist hlist);
     void withdraw(Data *data);
     void clear();
-    const int INFINITY = 10000;
+    // const int INFINITY = 10000;
 };
 
 #endif
