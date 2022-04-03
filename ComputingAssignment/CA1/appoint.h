@@ -36,8 +36,9 @@ class Hlist : public List<Hospital *>
 {
 public:
     Hlist();
-    void addh(Hospital *value);
-    void removeh(int index);
+    void addh(Hospital *value); // add a hospital to hlist
+    void removeh(int index);    // remove a hospital from hlist
+    void treat_done();          // clear numpatients in each hospital
 
     int tot_capacity;
 };
@@ -47,9 +48,9 @@ class Alist : public List<Data *>
 public:
     Alist();
 
-    void appoint(Heap *H, Hlist hlist);
-    void withdraw(Data *data);
-    void clear();
+    void appoint(Heap *H, Hlist hlist); // appoint one person with highest priority
+    void withdraw(Data *data);          // withdraw a person from alist
+    void clear();                       // clear alist
     // const int INFINITY = 10000;
 };
 
