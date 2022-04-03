@@ -3,23 +3,24 @@
 #include <iostream>
 #include <time.h>
 #include <string.h>
+#include "timeoffset.h"
 #include "fibonacii_heap.h"
 #include "data.h"
 #include "appoint.h"
 using std::cin;
 using std::cout;
+long timeoffset = 0;
 
 int main()
 {
     int op, f;
-    long timeoffset = 0;
     Local *local[2];
     local[0] = new Local; // cout << "Create new local"
     local[1] = new Local; // cout << "Create new local"
     Heap *h = new Heap;
     queue *q = new queue;   // central
     // TODO: queue的析构要改（单链表）
-    Alist alist;
+    // Alist alist;
 
     do
     {
@@ -33,7 +34,7 @@ int main()
             cout << "0: quit\n";
             cout << "1: do registration to local\n";
             cout << "2: update registry to central\n";
-            cout << "3: manual update information\n";
+            cout << "3: print root list of the heap\n";
             cout << "4: withdraw while waiting\n";
             cout << "5: make appointments\n";
             cout << "6: manual reporting\n";
@@ -54,35 +55,39 @@ int main()
             }
             case 1:
             {
-                // char filename;
-                // cout << "Specify the directory of the input file:\n";
-                // cin >> filename;
-                // cin.get();
+                char* c = new char[30];
+                cout << "Specify the directory of the input file:\n";
+                cin >> c;
+                const char* filename = c;
                 do
                 {
-                    cout << "Choose one local registry from 1 to 2: ";
+                    cout << "Choose one local registry from 1 to 2:\n";
                     cin >> f;
                 }
                 while (f < 1 && f > 2);
-                local[f - 1]->readfile("testfile2", timeoffset);
+                local[f - 1]->readfile(filename);
                 cout << "This queue has " << local[f - 1]->Queue->num << " items now\n";
+                // Data *p = local[0]->Queue->head;
+                // while (nullptr != p)
+                // {
+                //     cout << p->name << "\n";
+                //     p = p->next;
+                // }
                 break;
             }
             case 2:
             {
                 int i = 0;
-                Data *temp = NULL;
+                Data *temp = nullptr;
                 while (i < 2)
                 {
                     while (local[i]->Queue->num != 0)
                     {
                         temp = local[i]->Queue->pop();
-                        cout << temp->id << "\n";
+
                         if (0 == q->num)
                         {
-                            q->head = temp;
-                            q->tail = temp;
-                            q->num++;
+                            q->push(temp);
                             h->insert(temp);
                         }
                         else
@@ -90,40 +95,43 @@ int main()
                             // check if it has registered
                             Data *d_prev = q->head;
                             Data *d = d_prev->next;
+                            // cout << d_prev->name << "\n";
+                            // cout << temp->name << "\n";
                             // check the first data
-                            cout << d_prev->id << "\n";
-                            if (!strcmp(d_prev->id, temp->id))
+                            if (!strcmp(d_prev->id, temp->id) && (false == d_prev->appo))
                             {
                                 temp->next = d;
                                 q->head = temp;
-                                delete d_prev->node->data;
-                                cout << "update first one\n";
+                                // cout << "update first one\n";
                                 d_prev->node->data = temp;
-                                h->update(*d_prev->node);
+                                temp->node = d_prev->node;
+                                delete d_prev;
+                                // cout << "test\n";
+                                h->update(*temp->node);
                                 continue;
                             }
-                            // cout << "test\n";
-                            while (NULL != d)
+                            while (nullptr != d)
                             {
-                                // cout << "OMG\n";
-                                if (!strcmp(d->id, temp->id))
+                                if (!strcmp(d->id, temp->id) && (false == d->appo))
                                 {
                                     d_prev->next = temp;
                                     temp->next = d->next;
-                                    delete d->node->data;
+                                    // TODO: d->node的更新
+                                    // cout << d->node->data << "\n";
+                                    // cout << d->node << "test\n";
                                     d->node->data = temp;
-                                    h->update(*d->node);
+                                    temp->node = d->node;
+                                    delete d;
+                                    h->update(*temp->node);
                                     break;
                                 }
-                                d_prev = d_prev->next;
+                                d_prev = d;
                                 d = d->next;
                             }
                             // if it is new data
-                            if (NULL == d)
+                            if (nullptr == d)
                             {
-                                q->tail->next = temp;
-                                q->tail = temp;
-                                q->num++;
+                                q->push(temp);
                                 h->insert(temp);
                             }
                         }
@@ -135,80 +143,94 @@ int main()
             }
             case 3:
             {
-                // 手动更新某人的信息
-                // do
-                // {
-                //     cout << "Choose one local registry from 1 to 3:";
-                //     cin >> f;
-                // }
-                // while (f < 1 && f > 3);
-                // local[f - 1]->readfile("updateinfo", timeoffset);
+                // print heap
+                Node *p = h->highest->left;
+                cout << "test\n";
+                // cout << p->left->data->name << "\n";
+                cout << p->data->name << "\n";
+                cout << h->highest->right->data->name << "\n";
+                cout <<  "highest:" << h->highest->data->name << "\n";
                 // break;
+                int i = 0;
+                while (p != h->highest)
+                {
+                    cout << p->data->name << "\n";
+                    p = p->left;
+                    i++;
+                    if (i>10)
+                        break;
+                }
+                cout << p->data->name << "\n";
             }
             case 4:
             {
-                char a[10];
-                bool flag = false;
-                cout << "Enter an ID to withdraw\n";
-                cin >> a;
+                // char a[10];
+                // bool flag = false;
+                // cout << "Enter an ID to withdraw\n";
+                // cin >> a;
 
-                // search queue to find data with certain id
-                Data *pNode = q->head;
-                if (strcmp(q->tail->id,a)==0)
-                {
-                    cout << "find the data\n";
-                    pNode = q->tail;
-                    flag = true;
-                }
-                else
-                {
-                    while (pNode->next!=NULL)
-                    {
-                        if (strcmp(pNode->id,a)==0)
-                        {
-                            cout << "find the data\n";
-                            flag = true;
-                            break;
-                        }
-                        pNode = pNode->next;
-                    }
-                }
+                // // search queue to find data with certain id
+                // Data *pNode = q->head;
+                // if (strcmp(q->tail->id,a)==0)
+                // {
+                //     cout << "find the data\n";
+                //     pNode = q->tail;
+                //     flag = true;
+                // }
+                // else
+                // {
+                //     while (pNode->next!=nullptr)
+                //     {
+                //         if (strcmp(pNode->id,a)==0)
+                //         {
+                //             cout << "find the data\n";
+                //             flag = true;
+                //             break;
+                //         }
+                //         pNode = pNode->next;
+                //     }
+                // }
 
-                // withdraw that data
-                if (flag)
-                {
-                    if (pNode->appointment->in_alist)
-                    {
-                        alist.withdraw(pNode);
-                    }
-                    else
-                        h->delete_node(*(pNode->node));
-                }
-                else
-                    cout << "ID not found\n";
+                // // withdraw that data
+                // if (flag)
+                // {
+                //     if (pNode->appointment->in_alist)
+                //     {
+                //         alist.withdraw(pNode);
+                //     }
+                //     else
+                //         h->delete_node(*(pNode->node));
+                // }
+                // else
+                //     cout << "ID not found\n";
 
                 break;
             }
             case 5:
             {
-                // Data *p = NULL;
-                // p = h->get_highest();
-                // if (NULL != p)
-                //     cout << p->name << "\n";
-
-                // input hospital information
-                Hlist hlist;
-                Hospital hospital1(114, 514, 1000), hospital2(100, 200, 500);
-                hlist.append(&hospital1);
-                hlist.append(&hospital2);
-
-                bool available = false;
-                available = (alist.numitems < hlist.tot_capacity ? true : false);
-
-                while (available)
+                Data *p = nullptr;
+                p = h->get_highest();
+                if (nullptr != p)
                 {
-                    alist.appoint(h, hlist);
+                    p->appo = true;
+                    // cout << p << "\n";
+                    cout << p->name << "\n";
+                    cout << "test\n";
                 }
+
+                // // input hospital information
+                // Hlist hlist;
+                // Hospital hospital1(114, 514, 1000), hospital2(100, 200, 500);
+                // hlist.append(&hospital1);
+                // hlist.append(&hospital2);
+
+                // bool available = false;
+                // available = (alist.numitems < hlist.tot_capacity ? true : false);
+
+                // while (available)
+                // {
+                //     // alist.appoint(h, Hlist);
+                // }
                 break;
             }
             case 6:
@@ -282,7 +304,7 @@ int main()
         alist.withdraw(inputdata);
     else
         cout << "0\n";
-    // 
+    //
     // h->delete_node(?)
     */
 }

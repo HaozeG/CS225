@@ -25,16 +25,17 @@ public:
     Heap();
     ~Heap();
     Node *highest;                  // pointer to the highest priority node
+    int n;                          // record the number of nodes in this heap
 
     void insert(Data *data);        // insert new node with given data
     void update(Node &node);        // after the node's data changed
     void delete_node(Node &node);   // delete certain node
     Data *get_highest();            // get the pointer to the data of the highest priority node
+    bool higher_priority(Node &node1, Node &node2);
     // TODO: 返回的数据类型
     // TODO: print函数+test程序
 
 private:
-    int n;                          // record the number of nodes in this heap
     void delete_highest();
     void link_root(Node &node);
     void consolidate();

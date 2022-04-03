@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <iostream>
-// #include "fibonacii_heap.h"
+#include <math.h>
 #include "appoint.h"
 #include "data.h"
-#include "math.h"
 using std::cin;
 using std::cout;
 
@@ -25,7 +24,7 @@ void List<T>::append(T value)
 {
     array[numitems] = value;
     numitems++;
-    if (numitems = size)
+    if (numitems == size)
         allocate();
 }
 
@@ -110,17 +109,23 @@ void Alist::appoint(Heap *H, Hlist hlist)
     {
         if (hlist.array[i]->capacity > hlist.array[i]->numpatient)
         {
-            dist = (int)sqrt((hlist.array[i]->addx - data->contact->addx) ^ 2 + (hlist.array[i]->addy - data->contact->addy) ^ 2);
+            cout << "hospital" << i << " address: addx = " << hlist.array[i]->addx << " addy = " << hlist.array[i]->addy << "\n";
+            cout << "person address: addx = " << data->contact->addx << " addy = " << data->contact->addy << "\n";
+            dist = (int)sqrt(pow((hlist.array[i]->addx - data->contact->addx), 2) + pow((hlist.array[i]->addy - data->contact->addy), 2));
+
             if (dist < min_dist)
             {
                 min_dist = dist;
                 min_id = i;
             }
+            cout << "dist = " << dist << "\n";
+            cout << "min_dist = " << min_dist << "\n";
         }
     }
 
     // change hospital information
     hlist.array[min_id]->numpatient++;
+    cout << "hospital id = " << min_id << "\n";
 
     // change person data information
     data->appo = true;
@@ -129,6 +134,7 @@ void Alist::appoint(Heap *H, Hlist hlist)
     data->appointment->time = 8 + 10 * (hlist.array[min_id]->numpatient / hlist.array[min_id]->capacity); // 从8到18点分配一个整数时间
     // data->appointment->date =
     // TODO: 有关时间，date? time?
+    cout << "Finish appoint one person! Id = " << data->id << "\n";
 }
 
 void Alist::withdraw(Data *data) // withdraw在Alist里的元素
@@ -148,11 +154,13 @@ void Alist::withdraw(Data *data) // withdraw在Alist里的元素
             cout << "wrong data: not in Alist\n";
     }
     remove(index);
+    cout << "Finish withdraw person from Alist!\n";
 }
 
 void Alist::clear()
 {
     numitems = 0;
+    cout << "Alist cleared!\n";
 }
 
 Hospital::Hospital(int x, int y, int c)
