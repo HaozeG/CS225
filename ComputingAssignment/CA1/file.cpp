@@ -51,6 +51,7 @@ Data::Data()
 
 Data::~Data()
 {
+    delete appointment;
     cout << "delete data\n";
 }
 
