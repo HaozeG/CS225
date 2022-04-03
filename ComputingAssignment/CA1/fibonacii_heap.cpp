@@ -79,13 +79,13 @@ inline bool Heap::higher_priority(Node &node1, Node &node2)
     if (data1->profession < data2->profession)
         return risk_data1;
     else if (data1->profession > data2->profession)
-        return risk_data2;
+        return !risk_data2;
     else
     {
         if (data1->age_group < data2->age_group)
             return risk_data1;
         else if (data1->age_group > data2->age_group)
-            return risk_data2;
+            return !risk_data2;
         else
         {
             // penalty for withdraw
@@ -95,7 +95,7 @@ inline bool Heap::higher_priority(Node &node1, Node &node2)
             if ((data1->timestamp + d1)< (data2->timestamp + d2))
                 return risk_data1;
             else
-                return risk_data2;
+                return !risk_data2;
         }
     }
 }
