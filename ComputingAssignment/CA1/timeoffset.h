@@ -2,5 +2,6 @@
 #define timeoffset_h
 
 extern long timeoffset;
+extern long timestart;
 
 #endif
