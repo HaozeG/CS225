@@ -46,7 +46,7 @@ Data::Data()
     age_group = 0;
     risk = 0;
     next = NULL;
-    priority = -1;
+    priority = 0;
 }
 
 Data::~Data()

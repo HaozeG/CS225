@@ -47,13 +47,18 @@ Heap::~Heap()
 */
 inline bool Heap::higher_priority(Node &node1, Node &node2)
 {
-    // TODO: penalty
     // profession category, ranking of age group, time
     // profession category : int 越小越高
     // ranking of age group: 越小越高
     // time:
     Data *data1 = node1.data;
     Data *data2 = node2.data;
+    // add priority judgement
+    if (-1 == data1->priority && -1 != data2->priority)
+        return true;
+    else if (-1 != data1->priority && -1 == data2->priority)
+        return false;
+
     // add risk status judgement
     bool risk_data1 = false;
     if (0 == data1->risk || 1 == data1->risk)
@@ -197,7 +202,6 @@ void Heap::update(Node &node)
     }
     node.node_num = 1;
     node.child = nullptr;
-    // cout << "test\n";
 
     // cascaded cut parent nodes
     cascaded_cut(parent_node);
@@ -311,8 +315,9 @@ void Heap::delete_node(Node &node)
     // }
     // set the value of new_data to negative
     Data *new_data = new Data;
-    new_data->profession = 0;       // make sure it has the highest priority
-    Data *origin_data = node.data;  // preserve original data
+    new_data->profession = -1;       // make sure it has the highest priority
+    new_data->risk = 0;
+    Data *origin_data = node.data; // preserve original data
     node.data = new_data;
 
     // call decrease and delete_min
