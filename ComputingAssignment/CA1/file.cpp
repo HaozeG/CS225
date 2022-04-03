@@ -16,7 +16,7 @@ using std::cin;
 Local::Local()
 {
     Queue = new queue();
-    cout << "Create new local registry\n";
+    cout << "Create one local registry\n";
 }
 
 Local::~Local()
@@ -36,7 +36,6 @@ Contact::Contact()
 
 Data::Data()
 {
-    appointment = new Appointment();
     timestamp = 0;
     id = new char[10];
     name = new char[5];
@@ -46,8 +45,7 @@ Data::Data()
     age_group = 0;
     risk = 0;
     next = NULL;
-    node = NULL;
-    cout << "create new data\n";
+    priority = -1;
 }
 
 Data::~Data()
@@ -60,7 +58,6 @@ queue::queue()
     num = 0;
     head = NULL;
     tail = NULL;
-    cout << "New queue\n";
 }
 
 queue::~queue()
@@ -68,22 +65,6 @@ queue::~queue()
     cout << "Delete queue\n";
 }
 
-// void queue::push(Data* person)
-// {
-//     if (head == NULL && tail == NULL)
-//     {
-//         head = person;
-//         tail = person;
-//         num += 1;
-//     }
-//     else
-//     {
-//         tail->next = person;
-//         tail = person;
-//         num += 1;
-//     }
-//     return;
-// }
 void queue::push(Data *person)
 {
     if (0 == num)
@@ -115,32 +96,8 @@ Data* queue::pop()
     element->next = NULL;
     return element;
 }
-// Data* queue::pop()
-// {
-//     if (0 == num)
-//     {
-//         return NULL;
-//     }
-//     else
-//     {
-//         Data *temp = queue::head;
-//         int i = 1;
-//         while (i < num)
-//         {
-//             temp = temp->next;
-//             i++;
-//         }
-//         num--;
-//         temp->next = NULL;
-//         queue::tail = (0 == num ? NULL : temp);
-//         queue::head = (0 == num ? NULL : queue::head);
-//         return temp;
-//     }
-//     return head;
-// }
 
-
-int Local::registration()
+/*int Local::registration()
 {
     FILE *fp; char filename[8] ;
     cout<<"Please type your file name within eight characters."<<endl;
@@ -176,15 +133,15 @@ int Local::registration()
         cout<<"Error when opening the file."<<endl;
         return 0;
     }
-}
+}*/
 
-int Local::readfile(const char* filename,long timeoffset)
+int Local::readfile(const char* filename)
 {
     FILE *fp;
-    fp = fopen(filename, "r");
+    fp = fopen(filename , "r");
     if(fp == NULL) {
-     perror("打开文件时发生错误");
-     return(-1);
+        perror("打开文件时发生错误");
+        return(-1);
     }
     fgets (str, 60, fp);
     str[1] = '\0';
@@ -195,32 +152,33 @@ int Local::readfile(const char* filename,long timeoffset)
         if( fgets (person->id, 60, fp)!=NULL )
             person->id[10]='\0';
         else return 0;
-        if( fgets (person->name, 60, fp)!=NULL )
-            person->name[5]='\0';
-        else return 0;
+        if( fgets (person->name, 60, fp)==NULL )
+            return 0;// cout<<person->name;
         if( fgets (str, 60, fp)!=NULL )
         {
-            str[2]='\0';
-            int a_x = atoi(str);
-            person->contact->addx = a_x;
+            int a = sizeof(str);
+            str[a-1]='\0';
+            a = atoi(str);
+            person->contact->addx = a;
+            // cout<<person->contact->addx<<"\n";
         }
         else return 0;
         if( fgets (str, 60, fp)!=NULL )
         {
-            str[2]='\0';
-            int a_y = atoi(str);
-            person->contact->addy = a_y;
+            int a = sizeof(str);
+            str[a-1]='\0';
+            a = atoi(str);
+            person->contact->addy = a;
+            // cout<<person->contact->addy<<"\n";
         }
         else return 0;
         if( fgets (person->contact->phone, 60, fp)!=NULL )
             person->contact->phone[11]='\0';
         else return 0;
-        if( fgets (person->contact->WeChat, 60, fp)!=NULL )
-            person->contact->WeChat[7]='\0';
-        else return 0;
-        if( fgets (person->contact->email, 60, fp)!=NULL )
-            person->contact->email[15]='\0';
-        else return 0;
+        if( fgets (person->contact->WeChat, 60, fp)==NULL )
+            return 0;
+        if( fgets (person->contact->email, 60, fp)==NULL )
+            return 0;
         if( fgets (str, 60, fp)!=NULL )
         {
             str[1]='\0';
@@ -240,18 +198,26 @@ int Local::readfile(const char* filename,long timeoffset)
         else return 0;
         if( fgets (str, 60, fp)!=NULL )
         {
-            str[1]='\0';
-            int a = atoi(str);
-            person->timestamp = a + timeoffset;
+            int a = sizeof(str);
+            str[a-1]='\0';
+            a = atoi(str);
+            person->timestamp = a;
         }
         else return 0;
-        //time_t curtime;
-        //person->timestamp = time(&curtime);
         if( fgets (str, 60, fp)!=NULL )
         {
             str[1]='\0';
             int a = atoi(str);
             person->age_group = a;
+        }
+        else return 0;
+        if( fgets (str, 60, fp)!=NULL )
+        {
+            int a = sizeof(str);
+            str[a-1]='\0';
+            a = atoi(str);
+            person->priority = a;
+            // cout<<person->priority<<"\n";
         }
         else return 0;
         Queue->push(person);
