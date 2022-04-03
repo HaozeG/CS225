@@ -22,12 +22,13 @@ int main()
     queue *q = new queue;   // central
     // TODO: queue的析构要改（单链表）
     Alist alist;
+    Hlist hlist;
 
     do
     {
         cout << "---NEW DAY---\n";
         // 输出今天是几月几日
-        cout << "Today is " << int(timeoffset/24) << "\n";
+        cout << "Today is " << timestart + int(timeoffset/24) << "\n";
         cout << "-------------\n";
         do
         {
@@ -186,7 +187,7 @@ int main()
                 if (flag)
                 {
                     pNode->priority = ddl;
-                    cout << pNode->name << "——priority letter presented\n";
+                    cout << pNode->name << "=>priority letter presented\n";
                 }
                 else
                     cout << "data not found\n";
@@ -229,7 +230,10 @@ int main()
                         alist.withdraw(pNode);
                     }
                     else
+                    {
+                        pNode->withdrawn = true;
                         h->delete_node(*(pNode->node));
+                    }
                 }
                 else
                     cout << "ID not found\n";
@@ -242,17 +246,31 @@ int main()
                 Data *p = q->head;
                 while (nullptr != p)
                 {
-                    if ((p->priority - timeoffset) <= 72 && 0 != p->priority)
+                    if ((nullptr != p->node) && (p->priority - timeoffset) <= 72 && -1 != p->priority)
                     {
-                        p->priority = -1;
+                        Data *new_data = new Data;
+                        new_data->name = p->name;
+                        new_data->profession = -1; // make sure it has the highest priority
+                        new_data->risk = 0;
+                        p->node->data = new_data;
+
+                        // call decrease and delete_min
                         h->update(*p->node);
+                        p->node->data = p;
+                        delete new_data;
                     }
                     p = p->next;
                 }
-                cout << h->highest->data->name << "\n";
+                if (nullptr != h->highest)
+                    cout << h->highest->data->name << "\n";
+                else
+                {
+                    cout << "Already empty!\n";
+                    break;
+                }
 
                 // input hospital information
-                Hlist hlist;
+                // TODO: 一天可以appoint多次
                 Hospital hospital1(100, 100, 1), hospital2(500, 500, 1);
                 hlist.addh(&hospital1);
                 hlist.addh(&hospital2);
@@ -276,17 +294,25 @@ int main()
             }
             case 7:
             {
+                hlist.treat_done();
+                alist.clear();
+
                 timeoffset += 24; // +24h
                 break;
             }
             case 8:
             {
                 // print heap
+                if (nullptr == h->highest)
+                {
+                    cout << "heap empty\n";
+                    break;
+                }
                 Node *p = h->highest->left;
                 // cout << p->left->data->name << "\n";
                 // cout << p->data->name << "\n";
                 // cout << h->highest->right->data->name << "\n";
-                cout <<  "highest:" << h->highest->data->name << "\n";
+                cout <<  "highest:\n" << h->highest->data->name << "\n";
                 cout << "names in root list:\n";
                 int i = 0;
                 while (p != h->highest)
