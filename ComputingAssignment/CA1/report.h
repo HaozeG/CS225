@@ -30,8 +30,6 @@ public:
     Data *Sorting(Data *head, int number, int length, bool NAME);
     static bool cmp(Data a, Data b);
     static bool cmp_name(Data a, Data b);
-    int *stat(Data *data);
-
 };
 #endif
 
