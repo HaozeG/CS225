@@ -8,10 +8,11 @@ using std::cin;
 // initialize Node and Heap
 Node::Node()
 {
-    parent = NULL;
-    child = NULL;
-    left = NULL;
-    right = NULL;
+    data = nullptr;
+    parent = nullptr;
+    child = nullptr;
+    left = nullptr;
+    right = nullptr;
     node_num = 1;
     mark = false;
     cout << "Create one node!\n";
@@ -19,13 +20,13 @@ Node::Node()
 
 Node::~Node()
 {
-    data->node = NULL;
+    data->node = nullptr;
     cout << "Delete one node!\n";
 }
 
 Heap::Heap()
 {
-    highest = NULL;
+    highest = nullptr;
     n = 0;
     cout << "Create one empty heap!\n";
 }
@@ -80,19 +81,22 @@ inline bool higher_priority(Node &node1, Node &node2)
 */
 inline void Heap::link_root(Node &node)
 {
-    if (NULL == highest)
+    if (nullptr == highest)
         highest = &node;
-    // link to root list
-    node.left = highest;
-    node.right = highest->right;
-    highest->right = &node;
-    node.right->left = &node;
-    node.parent = NULL;
-    node.mark = false;
+    else
+    {
+        // link to root list
+        node.left = highest;
+        node.right = highest->right;
+        highest->right = &node;
+        node.right->left = &node;
 
-    // adjust H.highest
-    if (higher_priority(node, *highest))
-        highest = &node;
+        // adjust H.highest
+        if (higher_priority(node, *highest))
+            highest = &node;
+    }
+    node.parent = nullptr;
+    node.mark = false;
 }
 
 /*
@@ -106,9 +110,10 @@ void Heap::insert(Data *data)
     Node *node = new Node;
     node->data = data;
     data->node = node;
+    node->right = node;
+    node->left = node;
     link_root(*node);
     Heap::n++;
-    // TODO: Data中指向Node的指针需要更新
     cout << "Insert one node!\n";
 };
 
@@ -124,13 +129,26 @@ void Heap::update(Node &node)
 
     // cut off subtree and insert to root list
     update_degree(node.parent, -node.node_num);
-    link_root(node);
+    if (nullptr != parent_node && parent_node->child == &node)
+        parent_node->child = (&node == node.right ? nullptr : node.right);
+    // remove from heap
+    if (nullptr != parent_node && nullptr != parent_node->child)
+    {
+        node.left->right = node.right;
+        node.right->left = node.left;
+        node.right = &node;
+        node.left = &node;
+    }
+
+    // link to root list if it's not in root list
+    if (nullptr != parent_node)
+        link_root(node);
+
     // TODO: 处理没有child的情况
-    // cout << "test\n";
     Node *child_node = node.child;
     Node *left_root_node = highest;
     Node *right_root_node = highest->right;
-    if (NULL != node.child)
+    if (nullptr != node.child)
     {
         // connect child nodes to root list
         Node *right_child_node = child_node->right;
@@ -140,22 +158,18 @@ void Heap::update(Node &node)
         left_root_node->right = right_child_node;
 
         // update H.highest
-        child_node = left_root_node->left;
-        while (child_node != left_root_node)
+        child_node = left_root_node->right;
+        while (child_node != right_root_node)
         {
-            child_node->parent = NULL;    // make sure all nodes in root list have parent == NULL
+            child_node->mark = false;
+            child_node->parent = nullptr; // make sure all nodes in root list have parent == nullptr
             if (higher_priority(*child_node, *highest))
                 highest = child_node;
-            child_node = child_node->left;
+            child_node = child_node->right;
         }
     }
-    else
-    {
-        if (higher_priority(node, *highest))
-            highest = &node;
-    }
     node.node_num = 1;
-    node.child = NULL;
+    node.child = nullptr;
 
     // cascaded cut parent nodes
     cascaded_cut(parent_node);
@@ -169,8 +183,8 @@ void Heap::update(Node &node)
 */
 Data *Heap::get_highest()
 {
-    Data *data = NULL;
-    if (NULL != highest)
+    Data *data = nullptr;
+    if (nullptr != highest)
         data = highest->data;
     Heap::delete_highest();
     return data;
@@ -193,13 +207,14 @@ void Heap::delete_highest()
     if (0 == n)
     {
         delete highest;
-        highest = NULL;
+        highest = nullptr;
+        cout << "Finish delete highest node\n";
         return;
     }
     // connect child nodes to root list
     Node *node = highest->child;
-    // TODO: 只有root list的情况
-    if (NULL == node)
+    // TODO: 没有child的情况
+    if (nullptr == node)
     {
         Node *left_node = highest->left;
         highest->left->right = highest->right;
@@ -209,7 +224,8 @@ void Heap::delete_highest()
         node = left_node->left;
         while (node != left_node)
         {
-            node->parent = NULL;    // make sure all nodes in root list have parent == NULL
+            node->mark = false;
+            node->parent = nullptr; // make sure all nodes in root list have parent == nullptr
             if (higher_priority(*node, *highest))
                 highest = node;
             node = node->left;
@@ -238,7 +254,8 @@ void Heap::delete_highest()
         node = left_root_node->left;
         while (node != left_root_node)
         {
-            node->parent = NULL;    // make sure all nodes in root list have parent == NULL
+            node->mark = false;
+            node->parent = nullptr; // make sure all nodes in root list have parent == nullptr
             if (higher_priority(*node, *highest))
                 highest = node;
             node = node->left;
@@ -258,12 +275,12 @@ void Heap::delete_highest()
 */
 void Heap::delete_node(Node &node)
 {
-    // check if node is in the heap
-    if (NULL == node.left)
-    {
-        cout << "Node is not in the heap\n";
-        return;
-    }
+    // // check if node is in the heap
+    // if (nullptr == node.left)
+    // {
+    //     cout << "Node is not in the heap\n";
+    //     return;
+    // }
     // set the value of new_data to negative
     Data *new_data = new Data;
     new_data->profession = 0;       // make sure it has the highest priority
@@ -273,9 +290,9 @@ void Heap::delete_node(Node &node)
     // call decrease and delete_min
     update(node);
     // keep the data unchanged
-    node.data = origin_data;
     delete_highest();
-    // TODO: Data的析构
+    // TODO: withdraw标签
+    node.data = origin_data;
     delete new_data;
 };
 
@@ -290,41 +307,45 @@ void Heap::consolidate()
     // cout << maxdegree << "\n";
     Node *m[maxdegree + 1];
     for (int i = 0; i <= maxdegree; i++)
-        m[i] = NULL;
+        m[i] = nullptr;
     // iterate through root list
-    while (NULL != highest)
+    while (nullptr != highest)
     {
         // find the root node with the smallest node_num
         int mindegree = highest->node_num;
         Node *min_p = highest;
-        Node *p = highest->right;
+        Node *p = highest->left;
+        // TODO: 死循环
         while (p != highest)
         {
-            if (p->node_num <= mindegree)
+            // cout << highest->data->name << "\n";
+            // cout << highest->left->data->name << "\n";
+            // cout << p->data->name << "\n";
+            if (p->node_num < mindegree)
             {
                 mindegree = p->node_num;
                 min_p = p;
             }
-            p = p->right;
+            p = p->left;
         }
         // delete from root list
+        p = min_p;
         if (p == p->right)
         {
-            highest = NULL;
+            highest = nullptr;
         }
         else
         {
             // update H.highest if needed
-            if (p == highest)
-                highest = p->right;
+            highest = p->right;
             p->right->left = p->left;
             p->left->right = p->right;
-            p->right = p;
-            p->left = p;
         }
+        p->right = p;
+        p->left = p;
 
         mindegree = int(log2(mindegree));
-        if (NULL == m[mindegree])
+        if (nullptr == m[mindegree])
         {
             m[mindegree] = p;
         }
@@ -332,6 +353,7 @@ void Heap::consolidate()
         {
             do
             {
+                // swap if needed
                 if (higher_priority(*p, *m[mindegree]))
                 {
                     Node *temp;
@@ -340,28 +362,28 @@ void Heap::consolidate()
                     m[mindegree] = temp;
                 }
                 p->parent = m[mindegree];
-                if (NULL != m[mindegree]->child)
+                if (nullptr != m[mindegree]->child)
                 {
                     // connect with other child node
                     p->right = m[mindegree]->child->right;
                     p->left = m[mindegree]->child;
-                    m[mindegree]->child->right = p;
+                    p->left->right = p;
                     p->right->left = p;
                 }
                 m[mindegree]->child = p;
                 m[mindegree]->node_num += p->node_num;
                 p = m[mindegree];   // update pointer to the root node
-                m[mindegree] = NULL;
+                m[mindegree] = nullptr;
                 mindegree++;
-                cout << "test\n";
-            } while (NULL != m[mindegree]);
+            } while (nullptr != m[mindegree]);
             m[mindegree] = p;    // merging two tree with same node_num -> new tree with node_num + 1
         }
+        // cout << mindegree << "\n";
     }
 
     // connect heaps together
     for (int i = 0; i <= maxdegree; i++)
-        if (NULL != m[i]) link_root(*m[i]);
+        if (nullptr != m[i]) link_root(*m[i]);
     cout << "Finish consolidate\n";
 };
 
@@ -374,9 +396,9 @@ void Heap::consolidate()
 */
 void Heap::update_degree(Node *node, int d)
 {
-    if (0 == d || NULL == node)
+    if (0 == d || nullptr == node)
         return;
-    while (NULL != (*node).parent)
+    while (nullptr != (*node).parent)
     {
         (*node).node_num += d;
         node = (*node).parent;
@@ -391,8 +413,9 @@ void Heap::update_degree(Node *node, int d)
 */
 void Heap::cascaded_cut(Node *node)
 {
+    // TODO: 剪掉后是否更新child数值
     // return if its root node
-    if (NULL == node)
+    if (nullptr == node)
         return;
     Node *parent = node->parent;
     if (false == parent->mark)
@@ -400,9 +423,19 @@ void Heap::cascaded_cut(Node *node)
         node->mark = true;
         return;
     }
-    while (true == node->mark && NULL != parent)
+    while (true == node->mark && nullptr != parent)
     {
+        if (parent->child == node)
+            parent->child = (node == node->right ? nullptr : node->right);
         update_degree(node, -node->node_num);
+        // remove from heap
+        if (nullptr != parent->child)
+        {
+            node->left->right = node->right;
+            node->right->left = node->left;
+            node->right = node;
+            node->left = node;
+        }
         link_root(*node);
         // move to next parent node
         node = parent;
