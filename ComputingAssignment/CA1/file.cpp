@@ -34,6 +34,13 @@ Contact::Contact()
     email = new char[15];
 }
 
+Contact::~Contact()
+{
+    delete phone;
+    delete WeChat;
+    delete email;
+}
+
 Data::Data()
 {
     appointment = new Appointment();
@@ -52,7 +59,10 @@ Data::Data()
 Data::~Data()
 {
     delete appointment;
-    cout << "delete data\n";
+    delete contact;
+    delete id;
+    delete birth;
+    cout << "Delete data\n";
 }
 
 queue::queue()
@@ -60,6 +70,7 @@ queue::queue()
     num = 0;
     head = NULL;
     tail = NULL;
+    cout << "Create queue\n";
 }
 
 queue::~queue()
