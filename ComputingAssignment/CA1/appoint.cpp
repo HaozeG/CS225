@@ -150,11 +150,15 @@ void Alist::withdraw(Data *data) // withdraw在Alist里的元素
             index = i;
             break;
         }
-        else
+        else if (i == numitems - 1)
+        {
             cout << "wrong data: not in Alist\n";
+            return;
+        }
     }
     remove(index);
-    cout << "Finish withdraw person from Alist!\n";
+    cout << "Withdrawn Person: " << data->name;
+    cout << "There are " << numitems << " people remained in alist.\n";
 }
 
 void Alist::clear()
