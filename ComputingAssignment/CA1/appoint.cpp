@@ -90,6 +90,15 @@ void Hlist::removeh(int index)
     tot_capacity -= array[index]->capacity;
 }
 
+void Hlist::treat_done()
+{
+    for (int i = 0; i < numitems; i++)
+    {
+        array[i]->numpatient = 0;
+    }
+    cout << "Treated done.\n";
+}
+
 Alist::Alist() : List(20) {}
 
 void Alist::appoint(Heap *H, Hlist hlist)
