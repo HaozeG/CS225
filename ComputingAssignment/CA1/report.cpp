@@ -11,20 +11,25 @@ using namespace std;
 
 void Report_system::Open_file(Data *head, long timeoffset, int length)
 {
-    char choose;
+    string choose;
     int your_choice = 0;
     ofstream outfile;
     stringstream ss;
+
+    const char *one = "1";
+    const char *two = "2";
+    const char *three = "3";
 
     cout << "A week report is generating..." << endl;
     do
     {
         cout << "Please choose the order: 1 for name, 2 for profession, 3 for age" << endl;
         cin >> choose;
-        ss << choose;
-        ss >> your_choice;
-        ss.clear();
-    } while (1 != your_choice && 2 != your_choice && 3 != your_choice);
+    } while (0 != strcmp(one, choose.c_str())  && 0 != strcmp(two, choose.c_str()) && 0 != strcmp(three, choose.c_str()));
+
+    ss << choose;
+    ss >> your_choice;
+    ss.clear();
 
     outfile.open("./report/Week.txt", ios::out | ios::trunc);
     if (!outfile.is_open()){
