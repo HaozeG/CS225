@@ -45,9 +45,9 @@ public:
     bool treated = false;
     bool twice = false;
 
-    long timestamp; // YY,MM,DD,HH,MM,SS
-    char* id;  //TODO:再说
-    char* birth; // format: YYMMDD
+    long timestamp; // a time offset
+    char* id;
+    char* birth;    // format: YYMMDD
     int risk;
 
     char* name;
@@ -86,13 +86,13 @@ public:
     char str[60];
 };
 
-class Central
-{
-public:
-    Central();
-    void Selection(); // select people with the higest priority
-    void Report();
-};
+// class Central
+// {
+// public:
+//     Central();
+//     void Selection(); // select people with the higest priority
+//     void Report();
+// };
 
 
 
