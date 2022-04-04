@@ -61,18 +61,18 @@ void Report_system::Month(Data *head, long timeoffset)
 {
     ofstream outfile;
     Data *temp = head;
-    int *keep = new int[6];
+    int *keep = new int[7];
     // 0: How many people have registered?
     // 1: How many of them are waiting?
     // 2: How many are waiting in total?
-    // 3: How many treatment appointments have been made?
     // 4: Average waiting time
     // 5: How many people had withdrew their registration?
+    // 6: How many treatment appointments have been made?
 
-    for (int i = 0; i <= 5; i++){keep[i] = 0;}
+    for (int i = 0; i <= 6; i++){keep[i] = 0;}
     while (NULL != temp)
     {
-        if (!temp->withdrawn){keep[0] += 1;}
+        keep[0] += 1;
         if(temp->appo && !temp->treated && !temp->withdrawn){keep[1] += 1;}
         if(!temp->appo && !temp->withdrawn){keep[2] += 1;}
         if (temp->treated)
@@ -81,6 +81,9 @@ void Report_system::Month(Data *head, long timeoffset)
             keep[4] += (temp->appointment->time - temp->timestamp);
         }
         if(temp->withdrawn){keep[5] += 1;}
+        if (temp->appo || temp->withdrawn){
+            keep[6] += 1;
+        }
 
         temp = temp->next;
     }
@@ -92,7 +95,7 @@ void Report_system::Month(Data *head, long timeoffset)
     outfile << "How many people have registered? " << keep[0] << endl;
     outfile << "How many of them are waiting? " << keep[1] << endl;
     outfile << "How many are waiting in total? " << keep[2] << endl;
-    outfile << "How many treatment appointments have been made? " << keep[3] << endl;
+    outfile << "How many treatment appointments have been made? " << keep[6] << endl;
     if(0 ==keep[3])
     {
         outfile << "Average waiting time: " << "0 days 0 hours." << endl;
@@ -101,7 +104,7 @@ void Report_system::Month(Data *head, long timeoffset)
     {
         outfile << "Average waiting time: " << floor( keep[4] / (24 * keep[3]) ) << " days " << (keep[4] / keep[3]) % 24 << " hours." << endl;
     }
-    outfile << "How many people had withdrew their registration?" << keep[5] << endl;
+    outfile << "How many people had withdrew their registration? " << keep[5] << endl;
     outfile << "_____________ENDING_____________" << endl;
 
     outfile.close();
@@ -288,7 +291,7 @@ Data *Report_system::Sorting(Data *head, int Choice_2, int length, int Choice)
         }
         break;
     }
-    
+
     switch (Choice)
     {
     case 1:
