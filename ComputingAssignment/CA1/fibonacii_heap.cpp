@@ -317,6 +317,7 @@ void Heap::delete_node(Node &node)
     new_data->profession = -1; // make sure it has the highest priority
     new_data->risk = 0;
     Data *origin_data = node.data; // preserve original data
+    node.data->node = nullptr;
     node.data = new_data;
 
     // call decrease and delete_min
@@ -325,6 +326,7 @@ void Heap::delete_node(Node &node)
     delete_highest();
     // keep the data unchanged
     delete new_data;
+
     cout << "Delete " << p->name << "\n";
 };
 
