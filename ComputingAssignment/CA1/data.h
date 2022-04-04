@@ -13,9 +13,9 @@ public:
 
     int addx;
     int addy;
-    char* phone;
-    char* WeChat;
-    char* email;
+    char *phone;
+    char *WeChat;
+    char *email;
 };
 
 class Appointment
@@ -24,8 +24,8 @@ public:
     Appointment();
 
     bool in_alist; // whether in Alist or not
-    long date;
-    long time;  // TODO: 和timestamp对应
+    // long date;
+    long time; // TODO: 和timestamp对应
     int hospital_id;
 };
 
@@ -46,11 +46,11 @@ public:
     bool twice = false;
 
     long timestamp; // a time offset
-    char* id;
-    char* birth;    // format: YYMMDD
+    char *id;
+    char *birth; // format: YYMMDD
     int risk;
 
-    char* name;
+    char *name;
     int profession; // I to VIII
     int age_group;
     int priority;
@@ -66,11 +66,11 @@ public:
     queue();
     ~queue();
 
-    void push(Data* person);
-    Data* pop();
+    void push(Data *person);
+    Data *pop();
     int num = 0;
-    Data* head = NULL;
-    Data* tail = NULL;
+    Data *head = NULL;
+    Data *tail = NULL;
 };
 
 class Local
@@ -79,10 +79,10 @@ public:
     Local();
     ~Local();
 
-    queue* Queue;
-    queue* update(int time);   // update to central
+    queue *Queue;
+    queue *update(int time); // update to central
     int registration();
-    int readfile(const char* filename);
+    int readfile(const char *filename);
     char str[60];
 };
 
@@ -93,7 +93,5 @@ public:
 //     void Selection(); // select people with the higest priority
 //     void Report();
 // };
-
-
 
 #endif

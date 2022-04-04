@@ -3,6 +3,7 @@
 #include <math.h>
 #include "appoint.h"
 #include "data.h"
+#include "timeoffset.h"
 using std::cin;
 using std::cout;
 
@@ -127,8 +128,6 @@ void Alist::appoint(Heap *H, Hlist hlist)
                 min_dist = dist;
                 min_id = i;
             }
-            cout << "dist = " << dist << "\n";
-            cout << "min_dist = " << min_dist << "\n";
         }
     }
 
@@ -140,9 +139,8 @@ void Alist::appoint(Heap *H, Hlist hlist)
     data->appo = true;
     data->appointment->in_alist = true;
     data->appointment->hospital_id = min_id;
-    data->appointment->time = 8 + 10 * (hlist.array[min_id]->numpatient / hlist.array[min_id]->capacity); // 从8到18点分配一个整数时间
-    // data->appointment->date =
-    // TODO: 有关时间，date? time?
+    data->appointment->time = timeoffset + 24 + 8 + 10 * (hlist.array[min_id]->numpatient / hlist.array[min_id]->capacity); // 从8到18点分配一个整数时间
+
     cout << "Finish appoint one person! Id = " << data->id << "\n";
 }
 
@@ -172,6 +170,11 @@ void Alist::withdraw(Data *data) // withdraw在Alist里的元素
 
 void Alist::clear()
 {
+    for (int i = 0; i < numitems; i++)
+    {
+        array[i]->treated = true;
+    }
+
     numitems = 0;
     cout << "Alist cleared!\n";
 }
