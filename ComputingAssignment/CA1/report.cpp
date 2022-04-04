@@ -214,26 +214,8 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             if (0 == paste->age_group)
             {
                 paste = paste->next;
-                continue;
             }
-            outfile << "\n"
-                    << paste->age_group << endl;
-            outfile << "Name: " << paste->name;
-            outfile << "Profession: " << paste->profession << endl;
-            outfile << "Risk status: " << paste->risk << endl;
-            if (treating)
-            {
-                TIME = paste->appointment->time - paste->timestamp;
-                outfile << "Total waiting time: " << TIME << endl;
-            }
-            else
-            {
-                TIME = timeoffset - paste->timestamp;
-                outfile << "Waiting time till now: " << TIME << endl;
-            }
-            paste = paste->next;
         }
-        break;
 
     default:
         cout << "It seems that you did not choose a proper order." << endl;
