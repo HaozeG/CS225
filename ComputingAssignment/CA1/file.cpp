@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <iostream>
 #include <cstdlib>
+#include <stdlib.h>
+#include <cstring>
+// #include <time.h>
 #include "data.h"
-#include<stdlib.h>
+#include "timeoffset.h"
 using std::cout;
 using std::cin;
-#include <cstring>
-#include <time.h>
 
 // identification number; name; address; phone; WeChat; email; profession; date of birth;
 // risk status; timestamp; age group;
@@ -54,14 +55,15 @@ Data::Data()
     risk = 0;
     next = NULL;
     priority = 0;
+    cout << "Create data\n";
 }
 
 Data::~Data()
 {
-    delete appointment;
-    delete contact;
-    delete id;
-    delete birth;
+    // delete appointment;
+    // delete contact;
+    // delete id;
+    // delete birth;
     cout << "Delete data\n";
 }
 
@@ -214,7 +216,8 @@ int Local::readfile(const char* filename)
             int a = sizeof(str);
             str[a-1]='\0';
             a = atoi(str);
-            person->timestamp = a;
+            person->timestamp = a - (timestart*100) + 24 * (a/100 - timestart) + 30 * 24 * (a/10000 - timestart/100);
+            cout << person->timestamp;
         }
         else return 0;
         if( fgets (str, 60, fp)!=NULL )
