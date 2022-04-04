@@ -41,7 +41,7 @@ int main()
             cout << "3: present priority letter\n";
             cout << "4: withdraw while waiting\n";
             cout << "5: make appointments\n";
-            cout << "6: manual reporting\n";
+            cout << "6: manual produce weekly report\n";
             cout << "7: GO TO NEXT DAY\n";
             cout << "8: print information about heap\n";
             cin >> op;
@@ -83,7 +83,7 @@ int main()
             }
             case 2:
             {
-                // TODO: 二次进堆
+                // TODO: 二次进堆后的withdraw
                 int i = 0;
                 Data *temp = nullptr;
                 while (i < 2)
@@ -163,7 +163,7 @@ int main()
                 int ddl = 0;
                 cout << "Enter an ID to present priority letter:\n";
                 cin >> a;
-                cout << "Enter an deadline (Format: YYYYMMDD):\n";
+                cout << "Enter a deadline (Format: YYYYMMDD):\n";
                 cin >> str;
                 str[8] = '\0';
                 ddl = (atoi(str) - timestart) * 24;
@@ -295,6 +295,8 @@ int main()
             }
             case 6:
             {
+                Report_system report;
+                report.Open_file(q->head, timeoffset, q->num);
                 break;
             }
             case 7:
@@ -303,6 +305,16 @@ int main()
                 alist.clear();
 
                 timeoffset += 24; // +24h
+                if ((timeoffset/24) % 7 == 0 && 0 != timeoffset)
+                {
+                    Report_system report;
+                    report.Open_file(q->head, timeoffset, q->num);
+                }
+                if ((timeoffset/24) % 30 == 0 && 0 != timeoffset)
+                {
+                    Report_system report;
+                    report.Month(q->head, timeoffset);
+                }
                 break;
             }
             case 8:
