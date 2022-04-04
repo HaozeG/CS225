@@ -55,10 +55,10 @@ Type in `5`, this system will make appointments for queueing people.
 3. Our Report system uses data from a single-linked list that goes through all nodes.
 4. By using sort(), we can order the reporting order as you wish.
 
-
 #### manual
 
 Type in `6`, follow the instruction to produce report.
+*Note: don't do this on the first day!*
 
 #### automatic
 
