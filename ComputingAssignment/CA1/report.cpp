@@ -2,7 +2,6 @@
 #include "data.h"
 #include <typeinfo>
 #include <algorithm>
-
 #include <cstddef>
 #include <cstring>
 #include <cmath>
