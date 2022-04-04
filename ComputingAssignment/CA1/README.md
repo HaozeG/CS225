@@ -2,7 +2,7 @@
 
 This project is a system that includes **registration, queueing and reporting**.
 
-The core data structure is a Fibonacii heap to arrange patients based on different priorities. Data of patients are stored as a single linked list.
+The core data structure is a Fibonacii heap to arrange patients based on different priorities. Data of patients are stored as a single-linked list.
 
 # Instruction
 ## To compile
@@ -51,14 +51,14 @@ Type in `5`, this system will make appointments for queueing people.
 ### reporting
 
 1. Reports are produced in *report* folder.
-2. Open_file() is used to produce a week report, while Month() is used to produce a month report. All other functions in Report.h need not use in main function.
+2. `Open_file()` is used to produce a week report, while `Month()` is used to produce a month report. All other functions in Report.h need not use in main function.
 3. Our Report system uses data from a single-linked list that goes through all nodes.
-4.By using sort(), we can order the reporting order as you wish.
+4. By using sort(), we can order the reporting order as you wish.
 
 
 #### manual
 
-
+Type in `6`, follow the instruction to produce report.
 
 #### automatic
 
