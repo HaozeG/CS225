@@ -119,8 +119,7 @@ void Alist::appoint(Heap *H, Hlist hlist)
     {
         if (hlist.array[i]->capacity > hlist.array[i]->numpatient)
         {
-            cout << "hospital" << i << " address: addx = " << hlist.array[i]->addx << " addy = " << hlist.array[i]->addy << "\n";
-            cout << "person address: addx = " << data->contact->addx << " addy = " << data->contact->addy << "\n";
+
             dist = (int)sqrt(pow((hlist.array[i]->addx - data->contact->addx), 2) + pow((hlist.array[i]->addy - data->contact->addy), 2));
 
             if (dist < min_dist)
@@ -131,15 +130,18 @@ void Alist::appoint(Heap *H, Hlist hlist)
         }
     }
 
+    cout << "hospital id = " << min_id << "\n";
+    cout << "hospital" << min_id << " address: addx = " << hlist.array[min_id]->addx << " addy = " << hlist.array[min_id]->addy << "\n";
+    cout << "person address: addx = " << data->contact->addx << " addy = " << data->contact->addy << "\n";
     // change hospital information
     hlist.array[min_id]->numpatient++;
-    cout << "hospital id = " << min_id << "\n";
 
     // change person data information
     data->appo = true;
     data->appointment->in_alist = true;
     data->appointment->hospital_id = min_id;
-    data->appointment->time = timeoffset + 24 + 8 + 10 * (hlist.array[min_id]->numpatient / hlist.array[min_id]->capacity); // 从8到18点分配一个整数时间
+    data->appointment->time = timeoffset + 24 + 8 + 10 * ((hlist.array[min_id]->numpatient - 1) / hlist.array[min_id]->capacity); // 从8到18点分配一个整数时间
+    cout << "treated time = " << data->appointment->time << "\n";
 
     cout << "Finish appoint one person! Id = " << data->id << "\n";
 }
