@@ -217,7 +217,6 @@ int Local::readfile(const char* filename)
             str[a-1]='\0';
             a = atoi(str);
             person->timestamp = a - (timestart*100) + 24 * (a/100 - timestart) + 30 * 24 * (a/10000 - timestart/100);
-            cout << person->timestamp;
         }
         else return 0;
         if( fgets (str, 60, fp)!=NULL )
