@@ -27,7 +27,7 @@ int main()
     {
         cout << "---NEW DAY---\n";
         // 输出今天是几月几日
-        cout << "TODAY IS " << timestart + int(timeoffset/24) << "\n";
+        cout << "TODAY IS " << timestart + int(int(timeoffset/24)/30)*100 + (int(timeoffset/24) - 30 * int(int(timeoffset/24)/30)) << "\n";
         cout << "-------------\n";
         do
         {
@@ -80,7 +80,6 @@ int main()
             }
             case 2:
             {
-                // TODO: 二次进堆后的withdraw
                 int i = 0;
                 Data *temp = nullptr;
                 while (i < 2)
@@ -183,7 +182,7 @@ int main()
                     {
                         if (strcmp(pNode->id,a)==0)
                         {
-    
+
                             flag = true;
                             break;
                         }
@@ -223,7 +222,7 @@ int main()
                     while (pNode->next!=nullptr)
                     {
                         if (strcmp(pNode->id,a)==0)
-                        { 
+                        {
                             flag = true;
                             break;
                         }
@@ -273,13 +272,13 @@ int main()
                     }
                     p = p->next;
                 }
-                if (nullptr != h->highest)
-                    cout << h->highest->data->name << "\n";
-                else
-                {
-                    cout << "Heap already empty!\n";
-                    break;
-                }
+                // if (nullptr != h->highest)
+                //     cout << h->highest->data->name << "\n";
+                // else
+                // {
+                //     cout << "Heap already empty!\n";
+                //     break;
+                // }
 
                 // input hospital information
                 cout << "tot_capacity = " << hlist.tot_capacity << "\n";
