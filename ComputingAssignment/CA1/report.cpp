@@ -97,7 +97,12 @@ void Report_system::Month(Data *head, long timeoffset)
     }
     keep[3] = keep[0] - keep[2] + keep[1];
     // all_waiting_number = Regi_number - all_appointment_number + withdraw_number;
-    keep[5] = keep[5] / 1;
+    if (keep[4]==0)
+    {
+        keep[5] = 0;
+    }
+    else
+        keep[5] = keep[5] / keep[4];
     // Waiting_time = keep[5];
 
     outfile.open("./report/Month.txt", ios::out | ios::trunc);
