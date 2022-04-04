@@ -53,7 +53,7 @@ Data::Data()
     birth = new char[8];
     age_group = 0;
     risk = 0;
-    next = NULL;
+    next = nullptr;
     priority = 0;
     cout << "Create data\n";
 }
@@ -70,8 +70,8 @@ Data::~Data()
 queue::queue()
 {
     num = 0;
-    head = NULL;
-    tail = NULL;
+    head = nullptr;
+    tail = nullptr;
     cout << "Create queue\n";
 }
 
@@ -102,13 +102,13 @@ Data* queue::pop()
     if (num == 0)
     {
         cout<<"queue is empty now!"<<endl;
-        return NULL;
+        return nullptr;
     }
     num -= 1;
     Data* element = head;
     head = head->next;
-    tail = (0 == num ? NULL : tail);
-    element->next = NULL;
+    tail = (0 == num ? nullptr : tail);
+    element->next = nullptr;
     return element;
 }
 
@@ -154,7 +154,7 @@ int Local::readfile(const char* filename)
 {
     FILE *fp;
     fp = fopen(filename , "r");
-    if(fp == NULL) {
+    if(fp == nullptr) {
         perror("打开文件时发生错误");
         return(-1);
     }
@@ -164,12 +164,12 @@ int Local::readfile(const char* filename)
     for (; i>0; i--)
     {
         Data* person = new Data();
-        if( fgets (person->id, 60, fp)!=NULL )
+        if( fgets (person->id, 60, fp)!=nullptr )
             person->id[10]='\0';
         else return 0;
-        if( fgets (person->name, 60, fp)==NULL )
+        if( fgets (person->name, 60, fp)==nullptr )
             return 0;// cout<<person->name;
-        if( fgets (str, 60, fp)!=NULL )
+        if( fgets (str, 60, fp)!=nullptr )
         {
             int a = sizeof(str);
             str[a-1]='\0';
@@ -178,7 +178,7 @@ int Local::readfile(const char* filename)
             // cout<<person->contact->addx<<"\n";
         }
         else return 0;
-        if( fgets (str, 60, fp)!=NULL )
+        if( fgets (str, 60, fp)!=nullptr )
         {
             int a = sizeof(str);
             str[a-1]='\0';
@@ -187,31 +187,31 @@ int Local::readfile(const char* filename)
             // cout<<person->contact->addy<<"\n";
         }
         else return 0;
-        if( fgets (person->contact->phone, 60, fp)!=NULL )
+        if( fgets (person->contact->phone, 60, fp)!=nullptr )
             person->contact->phone[11]='\0';
         else return 0;
-        if( fgets (person->contact->WeChat, 60, fp)==NULL )
+        if( fgets (person->contact->WeChat, 60, fp)==nullptr )
             return 0;
-        if( fgets (person->contact->email, 60, fp)==NULL )
+        if( fgets (person->contact->email, 60, fp)==nullptr )
             return 0;
-        if( fgets (str, 60, fp)!=NULL )
+        if( fgets (str, 60, fp)!=nullptr )
         {
             str[1]='\0';
             int a = atoi(str);
             person->profession = a;
         }
         else return 0;
-        if( fgets (person->birth, 60, fp)!=NULL )
+        if( fgets (person->birth, 60, fp)!=nullptr )
             person->birth[8]='\0';
         else return 0;
-        if( fgets (str, 60, fp)!=NULL )
+        if( fgets (str, 60, fp)!=nullptr )
         {
             str[1]='\0';
             int a = atoi(str);
             person->risk = a;
         }
         else return 0;
-        if( fgets (str, 60, fp)!=NULL )
+        if( fgets (str, 60, fp)!=nullptr )
         {
             int a = sizeof(str);
             str[a-1]='\0';
@@ -219,14 +219,14 @@ int Local::readfile(const char* filename)
             person->timestamp = a - (timestart*100) + 24 * (a/100 - timestart) + 30 * 24 * (a/10000 - timestart/100);
         }
         else return 0;
-        if( fgets (str, 60, fp)!=NULL )
+        if( fgets (str, 60, fp)!=nullptr )
         {
             str[1]='\0';
             int a = atoi(str);
             person->age_group = a;
         }
         else return 0;
-        if( fgets (str, 60, fp)!=NULL )
+        if( fgets (str, 60, fp)!=nullptr )
         {
             int a = sizeof(str);
             str[a-1]='\0';

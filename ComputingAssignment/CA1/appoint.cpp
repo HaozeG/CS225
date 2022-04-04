@@ -105,7 +105,7 @@ Alist::Alist() : List(20) {}
 void Alist::appoint(Heap *H, Hlist hlist)
 {
     Data *data = H->get_highest();
-    if (data != NULL)
+    if (data != nullptr)
         cout << data->name << "\n";
 
     // add to Alist

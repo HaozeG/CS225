@@ -76,7 +76,7 @@ void Report_system::Month(Data *head, long timeoffset)
     // 6: How many treatment appointments have been made?
 
     for (int i = 0; i <= 6; i++){keep[i] = 0;}
-    while (NULL != temp)
+    while (nullptr != temp)
     {
         keep[0] += 1;
         if(temp->appo && !temp->treated && !temp->withdrawn){keep[1] += 1;}
