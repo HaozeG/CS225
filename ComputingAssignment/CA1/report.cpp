@@ -134,7 +134,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
 
             while (nullptr != paste){
                 if (0 == paste->age_group){paste = paste->next; continue;}
-                outfile << "\n" << paste->profession << endl;
+                outfile << "\n" << "Profession: " << paste->profession << endl;
                 outfile << "Name: "  << paste->name;
                 outfile << "Age: "  << paste->age_group << endl;
                 outfile << "Risk status: "  << paste->risk << endl;
@@ -143,7 +143,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
                     outfile << "Total waiting time: "  << TIME << endl;
                 }else{
                     TIME = timeoffset - paste->timestamp;
-                    outfile << "Waiting time till now: "  << TIME << endl;
+                    outfile << "Waiting time till now: " << TIME << endl;
                 }
                 paste = paste->next;
             }
@@ -154,7 +154,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
 
             while (nullptr != paste){
                 if (0 == paste->age_group){paste = paste->next; continue;}
-                outfile << "\n" << paste->age_group << endl;
+                outfile << "\n" << "Age group: " << paste->age_group << endl;
                 outfile <<"Name: "  << paste->name;
                 outfile <<"Profession: "  << paste->profession << endl;
                 outfile <<"Risk status: "  << paste->risk << endl;
