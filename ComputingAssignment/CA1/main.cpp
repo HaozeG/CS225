@@ -208,6 +208,11 @@ int main()
 
                 // search queue to find data with certain id
                 Data *pNode = q->head;
+                if (pNode==nullptr)
+                {
+                    cout << "data not found\n";
+                    break;
+                }
                 if (strcmp(q->tail->id,a)==0)
                 {
                     pNode = q->tail;
