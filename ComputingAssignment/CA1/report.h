@@ -5,30 +5,21 @@
 #include <cstdlib>
 #include <string>
 #include <string.h>
-#include <runetype.h>
 #include <sstream>
 #include <iostream>
 #include <fstream>
 #include "data.h"
-
 using namespace std;
-
 class Report_system
 {
 public:
-
-    long Regi_number = 0;
-    long all_waiting_number = 0;
-    long all_appointment_number = 0;
-    long Waiting_time = 0;
-    long withdraw_number = 0;
-
     void Open_file(Data *head, long timeoffset, int length);
     void Week(Data *head, int Choice, int Choice_2, long timeoffset, int length, bool treating);
     void Month(Data *head, long timeoffset);
 
-    Data *Sorting(Data *head, int number, int length, bool NAME);
-    static bool cmp(Data a, Data b);
+    Data *Sorting(Data *head, int Choice_2, int length, int Choice);
+    static bool cmp_age(Data a, Data b);
+    static bool cmp_profession(Data a, Data b);
     static bool cmp_name(Data a, Data b);
 };
 #endif
