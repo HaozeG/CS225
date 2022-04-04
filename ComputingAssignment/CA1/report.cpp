@@ -65,6 +65,7 @@ void Report_system::Month(Data *head, long timeoffset)
     // 0: How many people have registered?
     // 1: How many of them are waiting?
     // 2: How many are waiting in total?
+    // 3: How many people had been treated?
     // 4: Average waiting time
     // 5: How many people had withdrew their registration?
     // 6: How many treatment appointments have been made?
@@ -81,9 +82,7 @@ void Report_system::Month(Data *head, long timeoffset)
             keep[4] += (temp->appointment->time - temp->timestamp);
         }
         if(temp->withdrawn){keep[5] += 1;}
-        if (temp->appo || temp->withdrawn){
-            keep[6] += 1;
-        }
+        if (temp->appo || temp->withdrawn){keep[6] += 1;}
 
         temp = temp->next;
     }
@@ -139,12 +138,12 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             if (treating)
             {
                 TIME = paste->appointment->time - paste->timestamp;
-                outfile << "Waiting time from registration to treatment: " << TIME << endl;
+                outfile << "Waiting time from registration to treatment: " << floor(TIME / 24) << " days and " << TIME % 24 << " hours." << endl;
             }
             else
             {
                 TIME = timeoffset - paste->timestamp;
-                outfile << "Waiting time until now: " << TIME << endl;
+                outfile << "Waiting time until now: " << floor(TIME / 24) << " days and " << TIME % 24 << " hours." << endl;
             }
             paste = paste->next;
         }
@@ -168,12 +167,12 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             if (treating)
             {
                 TIME = paste->appointment->time - paste->timestamp;
-                outfile << "Waiting time from registration to treatment: " << TIME << endl;
+                outfile << "Waiting time from registration to treatment: " << floor(TIME / 24) << " days and " << TIME % 24 << " hours." << endl;
             }
             else
             {
                 TIME = timeoffset - paste->timestamp;
-                outfile << "Waiting time until now: " << TIME << endl;
+                outfile << "Waiting time until now: " << floor(TIME / 24) << " days and " << TIME % 24 << " hours." << endl;
             }
             paste = paste->next;
         }
@@ -197,12 +196,12 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             if (treating)
             {
                 TIME = paste->appointment->time - paste->timestamp;
-                outfile << "Waiting time from registration to treatment: " << TIME << endl;
+                outfile << "Waiting time from registration to treatment: " << floor(TIME / 24) << " days and " << TIME % 24 << " hours." << endl;
             }
             else
             {
                 TIME = timeoffset - paste->timestamp;
-                outfile << "Waiting time until now: " << TIME << endl;
+                outfile << "Waiting time until now: " << floor(TIME / 24) << " days and " << TIME % 24 << " hours." << endl;
             }
             paste = paste->next;
         }
