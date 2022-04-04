@@ -1,8 +1,5 @@
 #ifndef data_h
 #define data_h
-#include <time.h>
-#include <stdint.h>
-#include <stdio.h>
 using namespace std;
 
 class Contact

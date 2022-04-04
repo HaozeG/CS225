@@ -1,8 +1,5 @@
-#include <cstdio>
 #include <stdio.h>
 #include <iostream>
-#include <time.h>
-#include <string.h>
 #include "timeoffset.h"
 #include "fibonacii_heap.h"
 #include "data.h"
