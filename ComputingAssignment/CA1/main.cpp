@@ -174,7 +174,6 @@ int main()
                 }
                 if (strcmp(q->tail->id,a)==0)
                 {
-                    cout << "find the data\n";
                     pNode = q->tail;
                     flag = true;
                 }
@@ -184,7 +183,7 @@ int main()
                     {
                         if (strcmp(pNode->id,a)==0)
                         {
-                            cout << "find the data\n";
+    
                             flag = true;
                             break;
                         }
@@ -211,7 +210,6 @@ int main()
                 Data *pNode = q->head;
                 if (strcmp(q->tail->id,a)==0)
                 {
-                    cout << "find the data\n";
                     pNode = q->tail;
                     flag = true;
                 }
@@ -220,8 +218,7 @@ int main()
                     while (pNode->next!=nullptr)
                     {
                         if (strcmp(pNode->id,a)==0)
-                        {
-                            cout << "find the data\n";
+                        { 
                             flag = true;
                             break;
                         }
@@ -237,11 +234,13 @@ int main()
                         alist.withdraw(pNode);
                         pNode->appo = false;
                     }
-                    else
+                    else if(pNode->node!=nullptr)
                     {
                         pNode->withdrawn = true;
                         h->delete_node(*(pNode->node));
                     }
+                    else
+                        cout << "data not found\n";
                 }
                 else
                     cout << "data not found\n";
