@@ -38,7 +38,7 @@ public:
     Hlist();
     void addh(Hospital *value); // add a hospital to hlist
     void removeh(int index);    // remove a hospital from hlist
-    void treat_done();          // clear numpatients in each hospital
+    void treat_done();          // clear numpatients in each hospital.
 
     int tot_capacity;
 };
@@ -50,7 +50,7 @@ public:
 
     void appoint(Heap *H, Hlist hlist); // appoint one person with highest priority
     void withdraw(Data *data);          // withdraw a person from alist
-    void clear();                       // clear alist
+    void clear();                       // set treated = true and clear alist.
     // const int INFINITY = 10000;
 };
 
