@@ -7,6 +7,7 @@
 #include "fibonacii_heap.h"
 #include "data.h"
 #include "appoint.h"
+#include "report.h"
 using std::cin;
 using std::cout;
 long timeoffset = 0;
@@ -20,7 +21,6 @@ int main()
     local[1] = new Local; // cout << "Create new local"
     Heap *h = new Heap;
     queue *q = new queue;   // central
-    // TODO: queue的析构要改（单链表）
     Alist alist;
     Hlist hlist;
     Hospital hospital1(100, 100, 1), hospital2(500, 500, 1);
@@ -30,12 +30,12 @@ int main()
     {
         cout << "---NEW DAY---\n";
         // 输出今天是几月几日
-        cout << "Today is " << timestart + int(timeoffset/24) << "\n";
+        cout << "TODAY IS " << timestart + int(timeoffset/24) << "\n";
         cout << "-------------\n";
         do
         {
             cout << "Choose an operation:\n";
-            cout << "0: quit\n";
+            cout << "0: QUIT\n";
             cout << "1: do registration to local\n";
             cout << "2: update registry to central\n";
             cout << "3: present priority letter\n";
@@ -91,7 +91,6 @@ int main()
                     while (local[i]->Queue->num != 0)
                     {
                         temp = local[i]->Queue->pop();
-
                         if (0 == q->num)
                         {
                             q->push(temp);
@@ -107,6 +106,10 @@ int main()
                             // check the first data
                             if (!strcmp(d_prev->id, temp->id) && (false == d_prev->appo))
                             {
+                                if (true == d_prev->withdrawn)
+                                    d_prev->twice = true;
+                                temp->priority = d_prev->priority;
+                                temp->withdrawn = d_prev->withdrawn;
                                 temp->next = d;
                                 q->head = temp;
                                 // cout << "update first one\n";
@@ -121,6 +124,10 @@ int main()
                             {
                                 if (!strcmp(d->id, temp->id) && (false == d->appo))
                                 {
+                                    if (true == d_prev->withdrawn)
+                                        d_prev->twice = true;
+                                    temp->priority = d_prev->priority;
+                                    temp->withdrawn = d_prev->withdrawn;
                                     d_prev->next = temp;
                                     temp->next = d->next;
                                     // cout << d->node->data << "\n";
@@ -144,7 +151,7 @@ int main()
                     }
                     i++;
                 }
-                cout << "Collect information from local registry\n";
+                cout << "Collect information from all local registries\n";
                 break;
             }
             case 3:
@@ -239,7 +246,7 @@ int main()
                     }
                 }
                 else
-                    cout << "ID not found\n";
+                    cout << "data not found\n";
 
                 break;
             }
@@ -268,14 +275,11 @@ int main()
                     cout << h->highest->data->name << "\n";
                 else
                 {
-                    cout << "Already empty!\n";
+                    cout << "Heap already empty!\n";
                     break;
                 }
 
                 // input hospital information
-                // TODO: 一天可以appoint多次
-
-
                 cout << "tot_capacity = " << hlist.tot_capacity << "\n";
 
                 bool available = false;
@@ -306,19 +310,19 @@ int main()
                 // print heap
                 if (nullptr == h->highest)
                 {
-                    cout << "heap empty\n";
+                    cout << "Heap already empty!\n";
                     break;
                 }
                 Node *p = h->highest->left;
                 // cout << p->left->data->name << "\n";
                 // cout << p->data->name << "\n";
                 // cout << h->highest->right->data->name << "\n";
-                cout <<  "highest:\n" << h->highest->data->name << "\n";
-                cout << "names in root list:\n";
+                cout << "Name of highest:\n" << h->highest->data->name << "\n";
+                cout << "Names in root list:\n";
                 int i = 0;
                 while (p != h->highest)
                 {
-                    cout << p->data->name << "\n";
+                    cout << p->data->name << "->\n";
                     p = p->left;
                     i++;
                     if (i>10)
@@ -331,6 +335,7 @@ int main()
     }
     while (op != 0);
     return 0;
+}
 
     // above is the basic structure for main program
 
@@ -353,42 +358,3 @@ int main()
     手动开启（每周一个）报告，给选项，生成一个report文件
     手动开启每月报告
     */
-
-    /*
-    // Data a;
-    // printf(a.id[0]);
-    // return 0;
-    char a[5] = "123\n";
-    a[3] = '\0';
-    cout << a;
-
-
-
-    // appoint
-    Alist alist;
-    Hlist hlist;
-    Hospital hospital1(114, 514, 1000), hospital2(100, 200, 500);
-    hlist.append(&hospital1);
-    hlist.append(&hospital2);
-
-    bool available = false;
-    available = (alist.numitems < hlist.tot_capacity ? true : false);
-
-    while (available)
-    {
-        alist.appoint(h, hlist);
-    }
-
-
-
-    // withdraw
-    Data *inputdata;
-
-    if (inputdata->appointment->in_alist)
-        alist.withdraw(inputdata);
-    else
-        cout << "0\n";
-    //
-    // h->delete_node(?)
-    */
-}
