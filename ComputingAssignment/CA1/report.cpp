@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstring>
+#include <cmath>
 #include "timeoffset.h"
 #include <new>
 using namespace std;
@@ -26,108 +27,87 @@ void Report_system::Open_file(Data *head, long timeoffset, int length)
     } while (1 != your_choice && 2 != your_choice && 3 != your_choice);
 
     outfile.open("./report/Week.txt", ios::out | ios::trunc);
-    if (!outfile.is_open())
-    {
+    if (!outfile.is_open()){
         cout << "Error opening file" << endl;
         return;
     }
 
-    outfile << "————————————WEEK REPORT————————————\n"
-            << endl;
-    //已经被治疗的人
-    // data->treated = true
-    outfile << "-----people who has been treated-----" << endl;
+    outfile << "————————————WEEK REPORT————————————\n" << endl;
+    outfile << "-----People who have been treated-----" << endl;
     outfile.close();
+
     Week(head, your_choice, 4, timeoffset, length, true);
 
     outfile.open("./report/Week.txt", ios::out | ios::app);
-    //已经做了预约但是没有治疗的人，排除withdraw的人
-    // appo == true && treated == false && withdraw == false
-    outfile << "-----people who has an appointment but not treated yet-----" << endl;
+    outfile << "-----Registered people with a set appointment-----" << endl;
     outfile.close();
+
     Week(head, your_choice, 5, timeoffset, length, false);
 
     outfile.open("./report/Week.txt", ios::out | ios::app);
-    //做了登记但是没有预约也没有被治疗
-    // appo = false && treated = false 或 appo = true && withdraw = true
-    outfile << "-----people who has registered but done nothing else-----" << endl;
+    outfile << "-----Queueing people without a set appointment-----" << endl;
     outfile.close();
+
     Week(head, your_choice, 6, timeoffset, length, false);
 
     outfile.open("./report/Week.txt", ios::out | ios::app);
-    outfile << "Reporting has completed." << endl;
+    outfile << "REPORT ENDS" << endl;
     outfile.close();
+    return;
 }
+
+
 void Report_system::Month(Data *head, long timeoffset)
 {
     ofstream outfile;
-    int *keep = new int[6];
-    // 0:registered
-    // 1:withdraw
-    // 2:appo
-    // 3:waiting
-    // 4:treated
-    // 5:waiting time
-
-    for (int i = 0; i <= 5; i++)
-    {
-        keep[i] = 0;
-    }
     Data *temp = head;
+    int *keep = new int[6];
+    // 0: How many people have registered?
+    // 1: How many of them are waiting?
+    // 2: How many are waiting in total?
+    // 3: How many treatment appointments have been made?
+    // 4: Average waiting time
+    // 5: How many people had withdrew their registration?
+
+    for (int i = 0; i <= 5; i++){keep[i] = 0;}
     while (NULL != temp)
     {
-        // people registered
-        keep[0] += 1;
-        // people withdrawn once
-        if (temp->withdrawn)
-        {
-            keep[1] += 1;
-        }
-        // people ever made an appointment
-        if (temp->appo)
-        {
-            keep[2] += 1;
-        }
+        if (!temp->withdrawn){keep[0] += 1;}
+        if(temp->appo && !temp->treated && !temp->withdrawn){keep[1] += 1;}
+        if(!temp->appo && !temp->withdrawn){keep[2] += 1;}
         if (temp->treated)
         {
-            keep[4] += 1;
-            keep[5] += (temp->appointment->time - temp->timestamp);
+            keep[3] += 1;
+            keep[4] += (temp->appointment->time - temp->timestamp);
         }
+        if(temp->withdrawn){keep[5] += 1;}
+
         temp = temp->next;
     }
-    keep[3] = keep[0] - keep[2] + keep[1];
-    // all_waiting_number = Regi_number - all_appointment_number + withdraw_number;
-    if (keep[4]==0)
-    {
-        keep[5] = 0;
-    }
-    else
-        keep[5] = keep[5] / keep[4];
-    // Waiting_time = keep[5];
 
     outfile.open("./report/Month.txt", ios::out | ios::trunc);
-    if (!outfile.is_open())
-    {
-        cout << "Error opening file" << endl;
-        return;
-    }
+    if (!outfile.is_open()){cout << "Error opening file" << endl; return;}
 
     outfile << "MONTH REPORT" << endl;
-
-    outfile << "Till now, " << keep[0] << " have been registered." << endl;
-
-    outfile << keep[3] << " are waiting for an appointment." << endl;
-
-    outfile << keep[2] << " have received an appointment." << endl;
-
-    outfile << "There are " << keep[1] << " patients who had withdrawn their appointment." << endl;
-
-    long W = keep[5] / 24;
-    outfile << "The average waiting time is " << W << " days." << endl;
-
+    outfile << "How many people have registered? " << keep[0] << endl;
+    outfile << "How many of them are waiting? " << keep[1] << endl;
+    outfile << "How many are waiting in total? " << keep[2] << endl;
+    outfile << "How many treatment appointments have been made? " << keep[3] << endl;
+    if(0 ==keep[3])
+    {
+        outfile << "Average waiting time: " << "0 days 0 hours." << endl;
+    }
+    else
+    {
+        outfile << "Average waiting time: " << floor( keep[4] / (24 * keep[3]) ) << " days " << (keep[4] / keep[3]) % 24 << " hours." << endl;
+    }
+    outfile << "How many people had withdrew their registration?" << keep[5] << endl;
     outfile << "_____________ENDING_____________" << endl;
+
     outfile.close();
 }
+
+
 void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, int length, bool treating)
 {
     Data *paste;
@@ -135,11 +115,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
     ofstream outfile;
 
     outfile.open("./report/Week.txt", ios::out | ios::app);
-    if (!outfile.is_open())
-    {
-        cout << "Error in Week" << endl;
-        return;
-    }
+    if (!outfile.is_open()){cout << "Error in Week" << endl; return;}
 
     switch (Choice)
     {
@@ -153,20 +129,19 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
                 paste = paste->next;
                 continue;
             }
-            outfile << "\n"
-                    << paste->name;
+            outfile << "\n" << "Name: " << paste->name;
             outfile << "Profession: " << paste->profession << endl;
             outfile << "Age: " << paste->age_group << endl;
             outfile << "Risk status: " << paste->risk << endl;
             if (treating)
             {
                 TIME = paste->appointment->time - paste->timestamp;
-                outfile << "Total waiting time: " << TIME << endl;
+                outfile << "Waiting time from registration to treatment: " << TIME << endl;
             }
             else
             {
                 TIME = timeoffset - paste->timestamp;
-                outfile << "Waiting time till now: " << TIME << endl;
+                outfile << "Waiting time until now: " << TIME << endl;
             }
             paste = paste->next;
         }
@@ -190,12 +165,12 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             if (treating)
             {
                 TIME = paste->appointment->time - paste->timestamp;
-                outfile << "Total waiting time: " << TIME << endl;
+                outfile << "Waiting time from registration to treatment: " << TIME << endl;
             }
             else
             {
                 TIME = timeoffset - paste->timestamp;
-                outfile << "Waiting time till now: " << TIME << endl;
+                outfile << "Waiting time until now: " << TIME << endl;
             }
             paste = paste->next;
         }
@@ -219,12 +194,12 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             if (treating)
             {
                 TIME = paste->appointment->time - paste->timestamp;
-                outfile << "Total waiting time: " << TIME << endl;
+                outfile << "Waiting time from registration to treatment: " << TIME << endl;
             }
             else
             {
                 TIME = timeoffset - paste->timestamp;
-                outfile << "Waiting time till now: " << TIME << endl;
+                outfile << "Waiting time until now: " << TIME << endl;
             }
             paste = paste->next;
         }
@@ -243,15 +218,12 @@ Data *Report_system::Sorting(Data *head, int Choice_2, int length, int Choice)
 
     switch (Choice_2)
     {
+    //People who have been treated
     case 4:
         while (nullptr != ptr)
         {
-            if (!ptr->treated)
+            if (ptr->treated)
             {
-                ptr = ptr->next;
-                continue;
-            }
-
             temp[i].name = ptr->name;
             temp[i].age_group = ptr->age_group;
             temp[i].profession = ptr->profession;
@@ -261,18 +233,20 @@ Data *Report_system::Sorting(Data *head, int Choice_2, int length, int Choice)
 
             i += 1;
             ptr = ptr->next;
+            }
+            else
+            {
+                ptr = ptr->next;
+                continue;
+            }
         }
         break;
-
+    //Registered people with a set appointment
     case 5:
         while (nullptr != ptr)
         {
-            if (ptr->treated || !ptr->appo || (ptr->appo && ptr->withdrawn && !ptr->twice))
+            if(ptr->appo && !ptr->treated && !ptr->withdrawn)
             {
-                ptr = ptr->next;
-                continue;
-            }
-
             temp[i].name = ptr->name;
             temp[i].age_group = ptr->age_group;
             temp[i].profession = ptr->profession;
@@ -282,18 +256,20 @@ Data *Report_system::Sorting(Data *head, int Choice_2, int length, int Choice)
 
             i += 1;
             ptr = ptr->next;
+            }
+            else
+            {
+                ptr = ptr->next;
+                continue;
+            }
         }
         break;
-
+    //Queueing people without a set appointment
     case 6:
         while (nullptr != ptr)
         {
-            if ((ptr->appo && !ptr->withdrawn) || (ptr->appo && ptr->withdrawn && !ptr->twice) || ptr->treated)
+            if(!ptr->appo && !ptr->withdrawn)
             {
-                ptr = ptr->next;
-                continue;
-            }
-
             temp[i].name = ptr->name;
             temp[i].age_group = ptr->age_group;
             temp[i].profession = ptr->profession;
@@ -303,9 +279,16 @@ Data *Report_system::Sorting(Data *head, int Choice_2, int length, int Choice)
 
             i += 1;
             ptr = ptr->next;
+            }
+            else
+            {
+                ptr = ptr->next;
+                continue;
+            }
         }
         break;
     }
+    
     switch (Choice)
     {
     case 1:
