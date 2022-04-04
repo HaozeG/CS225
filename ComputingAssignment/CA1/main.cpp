@@ -41,7 +41,7 @@ int main()
             cout << "3: present priority letter\n";
             cout << "4: withdraw while waiting\n";
             cout << "5: make appointments\n";
-            cout << "6: manual produce weekly report\n";
+            cout << "6: manual reporting\n";
             cout << "7: GO TO NEXT DAY\n";
             cout << "8: print information about heap\n";
             cin >> op;
@@ -238,6 +238,7 @@ int main()
                     if (pNode->appointment->in_alist)
                     {
                         alist.withdraw(pNode);
+                        pNode->appo = false;
                     }
                     else
                     {
@@ -295,8 +296,27 @@ int main()
             }
             case 6:
             {
-                Report_system report;
-                report.Open_file(q->head, timeoffset, q->num);
+                char c = 'a';
+                do
+                {
+                    cout << "w for weekly report; m for monthly report\n";
+                    cin >> c;
+                }
+                while (c != 'w' && c != 'm');
+                switch (c)
+                {
+                    case ('w'):
+                    {
+                        Report_system report;
+                        report.Open_file(q->head, timeoffset, q->num);
+                        break;
+                    }
+                    case ('m'):
+                    {
+                        Report_system report;
+                        report.Month(q->head, timeoffset);
+                    }
+                }
                 break;
             }
             case 7:
