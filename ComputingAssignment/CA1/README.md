@@ -50,7 +50,11 @@ Type in `5`, this system will make appointments for queueing people.
 
 ### reporting
 
-Reports are produced in *report* folder.
+1. Reports are produced in *report* folder.
+2. Open_file() is used to produce a week report, while Month() is used to produce a month report. All other functions in Report.h need not use in main function.
+3. Our Report system uses data from a single-linked list that goes through all nodes.
+4.By using sort(), we can order the reporting order as you wish.
+
 
 #### manual
 
