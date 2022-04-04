@@ -97,15 +97,7 @@ void Report_system::Month(Data *head, long timeoffset)
     }
     keep[3] = keep[0] - keep[2] + keep[1];
     // all_waiting_number = Regi_number - all_appointment_number + withdraw_number;
-    if (0 == keep[4])
-    {
-        keep[5] = 0;
-    }
-    else
-    {
-        keep[5] = keep[5] / keep[4];
-    }
-
+    keep[5] = keep[5] / 1;
     // Waiting_time = keep[5];
 
     outfile.open("./report/Month.txt", ios::out | ios::trunc);
@@ -163,8 +155,6 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             outfile << "Risk status: " << paste->risk << endl;
             if (treating)
             {
-                cout << paste->appointment->time << "\n";
-                cout << paste->timestamp << "\n";
                 TIME = paste->appointment->time - paste->timestamp;
                 outfile << "Total waiting time: " << TIME << endl;
             }
@@ -188,7 +178,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
                 continue;
             }
             outfile << "\n"
-                    << paste->profession << endl;
+                    << "Profession: " << paste->profession << endl;
             outfile << "Name: " << paste->name;
             outfile << "Age: " << paste->age_group << endl;
             outfile << "Risk status: " << paste->risk << endl;
@@ -214,8 +204,26 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             if (0 == paste->age_group)
             {
                 paste = paste->next;
+                continue;
             }
+            outfile << "\n"
+                    << "Age group: " << paste->age_group << endl;
+            outfile << "Name: " << paste->name;
+            outfile << "Profession: " << paste->profession << endl;
+            outfile << "Risk status: " << paste->risk << endl;
+            if (treating)
+            {
+                TIME = paste->appointment->time - paste->timestamp;
+                outfile << "Total waiting time: " << TIME << endl;
+            }
+            else
+            {
+                TIME = timeoffset - paste->timestamp;
+                outfile << "Waiting time till now: " << TIME << endl;
+            }
+            paste = paste->next;
         }
+        break;
 
     default:
         cout << "It seems that you did not choose a proper order." << endl;
