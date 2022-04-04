@@ -9,6 +9,7 @@ class Contact
 {
 public:
     Contact();
+    ~Contact();
 
     int addx;
     int addy;
@@ -42,6 +43,7 @@ public:
     bool withdrawn = false;
     bool appo = false;
     bool treated = false;
+    bool twice = false;
 
     long timestamp; // YY,MM,DD,HH,MM,SS
     char* id;  //TODO:再说
