@@ -1,0 +1,7 @@
+MONTH REPORT
+Till now, 5 have been registered.
+3 are waiting for an appointment.
+3 have received an appointment.
+There are 1 patients who had withdrawn their appointment.
+The average waiting time is 0 days.
+_____________ENDING_____________
