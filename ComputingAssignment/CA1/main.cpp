@@ -12,7 +12,7 @@ long timestart = 20220401;
 
 int main()
 {
-    int op, f;
+    int op = -1;
     Local *local[2];
     local[0] = new Local; // cout << "Create new local"
     local[1] = new Local; // cout << "Create new local"
@@ -57,7 +57,8 @@ int main()
             }
             case 1:
             {
-                char* c = new char[30];
+                int f = -1;
+                char *c = new char[30];
                 cout << "Specify the name of the input file:\n";
                 cin >> c;
                 const char* filename = c;
