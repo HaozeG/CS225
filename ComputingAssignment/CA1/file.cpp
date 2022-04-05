@@ -44,6 +44,10 @@ Contact::~Contact()
 
 Data::Data()
 {
+    withdrawn = false;
+    appo = false;
+    treated = false;
+    twice = false;
     appointment = new Appointment();
     timestamp = 0;
     id = new char[10];
@@ -60,6 +64,7 @@ Data::Data()
 
 Data::~Data()
 {
+    // has some problems in copying the content of pointers
     // delete appointment;
     // delete contact;
     // delete id;
