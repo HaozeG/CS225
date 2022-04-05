@@ -97,8 +97,6 @@ int main()
                             // check if it has registered
                             Data *d_prev = q->head;
                             Data *d = d_prev->next;
-                            // cout << d_prev->name << "\n";
-                            // cout << temp->name << "\n";
                             // check the first data
                             if (!strcmp(d_prev->id, temp->id) && (false == d_prev->appo))
                             {
@@ -112,7 +110,6 @@ int main()
                                 d_prev->node->data = temp;
                                 temp->node = d_prev->node;
                                 delete d_prev;
-                                // cout << "test\n";
                                 h->update(*temp->node);
                                 continue;
                             }
