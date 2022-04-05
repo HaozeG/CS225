@@ -16,7 +16,7 @@ public:
     Node* right;
     int node_num;                     // number of nodes in subtree
     bool mark;
-    bool Written = false;
+    bool Written;
 };
 
 class Heap

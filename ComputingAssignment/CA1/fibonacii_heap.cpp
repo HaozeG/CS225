@@ -16,6 +16,7 @@ Node::Node()
     right = nullptr;
     node_num = 1;
     mark = false;
+    Written = false;
     cout << "Create one node!\n";
 };
 

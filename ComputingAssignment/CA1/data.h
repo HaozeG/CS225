@@ -65,9 +65,9 @@ public:
 
     void push(Data *person);
     Data *pop();
-    int num = 0;
-    Data *head = nullptr;
-    Data *tail = nullptr;
+    int num;
+    Data *head;
+    Data *tail;
 };
 
 class Local
