@@ -32,8 +32,6 @@ public:
     void delete_node(Node &node);   // delete certain node
     Data *get_highest();            // get the pointer to the data of the highest priority node
     bool higher_priority(Node &node1, Node &node2);
-    // TODO: 返回的数据类型
-    // TODO: print函数+test程序
 
 private:
     void delete_highest();

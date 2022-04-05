@@ -20,9 +20,9 @@ class Appointment
 public:
     Appointment();
 
-    bool in_alist; // whether in Alist or not
+    bool in_alist;  // whether in Alist or not
     // long date;
-    long time; // TODO: 和timestamp对应
+    long time;      // TODO: 和timestamp对应
     int hospital_id;
 };
 
@@ -37,14 +37,14 @@ public:
 
     Appointment *appointment;
 
-    bool withdrawn = false;
-    bool appo = false;
-    bool treated = false;
-    bool twice = false;
+    bool withdrawn;
+    bool appo;
+    bool treated;
+    bool twice;     // register again after withdrawing
 
     long timestamp; // a time offset
     char *id;
-    char *birth; // format: YYMMDD
+    char *birth;    // format: YYMMDD
     int risk;
 
     char *name;
@@ -82,13 +82,5 @@ public:
     int readfile(const char *filename);
     char str[60];
 };
-
-// class Central
-// {
-// public:
-//     Central();
-//     void Selection(); // select people with the higest priority
-//     void Report();
-// };
 
 #endif
