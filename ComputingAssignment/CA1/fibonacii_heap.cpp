@@ -62,7 +62,7 @@ inline bool Heap::higher_priority(Node &node1, Node &node2)
     {
         if (3 == data1->risk && 0 == n)
             risk_data1 = true;
-        if (2 == data1->risk && 30*24 >= (timeoffset - data1->timestamp))
+        if (2 == data1->risk && 30*24 <= (timeoffset - data1->timestamp))
             risk_data1 = true;
     }
     bool risk_data2 = false;
@@ -72,7 +72,7 @@ inline bool Heap::higher_priority(Node &node1, Node &node2)
     {
         if (3 == data2->risk && 0 == n)
             risk_data2 = true;
-        if (2 == data2->risk && 30*24 >= (timeoffset - data2->timestamp))
+        if (2 == data2->risk && 30*24 <= (timeoffset - data2->timestamp))
             risk_data2 = true;
     }
 
