@@ -54,7 +54,7 @@ inline bool Heap::higher_priority(Node &node1, Node &node2)
     Data *data1 = node1.data;
     Data *data2 = node2.data;
     // add risk status judgement
-    // one month extension: 30天后再考虑提高优先级
+    // one month extension: 30天后提高优先级(30天后risk status 2的患者跟risk 0/1的患者在risk status上同级)
     bool risk_data1 = false;
     if (0 == data1->risk || 1 == data1->risk)
         risk_data1 = true;
@@ -88,7 +88,7 @@ inline bool Heap::higher_priority(Node &node1, Node &node2)
             return !risk_data2;
         else
         {
-            // penalty for withdraw
+            // penalty for withdraw(7days)
             long d1, d2;
             d1 = (true == data1->withdrawn && (0 == data1->risk || 1 == data1->risk) ? 24 * 7 : 0);
             d2 = (true == data2->withdrawn && (0 == data2->risk || 1 == data2->risk) ? 24 * 7 : 0);
