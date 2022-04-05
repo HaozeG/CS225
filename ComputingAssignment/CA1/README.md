@@ -30,6 +30,7 @@ Type in `7` to go to next day.
 
 1. Put registration data of patients in a file under the same directory as the program. You need to follow the input format as shown.
 ![input format](./img/input_format.png)
+*Note: Here **risk status = 2** is interpreted that this people will have the same priority as other people with risk status 0/1 after 30 days, if the system needs to judge priority based risk status.*
 2. In the interface, type in `1` and follow the instructions shown. You can designate which local registry(1/2) these data will go to.
 3. To collect data to central registry, type in `2`. This system automatically collects all data from all local registries.
 *One person only has one data. If this person update his/her information, data before will be updated(overwritted)*
@@ -46,16 +47,16 @@ Type in `3`, follow the instruction to type in ID and a deadline.
 Type in `4`, follow the instruction to type in ID.
 #### appointment
 
-Type in `5`, this system will make appointments for queueing people.
+Type in `5`, this system will make appointments for queueing people. Appointment information is displayed in terminal.
 *Note: To set the daily capacity of each hospital, you can change the underlined parameters in main.cpp as shown.*
 ![daily capacity](./img/capacity.png)
 
 ### reporting
 
-1. Reports are produced in *report* folder.
-2. `Open_file()` is used to produce a week report, while `Month()` is used to produce a month report. All other functions in Report.h need not use in main function.
-3. Our Report system uses data from a single-linked list that goes through all nodes.
-4. By using sort(), we can order the reporting order as you wish.
+1. Reports will be produced to *report* folder.
+2. `Open_file()` is used to produce a weekly report, while `Month()` is used to produce a monthly report. All other functions in *Report.h* won't be used in main function.
+3. Our Report system uses data from a single-linked list containing information of all registered people.
+4. By using `sort()`, we can order the reporting order based on some keywords as you wish.
 
 #### manual
 
