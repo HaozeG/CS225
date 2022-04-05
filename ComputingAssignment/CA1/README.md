@@ -47,6 +47,8 @@ Type in `4`, follow the instruction to type in ID.
 #### appointment
 
 Type in `5`, this system will make appointments for queueing people.
+*Note: To set the daily capacity of each hospital, you can change the underlined parameters in main.cpp as shown.*
+![daily capacity](./img/capacity.png)
 
 ### reporting
 
