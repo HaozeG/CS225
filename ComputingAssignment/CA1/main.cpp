@@ -94,6 +94,7 @@ int main()
                         }
                         else
                         {
+                            // TODO: withdraw后register
                             // check if it has registered
                             Data *d_prev = q->head;
                             Data *d = d_prev->next;
@@ -106,11 +107,18 @@ int main()
                                 temp->withdrawn = d_prev->withdrawn;
                                 temp->next = d;
                                 q->head = temp;
-                                // cout << "update first one\n";
-                                d_prev->node->data = temp;
-                                temp->node = d_prev->node;
+                                // if withdrawn, it need to be inserted into heap again
+                                if (nullptr == d_prev->node)
+                                {
+                                    h->insert(temp);
+                                }
+                                else
+                                {
+                                    d_prev->node->data = temp;
+                                    temp->node = d_prev->node;
+                                    h->update(*temp->node);
+                                }
                                 delete d_prev;
-                                h->update(*temp->node);
                                 continue;
                             }
                             while (nullptr != d)
@@ -125,10 +133,16 @@ int main()
                                     temp->next = d->next;
                                     // cout << d->node->data << "\n";
                                     // cout << d->node << "test\n";
-                                    d->node->data = temp;
-                                    temp->node = d->node;
+                                    // if withdrawn, it need to be inserted into heap again
+                                    if (nullptr == d->node)
+                                        h->insert(temp);
+                                    else
+                                    {
+                                        d->node->data = temp;
+                                        temp->node = d->node;
+                                        h->update(*temp->node);
+                                    }
                                     delete d;
-                                    h->update(*temp->node);
                                     break;
                                 }
                                 d_prev = d;
