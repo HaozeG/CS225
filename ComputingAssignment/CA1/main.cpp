@@ -36,7 +36,7 @@ int main()
             cout << "1: do registration to local\n";
             cout << "2: update registry to central\n";
             cout << "3: present priority letter\n";
-            cout << "4: withdraw while waiting\n";
+            cout << "4: withdraw\n";
             cout << "5: make appointments\n";
             cout << "6: manual reporting\n";
             cout << "7: GO TO NEXT DAY\n";
