@@ -74,7 +74,7 @@ void List<T>::deallocate()
     size = newsize;
 }
 
-Hlist::Hlist() : List(20) // TODO: 是这样写的吗？
+Hlist::Hlist() : List(20) 
 {
     tot_capacity = 0;
 }
@@ -174,6 +174,7 @@ void Alist::clear()
 {
     for (int i = 0; i < numitems; i++)
     {
+        array[i]->appointment->in_alist = false;
         array[i]->treated = true;
     }
 
