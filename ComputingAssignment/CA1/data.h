@@ -1,6 +1,6 @@
 #ifndef data_h
 #define data_h
-using namespace std;
+// using namespace std;
 
 class Contact
 {

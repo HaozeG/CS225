@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <iostream>
 #include "timeoffset.h"
-#include "fibonacii_heap.h"
+#include "fibonacii_heap.cpp"
 #include "data.h"
-#include "appoint.h"
-#include "report.h"
+#include "appoint.cpp"
+#include "report.cpp"
+#include "file.cpp"
 using std::cin;
 using std::cout;
 long timeoffset = 0;

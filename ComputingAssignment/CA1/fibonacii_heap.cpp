@@ -4,7 +4,7 @@
 #include "timeoffset.h"
 #include "fibonacii_heap.h"
 using std::cout;
-using std::cin;
+// using std::cin;
 
 // initialize Node and Heap
 Node::Node()
