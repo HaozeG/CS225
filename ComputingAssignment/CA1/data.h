@@ -41,6 +41,7 @@ public:
     bool appo;
     bool treated;
     bool twice;     // register again after withdrawing
+    int locale;
 
     long timestamp; // a time offset
     char *id;
