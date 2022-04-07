@@ -59,6 +59,7 @@ Data::Data()
     risk = 0;
     next = nullptr;
     priority = 0;
+    locale = -1;
     cout << "Create data\n";
 }
 
@@ -155,7 +156,7 @@ Data* queue::pop()
     }
 }*/
 
-int Local::readfile(const char* filename)
+int Local::readfile(const char* filename, int locale)
 {
     FILE *fp;
     fp = fopen(filename , "r");
@@ -238,8 +239,9 @@ int Local::readfile(const char* filename)
             a = atoi(str);
             person->priority = a;
             // cout<<person->priority<<"\n";
-        }
-        else return 0;
+        } else
+          return 0;
+        person->locale = locale;
         Queue->push(person);
     }
     fclose(fp);

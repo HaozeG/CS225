@@ -80,7 +80,7 @@ public:
     queue *Queue;
     queue *update(int time); // update to central
     int registration();
-    int readfile(const char *filename);
+    int readfile(const char *filename, int locale);
     char str[60];
 };
 

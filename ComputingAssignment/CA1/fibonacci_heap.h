@@ -1,5 +1,5 @@
-#ifndef fibonacii_heap_h
-#define fibonacii_heap_h
+#ifndef fibonacci_heap_h
+#define fibonacci_heap_h
 
 #include "data.h"
 

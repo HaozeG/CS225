@@ -1,7 +1,7 @@
 #ifndef appoint_h
 #define appoint_h
 
-#include "fibonacii_heap.h"
+#include "fibonacci_heap.h"
 
 template <class T>
 class List
