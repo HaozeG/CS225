@@ -193,7 +193,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
 
         while (nullptr != paste)
         {
-            //因为age——group
+            //因为age——group 不可能等于0，当age——group等于0时说明sorting的时候没有这个节点
             if (0 == paste->age_group)
             {
                 paste = paste->next;
@@ -204,6 +204,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
             outfile << "Profession: " << paste->profession << endl;
             outfile << "Age: " << paste->age_group << endl;
             outfile << "Risk status: " << paste->risk << endl;
+            //判断时间是否锁定
             if (treating)
             {
                 TIME = paste->appointment->time - paste->timestamp;
@@ -228,6 +229,7 @@ void Report_system::Week(Data *head, int Choice, int Choice_2, long timeoffset, 
                 paste = paste->next;
                 continue;
             }
+            //profession排在最前面
             outfile << "\n"
                     << "Profession: " << paste->profession << endl;
             outfile << "Name: " << paste->name;
