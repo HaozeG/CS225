@@ -60,7 +60,7 @@ Data::Data()
     next = nullptr;
     priority = 0;
     locale = -1;
-    cout << "Create data\n";
+    // cout << "Create data\n";
 }
 
 Data::~Data()
@@ -70,7 +70,7 @@ Data::~Data()
     // delete contact;
     // delete id;
     // delete birth;
-    cout << "Delete data\n";
+    // cout << "Delete data\n";
 }
 
 queue::queue()
