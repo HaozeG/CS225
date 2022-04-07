@@ -58,6 +58,7 @@ void Report_system::Open_file(Data *head, long timeoffset, int length)
     outfile.open("./report/Week.txt", ios::out | ios::app);
     outfile << "REPORT ENDS" << endl;
     outfile.close();
+    cout << "Week.txt generates ssuccessfully." << endl;
     return;
 }
 
@@ -66,7 +67,8 @@ void Report_system::Month(Data *head, long timeoffset)
 {
     ofstream outfile;
     Data *temp = head;
-    int *keep = new int[7];
+    int *keep = new int[9];
+
     // 0: How many people have registered?
     // 1: How many of them are waiting?
     // 2: How many are waiting in total?
@@ -74,8 +76,11 @@ void Report_system::Month(Data *head, long timeoffset)
     // 4: Average waiting time
     // 5: How many people had withdrew their registration?
     // 6: How many treatment appointments have been made?
+    // 7: How many of them are waiting in locale1?
+    // 8: How many of them are waiting in locale2?
 
-    for (int i = 0; i <= 6; i++){keep[i] = 0;}
+
+    for (int i = 0; i <= 8; i++){keep[i] = 0;}
     while (nullptr != temp)
     {
         keep[0] += 1;
@@ -86,6 +91,8 @@ void Report_system::Month(Data *head, long timeoffset)
             keep[3] += 1;
             keep[4] += (temp->appointment->time - temp->timestamp);
         }
+        if (1 == temp->locale){keep[7] += 1;}
+        if (2 == temp->locale){keep[8] += 1;}
         if(temp->withdrawn){keep[5] += 1;}
         if (temp->appo || temp->withdrawn){keep[6] += 1;}
 
@@ -97,7 +104,8 @@ void Report_system::Month(Data *head, long timeoffset)
 
     outfile << "MONTH REPORT" << endl;
     outfile << "How many people have registered? " << keep[0] << endl;
-    outfile << "How many of them are waiting? " << keep[1] << endl;
+    outfile << "How many of them are waiting in locale 1? " << keep[7] << endl;
+    outfile << "How many of them are waiting in locale 2? " << keep[8] << endl;   
     outfile << "How many are waiting in total? " << keep[2] << endl;
     outfile << "How many treatment appointments have been made? " << keep[6] << endl;
     if(0 ==keep[3])
@@ -110,8 +118,8 @@ void Report_system::Month(Data *head, long timeoffset)
     }
     outfile << "How many people had withdrew their registration? " << keep[5] << endl;
     outfile << "_____________ENDING_____________" << endl;
-
     outfile.close();
+    cout << "Month.txt generates successfully." << endl;
 }
 
 
