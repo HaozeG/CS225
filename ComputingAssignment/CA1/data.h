@@ -21,8 +21,7 @@ public:
     Appointment();
 
     bool in_alist;  // whether in Alist or not
-    // long date;
-    long time;      // TODO: 和timestamp对应
+    long time;
     int hospital_id;
 };
 
@@ -78,8 +77,8 @@ public:
     ~Local();
 
     queue *Queue;
-    queue *update(int time); // update to central
-    int registration();
+    // queue *update(int time); // update to central
+    // int registration();
     int readfile(const char *filename, int locale);
     char str[60];
 };

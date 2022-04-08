@@ -1,48 +1,42 @@
 ————————————WEEK REPORT————————————
 
------people who has been treated-----
+-----People who have been treated-----
 
-Bella
-Profession: 5
-Age: 6
+Profession: 1
+Name: A
+Age: 1
+Risk status: 0
+Waiting time from registration to treatment: 1 days and 7 hours.
+
+Profession: 1
+Name: D
+Age: 1
+Risk status: 0
+Waiting time from registration to treatment: 1 days and 4 hours.
+-----Registered people with a set appointment-----
+-----Queueing people without a set appointment-----
+
+Profession: 1
+Name: C
+Age: 2
+Risk status: 1
+Waiting time until now: 0 days and 23 hours.
+
+Profession: 1
+Name: E
+Age: 1
 Risk status: 2
-Total waiting time: 20
+Waiting time until now: 0 days and 23 hours.
 
-Carol
-Profession: 5
-Age: 6
-Risk status: 2
-Total waiting time: 24
-
-Diana
-Profession: 8
-Age: 7
+Profession: 1
+Name: F
+Age: 1
 Risk status: 3
-Total waiting time: 792
+Waiting time until now: 0 days and 23 hours.
 
-Eilee
-Profession: 5
-Age: 6
-Risk status: 2
-Total waiting time: 778
------people who has an appointment but not treated yet-----
------people who has registered but done nothing else-----
-
-Ava
-Profession: 5
-Age: 6
-Risk status: 2
-Waiting time till now: 791
-
-Bella
-Profession: 5
-Age: 6
-Risk status: 2
-Waiting time till now: 770
-
-Carol
-Profession: 5
-Age: 6
-Risk status: 2
-Waiting time till now: 784
-Reporting has completed.
+Profession: 2
+Name: B
+Age: 1
+Risk status: 0
+Waiting time until now: 0 days and 23 hours.
+REPORT ENDS

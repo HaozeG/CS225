@@ -248,19 +248,19 @@ int Local::readfile(const char* filename, int locale)
     return 1;
 }
 
-// 传递class指针，需要什么形式？
-// 如何传递，或者是center call local的函数？
-// 两个local
-queue* Local::update(int time)
-{
-    // 判断timestamp再传递
-     queue* pack = new queue();
-    if (Queue->num == 0 || Queue->head->timestamp > time) return pack;
-    Data* tem = Queue->head; //
-    while (Queue->num > 0 && tem->timestamp <= time)
-    {
-        tem = tem->next;
-        pack->push(Queue->pop());
-    }
-    return pack;
-}
+// // 传递class指针，需要什么形式？
+// // 如何传递，或者是center call local的函数？
+// // 两个local
+// queue* Local::update(int time)
+// {
+//     // 判断timestamp再传递
+//      queue* pack = new queue();
+//     if (Queue->num == 0 || Queue->head->timestamp > time) return pack;
+//     Data* tem = Queue->head; //
+//     while (Queue->num > 0 && tem->timestamp <= time)
+//     {
+//         tem = tem->next;
+//         pack->push(Queue->pop());
+//     }
+//     return pack;
+// }

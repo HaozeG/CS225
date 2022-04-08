@@ -30,8 +30,11 @@ Type in `7` to go to next day.
 ### Registration
 
 1. Put registration data of patients in a file under the same directory as the program. You need to follow the input format as shown.
+
 ![input format](./img/input_format.png)
-*Note: Here **risk status = 2** is interpreted that this people will have the same priority as other people with risk status 0/1 after 30 days, if the system needs to judge priority based risk status.*
+
+*Note: Here **risk status = 2** is interpreted that this people will have the same priority as other people with risk status 0/1 after 30 days, if the system needs to judge priority based on risk status.*
+
 2. In the interface, type in `1` and follow the instructions shown. You can designate which local registry(1/2) these data will go to.
 3. To collect data to central registry, type in `2`. This system automatically collects all data from all local registries.
 *One person only has one data. If this person update his/her information, data before will be updated(overwritten)*
@@ -39,11 +42,13 @@ Type in `7` to go to next day.
 ### queuing
 
 Queuing is performed when they are added to central registry(when you type in `2`).
-*Note: two week penalty is **added to the timestamp** when judging priority.*
+*Note: two week penalty is **added to the timestamp** when judging priority, which means it could be ignored if the priority can be judged by more important criteria like profession.*
 
 #### Present priority letter
 
 Type in `3`, follow the instruction to type in ID and a deadline.
+
+*Note: if it is now **less than 48 hours before the deadline**, our system will begin arranging appointments for people with priority letter.*
 #### Withdraw while queuing
 
 Type in `4`, follow the instruction to type in ID.

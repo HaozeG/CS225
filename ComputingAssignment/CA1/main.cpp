@@ -26,7 +26,7 @@ int main()
     do
     {
         cout << "---NEW DAY---\n";
-        // 输出今天是几月几日
+        // our system time
         cout << "TODAY IS " << timestart + int(int(timeoffset/24)/30)*100 + (int(timeoffset/24) - 30 * int(int(timeoffset/24)/30)) << "\n";
         cout << "-------------\n";
         do
@@ -264,7 +264,8 @@ int main()
                 Data *p = q->head;
                 while (nullptr != p)
                 {
-                    if ((nullptr != p->node) && (p->priority - timeoffset) <= 24 && -1 != p->priority)
+                    // people with priority letter will receive appointment if it is <= 48 hours before the deadline
+                    if ((nullptr != p->node) && (p->priority - timeoffset) <= 48 && -1 != p->priority)
                     {
                         Data *new_data = new Data;
                         new_data->name = p->name;
@@ -279,13 +280,6 @@ int main()
                     }
                     p = p->next;
                 }
-                // if (nullptr != h->highest)
-                //     cout << h->highest->data->name << "\n";
-                // else
-                // {
-                //     cout << "Heap already empty!\n";
-                //     break;
-                // }
 
                 // input hospital information
                 cout << "tot_capacity = " << hlist.tot_capacity << "\n";
