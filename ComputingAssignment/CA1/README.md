@@ -5,6 +5,8 @@ This project is a system that includes **registration, queuing and reporting**.
 
 The core data structure is a Fibonacci heap to arrange patients based on different priorities. Data of patients are stored as a single-linked list.
 
+![basic structure](./img/structure.png)
+
 # Instruction
 ## To compile
 
