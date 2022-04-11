@@ -2,7 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include "timeoffset.h"
-#include "fibonacii_heap.h"
+#include "fibonacci_heap.h"
 using std::cout;
 // using std::cin;
 
@@ -91,8 +91,8 @@ inline bool Heap::higher_priority(Node &node1, Node &node2)
         {
             // penalty for withdraw(7days)
             long d1, d2;
-            d1 = (true == data1->withdrawn && (0 == data1->risk || 1 == data1->risk) ? 24 * 7 : 0);
-            d2 = (true == data2->withdrawn && (0 == data2->risk || 1 == data2->risk) ? 24 * 7 : 0);
+            d1 = (true == data1->withdrawn && (0 == data1->risk || 1 == data1->risk) ? 24 * 7 * 2 : 0);
+            d2 = (true == data2->withdrawn && (0 == data2->risk || 1 == data2->risk) ? 24 * 7 * 2 : 0);
             if ((data1->timestamp + d1)< (data2->timestamp + d2))
                 return risk_data1;
             else

@@ -59,7 +59,8 @@ Data::Data()
     risk = 0;
     next = nullptr;
     priority = 0;
-    cout << "Create data\n";
+    locale = -1;
+    // cout << "Create data\n";
 }
 
 Data::~Data()
@@ -69,7 +70,7 @@ Data::~Data()
     // delete contact;
     // delete id;
     // delete birth;
-    cout << "Delete data\n";
+    // cout << "Delete data\n";
 }
 
 queue::queue()
@@ -155,7 +156,7 @@ Data* queue::pop()
     }
 }*/
 
-int Local::readfile(const char* filename)
+int Local::readfile(const char* filename, int locale)
 {
     FILE *fp;
     fp = fopen(filename , "r");
@@ -238,27 +239,28 @@ int Local::readfile(const char* filename)
             a = atoi(str);
             person->priority = a;
             // cout<<person->priority<<"\n";
-        }
-        else return 0;
+        } else
+          return 0;
+        person->locale = locale;
         Queue->push(person);
     }
     fclose(fp);
     return 1;
 }
 
-// 传递class指针，需要什么形式？
-// 如何传递，或者是center call local的函数？
-// 两个local
-queue* Local::update(int time)
-{
-    // 判断timestamp再传递
-     queue* pack = new queue();
-    if (Queue->num == 0 || Queue->head->timestamp > time) return pack;
-    Data* tem = Queue->head; //
-    while (Queue->num > 0 && tem->timestamp <= time)
-    {
-        tem = tem->next;
-        pack->push(Queue->pop());
-    }
-    return pack;
-}
+// // 传递class指针，需要什么形式？
+// // 如何传递，或者是center call local的函数？
+// // 两个local
+// queue* Local::update(int time)
+// {
+//     // 判断timestamp再传递
+//      queue* pack = new queue();
+//     if (Queue->num == 0 || Queue->head->timestamp > time) return pack;
+//     Data* tem = Queue->head; //
+//     while (Queue->num > 0 && tem->timestamp <= time)
+//     {
+//         tem = tem->next;
+//         pack->push(Queue->pop());
+//     }
+//     return pack;
+// }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "timeoffset.h"
-#include "fibonacii_heap.cpp"
+#include "fibonacci_heap.h"
 #include "data.h"
 #include "appoint.cpp"
 #include "report.cpp"
@@ -27,7 +27,7 @@ int main()
     do
     {
         cout << "---NEW DAY---\n";
-        // 输出今天是几月几日
+        // our system time
         cout << "TODAY IS " << timestart + int(int(timeoffset/24)/30)*100 + (int(timeoffset/24) - 30 * int(int(timeoffset/24)/30)) << "\n";
         cout << "-------------\n";
         do
@@ -70,14 +70,8 @@ int main()
                     cin >> f;
                 }
                 while (f < 1 && f > 2);
-                local[f - 1]->readfile(filename);
+                local[f - 1]->readfile(filename, f );
                 cout << "This queue has " << local[f - 1]->Queue->num << " items now\n";
-                // Data *p = local[0]->Queue->head;
-                // while (nullptr != p)
-                // {
-                //     cout << p->name << "\n";
-                //     p = p->next;
-                // }
                 break;
             }
             case 2:
@@ -96,7 +90,6 @@ int main()
                         }
                         else
                         {
-                            // TODO: withdraw后register
                             // check if it has registered
                             Data *d_prev = q->head;
                             Data *d = d_prev->next;
@@ -107,6 +100,7 @@ int main()
                                     d_prev->twice = true;
                                 temp->priority = d_prev->priority;
                                 temp->withdrawn = d_prev->withdrawn;
+                                temp->locale = d_prev->locale;
                                 temp->next = d;
                                 q->head = temp;
                                 // if withdrawn, it need to be inserted into heap again
@@ -131,6 +125,7 @@ int main()
                                         d_prev->twice = true;
                                     temp->priority = d_prev->priority;
                                     temp->withdrawn = d_prev->withdrawn;
+                                    temp->locale = d_prev->locale;
                                     d_prev->next = temp;
                                     temp->next = d->next;
                                     // cout << d->node->data << "\n";
@@ -270,7 +265,8 @@ int main()
                 Data *p = q->head;
                 while (nullptr != p)
                 {
-                    if ((nullptr != p->node) && (p->priority - timeoffset) <= 72 && -1 != p->priority)
+                    // people with priority letter will receive appointment if it is <= 48 hours before the deadline
+                    if ((nullptr != p->node) && (p->priority - timeoffset) <= 48 && -1 != p->priority)
                     {
                         Data *new_data = new Data;
                         new_data->name = p->name;
@@ -285,13 +281,6 @@ int main()
                     }
                     p = p->next;
                 }
-                // if (nullptr != h->highest)
-                //     cout << h->highest->data->name << "\n";
-                // else
-                // {
-                //     cout << "Heap already empty!\n";
-                //     break;
-                // }
 
                 // input hospital information
                 cout << "tot_capacity = " << hlist.tot_capacity << "\n";

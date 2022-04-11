@@ -1,7 +1,9 @@
 MONTH REPORT
-Till now, 5 have been registered.
-3 are waiting for an appointment.
-3 have received an appointment.
-There are 1 patients who had withdrawn their appointment.
-The average waiting time is 0 days.
+How many people have registered? 6
+How many of them are waiting in locale 1? 6
+How many of them are waiting in locale 2? 0
+How many are waiting in total? 4
+How many treatment appointments have been made? 2
+Average waiting time: 0 days 0 hours.
+How many people had withdrew their registration? 0
 _____________ENDING_____________

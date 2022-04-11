@@ -4,7 +4,7 @@
 #include "appoint.h"
 #include "data.h"
 #include "timeoffset.h"
-// using std::cin;
+using std::cin;
 using std::cout;
 
 Appointment::Appointment()
@@ -74,7 +74,11 @@ void List<T>::deallocate()
     size = newsize;
 }
 
+<<<<<<< HEAD
 Hlist::Hlist() : List(20)
+=======
+Hlist::Hlist() : List(20)
+>>>>>>> master
 {
     tot_capacity = 0;
 }

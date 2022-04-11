@@ -11,7 +11,7 @@ Diana                   // name
 3                       // risk status (from 0 to 3)
 2022040108              // timestamp YYYYMMDDHH (2022040100 - 2022053123)
 7                       // age group (from 1 to 7 based on age)
--1                      // priority letter (-1 for no)
+-1                      // priority letter (-1 for no, otherwise从2022.04.01 00:00开始的小时数)
 3200116666
 Carol
 90
