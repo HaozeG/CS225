@@ -140,8 +140,10 @@ class Appointment
 {
 public:
     bool appo;
+    bool treated;
+    bool withdrawn;
 
-}
+};
 
 class relation
 {
