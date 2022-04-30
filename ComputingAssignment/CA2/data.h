@@ -157,6 +157,8 @@ public:
     Registration* registration;
     Treatment* treatment;
     int key(); // return the associated key value according to the sorting type
+
+    relation *next;
 };
 
 class Block // 0-2 is overflow block
