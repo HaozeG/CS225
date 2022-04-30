@@ -1,30 +1,28 @@
 #ifndef report_h
 #define report_h
 
-#include <ratio>
-#include <cstdlib>
-#include <string>
-#include <string.h>
-#include <sstream>
-#include <iostream>
-#include <fstream>
 #include "data.h"
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <ratio>
+#include <sstream>
+#include <string.h>
+#include <string>
 using namespace std;
-class Report_system
-{
+class Report_system {
 public:
-    void Open_file(blist *ptr, long timeoffset, int length);
-    void Week(blist *ptr, int Choice, int Choice_2, long timeoffset, int length, bool treating);
-    void Month(blist *ptr, long timeoffset);
+  void Open_file(blist *ptr, long timeoffset, int length);
+  void Week(blist *ptr, int Choice, int Choice_2, long timeoffset, int length,
+            bool treating);
+  void Month(blist *ptr, long timeoffset);
 
-    Data *Sorting(blist *head, int Choice_2, int length, int Choice);
-    static bool cmp_age(Data a, Data b);
-    static bool cmp_profession(Data a, Data b);
-    static bool cmp_name(Data a, Data b);
+  relation *Sorting(blist *head, int Choice_2, int length, int Choice);
+  // static bool cmp_age(Data a, Data b);
+  // static bool cmp_profession(Data a, Data b);
+  // static bool cmp_name(Data a, Data b);
 };
 #endif
-
-
 
 /*
 
