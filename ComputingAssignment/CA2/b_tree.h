@@ -26,7 +26,7 @@ namespace b_tree
     {
     public:
         Tree();
-        ~Tree();
+        ~Tree(T);
 
         int insert_node(T key);
         int delete_node(T key);
