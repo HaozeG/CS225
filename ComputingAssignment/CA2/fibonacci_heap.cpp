@@ -31,6 +31,7 @@ fibonacci::Heap::Heap()
 {
     highest = nullptr;
     n = 0;
+    type = 0;
     cout << "Create one empty heap!\n";
 }
 
@@ -47,57 +48,165 @@ fibonacci::Heap::~Heap()
         true: node1 has higher priority
         false: node2 has higher priority
 */
-inline bool fibonacci::Heap::higher_priority(Node& node1, Node& node2)
+bool fibonacci::Heap::higher_priority(Node& node1, Node& node2)
 {
-    // profession category, ranking of age group, time
-    // profession category : int 越小越高
-    // ranking of age group: 越小越高
-    // time: 越小越高
-    relation* data1 = node1.relation;
-    relation* data2 = node2.relation;
-    // add risk status judgement
-    // one month extension: 30天后提高优先级(30天后risk status 2的患者跟risk 0/1的患者在risk status上同级)
-    bool risk_data1 = false;
-    if (0 == data1->status->risk || 1 == data1->status->risk)
-        risk_data1 = true;
-    else
+    if (1 == type)
     {
-        if (3 == data1->status->risk && 0 == n)
+        // profession category : int 越小越高
+        // ranking of age group: 越小越高
+        // time: 越小越高
+        relation* data1 = node1.relation;
+        relation* data2 = node2.relation;
+        // add risk status judgement
+        // one month extension: 30天后提高优先级(30天后risk status 2的患者跟risk 0/1的患者在risk status上同级)
+        bool risk_data1 = false;
+        if (0 == data1->status->risk || 1 == data1->status->risk)
             risk_data1 = true;
-        if (2 == data1->status->risk && 30 * 24 <= (timeoffset - data1->registration->timestamp))
-            risk_data1 = true;
-    }
-    bool risk_data2 = false;
-    if (0 == data2->status->risk || 1 == data2->status->risk)
-        risk_data2 = true;
-    else
-    {
-        if (3 == data2->status->risk && 0 == n)
+        else
+        {
+            if (3 == data1->status->risk && 0 == n)
+                risk_data1 = true;
+            if (2 == data1->status->risk && 30 * 24 <= (timeoffset - data1->registration->timestamp))
+                risk_data1 = true;
+        }
+        bool risk_data2 = false;
+        if (0 == data2->status->risk || 1 == data2->status->risk)
             risk_data2 = true;
-        if (2 == data2->status->risk && 30 * 24 <= (timeoffset - data2->registration->timestamp))
-            risk_data2 = true;
-    }
+        else
+        {
+            if (3 == data2->status->risk && 0 == n)
+                risk_data2 = true;
+            if (2 == data2->status->risk && 30 * 24 <= (timeoffset - data2->registration->timestamp))
+                risk_data2 = true;
+        }
 
-    if (data1->person->profession < data2->person->profession)
-        return risk_data1;
-    else if (data1->person->profession > data2->person->profession)
-        return !risk_data2;
-    else
-    {
-        if (data1->person->age_group < data2->person->age_group)
+        if (data1->person->profession < data2->person->profession)
             return risk_data1;
-        else if (data1->person->age_group > data2->person->age_group)
+        else if (data1->person->profession > data2->person->profession)
             return !risk_data2;
         else
         {
-            // penalty for withdraw(7days)
-            long d1, d2;
-            d1 = (true == data1->registration->withdrawn && (0 == data1->status->risk || 1 == data1->status->risk) ? 24 * 7 * 2 : 0);
-            d2 = (true == data2->registration->withdrawn && (0 == data2->status->risk || 1 == data2->status->risk) ? 24 * 7 * 2 : 0);
-            if ((data1->registration->timestamp + d1) < (data2->registration->timestamp + d2))
+            if (data1->person->age_group < data2->person->age_group)
                 return risk_data1;
-            else
+            else if (data1->person->age_group > data2->person->age_group)
                 return !risk_data2;
+            else
+            {
+                // penalty for withdraw(7days)
+                long d1, d2;
+                d1 = (true == data1->appoint->withdrawn && (0 == data1->status->risk || 1 == data1->status->risk) ? 24 * 7 * 2 : 0);
+                d2 = (true == data2->appoint->withdrawn && (0 == data2->status->risk || 1 == data2->status->risk) ? 24 * 7 * 2 : 0);
+                if ((data1->registration->timestamp + d1) < (data2->registration->timestamp + d2))
+                    return risk_data1;
+                else
+                    return !risk_data2;
+            }
+        }
+    }
+    else if (2 == type)
+    {
+        // profession category : int 越小越高
+        // ranking of age group: 越大越高
+        // time: 越小越高
+        relation* data1 = node1.relation;
+        relation* data2 = node2.relation;
+        // add risk status judgement
+        // one month extension: 30天后提高优先级(30天后risk status 2的患者跟risk 0/1的患者在risk status上同级)
+        bool risk_data1 = false;
+        if (0 == data1->status->risk || 1 == data1->status->risk)
+            risk_data1 = true;
+        else
+        {
+            if (3 == data1->status->risk && 0 == n)
+                risk_data1 = true;
+            if (2 == data1->status->risk && 30 * 24 <= (timeoffset - data1->registration->timestamp))
+                risk_data1 = true;
+        }
+        bool risk_data2 = false;
+        if (0 == data2->status->risk || 1 == data2->status->risk)
+            risk_data2 = true;
+        else
+        {
+            if (3 == data2->status->risk && 0 == n)
+                risk_data2 = true;
+            if (2 == data2->status->risk && 30 * 24 <= (timeoffset - data2->registration->timestamp))
+                risk_data2 = true;
+        }
+
+        if (data1->person->profession < data2->person->profession)
+            return risk_data1;
+        else if (data1->person->profession > data2->person->profession)
+            return !risk_data2;
+        else
+        {
+            if (data1->person->age_group > data2->person->age_group)
+                return risk_data1;
+            else if (data1->person->age_group < data2->person->age_group)
+                return !risk_data2;
+            else
+            {
+                // penalty for withdraw(7days)
+                long d1, d2;
+                d1 = (true == data1->appoint->withdrawn && (0 == data1->status->risk || 1 == data1->status->risk) ? 24 * 7 * 2 : 0);
+                d2 = (true == data2->appoint->withdrawn && (0 == data2->status->risk || 1 == data2->status->risk) ? 24 * 7 * 2 : 0);
+                if ((data1->registration->timestamp + d1) < (data2->registration->timestamp + d2))
+                    return risk_data1;
+                else
+                    return !risk_data2;
+            }
+        }
+    }
+    else
+    {
+        // profession category : 优先2 其余越小越高
+        // ranking of age group: 越大越高
+        // time: 越小越高
+        relation* data1 = node1.relation;
+        relation* data2 = node2.relation;
+        // add risk status judgement
+        // one month extension: 30天后提高优先级(30天后risk status 2的患者跟risk 0/1的患者在risk status上同级)
+        bool risk_data1 = false;
+        if (0 == data1->status->risk || 1 == data1->status->risk)
+            risk_data1 = true;
+        else
+        {
+            if (3 == data1->status->risk && 0 == n)
+                risk_data1 = true;
+            if (2 == data1->status->risk && 30 * 24 <= (timeoffset - data1->registration->timestamp))
+                risk_data1 = true;
+        }
+        bool risk_data2 = false;
+        if (0 == data2->status->risk || 1 == data2->status->risk)
+            risk_data2 = true;
+        else
+        {
+            if (3 == data2->status->risk && 0 == n)
+                risk_data2 = true;
+            if (2 == data2->status->risk && 30 * 24 <= (timeoffset - data2->registration->timestamp))
+                risk_data2 = true;
+        }
+
+        if ((2 == data1->person->profession) || (data1->person->profession < data2->person->profession))
+            return risk_data1;
+        else if ((2 == data2->person->profession) || (data1->person->profession > data2->person->profession))
+            return !risk_data2;
+        else
+        {
+            if (data1->person->age_group > data2->person->age_group)
+                return risk_data1;
+            else if (data1->person->age_group < data2->person->age_group)
+                return !risk_data2;
+            else
+            {
+                // penalty for withdraw(7days)
+                long d1, d2;
+                d1 = (true == data1->appoint->withdrawn && (0 == data1->status->risk || 1 == data1->status->risk) ? 24 * 7 * 2 : 0);
+                d2 = (true == data2->appoint->withdrawn && (0 == data2->status->risk || 1 == data2->status->risk) ? 24 * 7 * 2 : 0);
+                if ((data1->registration->timestamp + d1) < (data2->registration->timestamp + d2))
+                    return risk_data1;
+                else
+                    return !risk_data2;
+            }
         }
     }
 }
@@ -136,6 +245,9 @@ void fibonacci::Heap::link_root(Node& node)
 */
 void fibonacci::Heap::insert(relation* relation)
 {
+    // assign treatment type to the heap
+    if (0 == type)
+        type = relation->status->type;
     Node* node = new Node;
     node->relation = relation;
     relation->f_node = node;
@@ -316,10 +428,23 @@ void fibonacci::Heap::delete_node(Node& node)
     // set the value of new_data to negative
     relation* new_relation = new relation;
     // TODO: create a new node based on different priority rules
-    new_relation->name = node.relation->person->name;
-    new_data->profession = -1; // make sure it has the highest priority
-    new_data->risk = 0;
-    // above part
+    // make sure it has the highest priority
+    new_relation->person->name = node.relation->person->name;
+    if (1 == type)
+    {
+        new_relation->person->profession = -1;
+        new_relation->status->risk = 0;
+    }
+    else if (2 == type)
+    {
+        new_relation->person->profession = -1;
+        new_relation->status->risk = 0;
+    }
+    else
+    {
+        new_relation->person->profession = 2;
+        new_relation->status->risk = 0;
+    }
     relation* origin_relation = node.relation; // preserve original data
     node.relation->f_node = nullptr;
     node.relation = new_relation;
