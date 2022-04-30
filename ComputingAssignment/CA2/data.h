@@ -94,7 +94,7 @@ public:
     int profession;
     char* birth;
     int age_group;
-    int addx; 
+    int addx;
     int addy;
     char* phone;
     char* WeChat;
@@ -156,7 +156,11 @@ public:
     Status* status;
     Registration* registration;
     Treatment* treatment;
-    int key(); // return the associated key value according to the sorting type
+    char* key(); // return the associated key value according to the sorting type
+    // TODO: pointer to Nodes in Fibonacci Heap
+    fibonacci::Node* f_node;
+
+    relation* next;
 };
 
 class Block // 0-2 is overflow block
@@ -190,7 +194,7 @@ public:
     Block* head;
     //static int numitems;
     void merge(Block* block1, Block* block2);
-    
+
 };
 
 class Local
