@@ -156,6 +156,8 @@ public:
     int key(); // return the associated key value according to the sorting type
     // TODO: pointer to Node in Fibonacci Heap
     fibonacci::Node* f_node;
+
+    relation *next;
 };
 
 class Block // 0-2 is overflow block
