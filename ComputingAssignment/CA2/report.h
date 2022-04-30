@@ -10,17 +10,16 @@
 #include <string.h>
 #include <string>
 using namespace std;
-class Report_system {
+class Report_system
+{
 public:
-  void Open_file(blist *ptr, long timeoffset, int length);
-  void Week(blist *ptr, int Choice, int Choice_2, long timeoffset, int length,
-            bool treating);
-  void Month(blist *ptr, long timeoffset);
-
-  relation *Sorting(blist *head, int Choice_2, int length, int Choice);
-  // static bool cmp_age(Data a, Data b);
-  // static bool cmp_profession(Data a, Data b);
-  // static bool cmp_name(Data a, Data b);
+    void Open_file(blist* ptr, long timeoffset, int length);
+    void Week(blist* ptr, int Choice, int Choice_2, long timeoffset, int length, bool treating);
+    void Month(blist* ptr, long timeoffset);
+    relation* Sorting(blist* head, int Choice_2, int length, int Choice);
+    // static bool cmp_age(Data a, Data b);
+    // static bool cmp_profession(Data a, Data b);
+    // static bool cmp_name(Data a, Data b);
 };
 #endif
 
