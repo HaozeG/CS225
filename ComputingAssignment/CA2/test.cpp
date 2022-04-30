@@ -4,9 +4,8 @@
 #include "data.h"
 #include <stdlib.h>
 #include <cstring>
-using std::cout;
 using std::cin;
-
+using std::cout;
 
 int main()
 {
@@ -37,12 +36,14 @@ int main()
         cout<<"\n"<<tem->retrieval(x)->person->id<<"\n";
     }*/
 
-    char* c = new char [10];int i = 3201; sprintf(c,"%d",i);
+    char* c = new char[10];
+    int i = 3201;
+    sprintf(c, "%d", i);
     //sprintf(c, "%d.bmp", i);
     //for (int i = 0; i < ; i++)
     //cout<<c<<"\n";
     const char* b = "3202";
-    if (strcmp(c,b) < 0)
-    cout<<strcmp(c,b)<<"\n";
+    if (strcmp(c, b) < 0)
+        cout << strcmp(c, b) << "\n";
     return 0;
 }
