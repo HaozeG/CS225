@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
+#include "data.h"
 #include "timeoffset.h"
 #include "fibonacci_heap.h"
 using std::cout;
 // using std::cin;
 
 // initialize Node and Heap
-Node::Node()
+fibonacci::Node::Node()
 {
     relation = nullptr;
     parent = nullptr;
@@ -20,20 +21,20 @@ Node::Node()
     cout << "Create one node!\n";
 };
 
-Node::~Node()
+fibonacci::Node::~Node()
 {
-    data->node = nullptr;
+    relation->f_node = nullptr;
     cout << "Delete one node!\n";
 }
 
-Heap::Heap()
+fibonacci::Heap::Heap()
 {
     highest = nullptr;
     n = 0;
     cout << "Create one empty heap!\n";
 }
 
-Heap::~Heap()
+fibonacci::Heap::~Heap()
 {
     cout << "Delete heap\n";
 }
@@ -46,54 +47,54 @@ Heap::~Heap()
         true: node1 has higher priority
         false: node2 has higher priority
 */
-inline bool Heap::higher_priority(Node& node1, Node& node2)
+inline bool fibonacci::Heap::higher_priority(Node& node1, Node& node2)
 {
     // profession category, ranking of age group, time
     // profession category : int 越小越高
     // ranking of age group: 越小越高
     // time: 越小越高
-    Data* data1 = node1.data;
-    Data* data2 = node2.data;
+    relation* data1 = node1.relation;
+    relation* data2 = node2.relation;
     // add risk status judgement
     // one month extension: 30天后提高优先级(30天后risk status 2的患者跟risk 0/1的患者在risk status上同级)
     bool risk_data1 = false;
-    if (0 == data1->risk || 1 == data1->risk)
+    if (0 == data1->status->risk || 1 == data1->status->risk)
         risk_data1 = true;
     else
     {
-        if (3 == data1->risk && 0 == n)
+        if (3 == data1->status->risk && 0 == n)
             risk_data1 = true;
-        if (2 == data1->risk && 30 * 24 <= (timeoffset - data1->timestamp))
+        if (2 == data1->status->risk && 30 * 24 <= (timeoffset - data1->registration->timestamp))
             risk_data1 = true;
     }
     bool risk_data2 = false;
-    if (0 == data2->risk || 1 == data2->risk)
+    if (0 == data2->status->risk || 1 == data2->status->risk)
         risk_data2 = true;
     else
     {
-        if (3 == data2->risk && 0 == n)
+        if (3 == data2->status->risk && 0 == n)
             risk_data2 = true;
-        if (2 == data2->risk && 30 * 24 <= (timeoffset - data2->timestamp))
+        if (2 == data2->status->risk && 30 * 24 <= (timeoffset - data2->registration->timestamp))
             risk_data2 = true;
     }
 
-    if (data1->profession < data2->profession)
+    if (data1->person->profession < data2->person->profession)
         return risk_data1;
-    else if (data1->profession > data2->profession)
+    else if (data1->person->profession > data2->person->profession)
         return !risk_data2;
     else
     {
-        if (data1->age_group < data2->age_group)
+        if (data1->person->age_group < data2->person->age_group)
             return risk_data1;
-        else if (data1->age_group > data2->age_group)
+        else if (data1->person->age_group > data2->person->age_group)
             return !risk_data2;
         else
         {
             // penalty for withdraw(7days)
             long d1, d2;
-            d1 = (true == data1->withdrawn && (0 == data1->risk || 1 == data1->risk) ? 24 * 7 * 2 : 0);
-            d2 = (true == data2->withdrawn && (0 == data2->risk || 1 == data2->risk) ? 24 * 7 * 2 : 0);
-            if ((data1->timestamp + d1) < (data2->timestamp + d2))
+            d1 = (true == data1->registration->withdrawn && (0 == data1->status->risk || 1 == data1->status->risk) ? 24 * 7 * 2 : 0);
+            d2 = (true == data2->registration->withdrawn && (0 == data2->status->risk || 1 == data2->status->risk) ? 24 * 7 * 2 : 0);
+            if ((data1->registration->timestamp + d1) < (data2->registration->timestamp + d2))
                 return risk_data1;
             else
                 return !risk_data2;
@@ -107,7 +108,7 @@ inline bool Heap::higher_priority(Node& node1, Node& node2)
         node: the node need to link
     output: none
 */
-inline void Heap::link_root(Node& node)
+void fibonacci::Heap::link_root(Node& node)
 {
     if (nullptr == highest)
         highest = &node;
@@ -133,11 +134,11 @@ inline void Heap::link_root(Node& node)
         data: the data of the node
     output: none
 */
-void Heap::insert(Data* data)
+void fibonacci::Heap::insert(relation* relation)
 {
     Node* node = new Node;
-    node->data = data;
-    data->node = node;
+    node->relation = relation;
+    relation->f_node = node;
     node->right = node;
     node->left = node;
     link_root(*node);
@@ -151,7 +152,7 @@ void Heap::insert(Data* data)
         node: the node that has been changed
     output: none
 */
-void Heap::update(Node& node)
+void fibonacci::Heap::update(Node& node)
 {
     Node* parent_node = node.parent;
 
@@ -205,7 +206,7 @@ void Heap::update(Node& node)
 
     // cascaded cut parent nodes
     cascaded_cut(parent_node);
-    cout << "Sucessfully update " << node.data->name << "\n";
+    cout << "Sucessfully update " << node.relation->person->name << "\n";
 }
 
 /*
@@ -213,13 +214,13 @@ void Heap::update(Node& node)
     input: none
     output: data pointer
 */
-Data* Heap::get_highest()
+relation* fibonacci::Heap::get_highest()
 {
-    Data* data = nullptr;
+    relation* relation = nullptr;
     if (nullptr != highest)
-        data = highest->data;
+        relation = highest->relation;
     Heap::delete_highest();
-    return data;
+    return relation;
 }
 
 /*
@@ -227,7 +228,7 @@ Data* Heap::get_highest()
     input: none
     ouput: none
 */
-void Heap::delete_highest()
+void fibonacci::Heap::delete_highest()
 {
     // check if the heap is empty
     if (0 == n)
@@ -304,7 +305,7 @@ void Heap::delete_highest()
         node: the node needs to delete
     output: none
 */
-void Heap::delete_node(Node& node)
+void fibonacci::Heap::delete_node(Node& node)
 {
     // // check if node is in the heap
     // if (nullptr == node.left)
@@ -313,28 +314,30 @@ void Heap::delete_node(Node& node)
     //     return;
     // }
     // set the value of new_data to negative
-    Data* new_data = new Data;
-    new_data->name = node.data->name;
+    relation* new_relation = new relation;
+    // TODO: create a new node based on different priority rules
+    new_relation->name = node.relation->person->name;
     new_data->profession = -1; // make sure it has the highest priority
     new_data->risk = 0;
-    Data* origin_data = node.data; // preserve original data
-    node.data->node = nullptr;
-    node.data = new_data;
+    // above part
+    relation* origin_relation = node.relation; // preserve original data
+    node.relation->f_node = nullptr;
+    node.relation = new_relation;
 
     // call decrease and delete_min
     update(node);
-    Data* p = highest->data;
+    relation* p = highest->relation;
     delete_highest();
     // keep the data unchanged
-    delete new_data;
+    delete new_relation;
 
-    cout << "Delete " << p->name << "\n";
+    cout << "Delete " << p->person->name << "\n";
 };
 
 /*
     rebalance the heap
 */
-void Heap::consolidate()
+void fibonacci::Heap::consolidate()
 {
     // compute max node_num and prepare hash map
     int maxdegree = int(log2(n));
@@ -427,7 +430,7 @@ void Heap::consolidate()
         d: change to the node_num (can be +/-)
     output: none
 */
-void Heap::update_degree(Node* node, int d)
+void fibonacci::Heap::update_degree(Node* node, int d)
 {
     if (0 == d || nullptr == node)
         return;
@@ -444,7 +447,7 @@ void Heap::update_degree(Node* node, int d)
     input: first parent node
     output: none
 */
-void Heap::cascaded_cut(Node* node)
+void fibonacci::Heap::cascaded_cut(Node* node)
 {
     // return if it's root node
     if (nullptr == node)
