@@ -137,6 +137,14 @@ public:
     char* key();
 };
 
+class Appointment
+{
+public:
+    bool appo;
+    bool treated;
+    bool withdrawn;
+};
+
 namespace fibonacci
 {
     class Node;
@@ -157,7 +165,7 @@ public:
     // TODO: pointer to Node in Fibonacci Heap
     fibonacci::Node* f_node;
 
-    relation *next;
+    relation* next;
 };
 
 class Block // 0-2 is overflow block
