@@ -94,11 +94,14 @@ void Report_system::Open_file(blist* ptr, long timeoffset, int length)
     head：头节点
     time offset：当前时间（不是自然时间，同上）
 */
+
+//缺locale的更改
 void Report_system::Month(blist* ptr, long timeoffset)
 {
     ofstream outfile;
-    Block* temp = ptr->head;
     int* keep = new int[9];
+    //temp是Block，一个Block里有好几个relation，根据number计数
+    Block* temp = ptr->head;
 
     // 0: How many people have registered?
     // 1: How many of them are waiting?（没有用到，一开始理解错误了）
@@ -114,12 +117,14 @@ void Report_system::Month(blist* ptr, long timeoffset)
     {
         keep[i] = 0;
     }
+    //外循环：遍历所有的Block
     do
     {
-        for (int relation_index = 0; relation_index < temp->length;
+        //内循环：遍历一个Block里的relation
+        for (int relation_index = 0; relation_index < temp->number;
              relation_index++)
         {
-            //只要进入系统了就算登记过
+            //只要进入系统（只要有了relation）就算登记过
             keep[0] += 1;
             //已经预约 && 没有治疗 && 没有退出（不过没有用到）
             if ((temp->block[relation_index])->appoint->appo &&
@@ -140,7 +145,7 @@ void Report_system::Month(blist* ptr, long timeoffset)
                 //已经治疗的人
                 keep[3] += 1;
                 //收集等待时间
-                keep[4] += (temp->appointment->time - temp->timestamp);
+                keep[4] += ((temp->block[relation_index])->treatment->time - (temp->block[relation_index])->registration->timestamp);
             }
             //如果这个人来自locale1则输出
             if (1 == temp->locale)
@@ -164,7 +169,9 @@ void Report_system::Month(blist* ptr, long timeoffset)
                 keep[6] += 1;
             }
         }
+        //移到下一个Block
         temp = temp->next;
+        //因为是环，check是否结束
     } while (ptr->head != temp);
 
     outfile.open("./report/Month.txt", ios::out | ios::trunc);
@@ -198,6 +205,7 @@ void Report_system::Month(blist* ptr, long timeoffset)
             << "\n";
     outfile << "_____________ENDING_____________\n";
     outfile.close();
+
     cout << "Month.txt generates successfully." << endl;
     return;
 }
@@ -213,8 +221,9 @@ void Report_system::Month(blist* ptr, long timeoffset)
     treating：判断是否治疗了，如果已经治疗了，那么等待时间已经固定
 
 */
-void Report_system::Week(blist* ptr, int Choice, int Choice_2, long timeoffset, int length, bool treating)
+void Report_system::Week(blist* ptr, int User_Choice, int Choice_2, long timeoffset, int length, bool treating)
 {
+    //paste是relation，最基本的数据储存空间
     relation* paste;
     long TIME;
     ofstream outfile;
@@ -227,7 +236,7 @@ void Report_system::Week(blist* ptr, int Choice, int Choice_2, long timeoffset, 
         return;
     }
 
-    switch (Choice)
+    switch (User_Choice)
     {
     //用户选择了按姓名排序
     case 1:
@@ -244,22 +253,22 @@ void Report_system::Week(blist* ptr, int Choice, int Choice_2, long timeoffset, 
             }
             //名字放在最前面
             outfile << "\n"
-                    << "Name: " << paste->name;
-            outfile << "Profession: " << paste->profession << endl;
-            outfile << "Age: " << paste->age_group << endl;
-            outfile << "Risk status: " << paste->risk << endl;
+                    << "Name: " << paste->person->name;
+            outfile << "Profession: " << paste->person->profession << "\n";
+            outfile << "Age: " << paste->person->age_group << "\n";
+            outfile << "Risk status: " << paste->status->risk << "\n";
             //判断时间是否锁定
             if (treating)
             {
-                TIME = paste->appointment->time - paste->timestamp;
+                TIME = paste->treatment->time - paste->registration->timestamp;
                 outfile << "Waiting time from registration to treatment: "
-                        << floor(TIME / 24) << " days and " << TIME % 24 << " hours.\n";
+                        << floor(TIME / 24) << " days and " << TIME % 24 << " hours." << endl;
             }
             else
             {
-                TIME = timeoffset - paste->timestamp;
+                TIME = timeoffset - paste->registration->timestamp;
                 outfile << "Waiting time until now: " << floor(TIME / 24)
-                        << " days and " << TIME % 24 << " hours.\n";
+                        << " days and " << TIME % 24 << " hours." << endl;
             }
             paste = paste->next;
         }
@@ -270,27 +279,27 @@ void Report_system::Week(blist* ptr, int Choice, int Choice_2, long timeoffset, 
 
         while (nullptr != paste)
         {
-            if (0 == paste->age_group)
+            if (0 == paste->person->age_group)
             {
                 paste = paste->next;
                 continue;
             }
             // profession排在最前面
             outfile << "\n"
-                    << "Profession: " << paste->profession << endl;
-            outfile << "Name: " << paste->name;
-            outfile << "Age: " << paste->age_group << endl;
-            outfile << "Risk status: " << paste->risk << endl;
+                    << "Profession: " << paste->person->profession << "\n";
+            outfile << "Name: " << paste->person->name;
+            outfile << "Age: " << paste->person->age_group << "\n";
+            outfile << "Risk status: " << paste->status->risk << "\n";
             if (treating)
             {
-                TIME = paste->appointment->time - paste->timestamp;
+                TIME = paste->treatment->time - paste->registration->timestamp;
                 outfile << "Waiting time from registration to treatment: "
                         << floor(TIME / 24) << " days and " << TIME % 24 << " hours."
                         << endl;
             }
             else
             {
-                TIME = timeoffset - paste->timestamp;
+                TIME = timeoffset - paste->registration->timestamp;
                 outfile << "Waiting time until now: " << floor(TIME / 24)
                         << " days and " << TIME % 24 << " hours." << endl;
             }
@@ -299,30 +308,30 @@ void Report_system::Week(blist* ptr, int Choice, int Choice_2, long timeoffset, 
         break;
 
     case 3:
-        paste = Sorting(head, Choice_2, length, 3);
+        paste = Sorting(ptr, Choice_2, length, 3);
 
         while (nullptr != paste)
         {
-            if (0 == paste->age_group)
+            if (0 == paste->person->age_group)
             {
                 paste = paste->next;
                 continue;
             }
             outfile << "\n"
-                    << "Age group: " << paste->age_group << endl;
-            outfile << "Name: " << paste->name;
-            outfile << "Profession: " << paste->profession << endl;
-            outfile << "Risk status: " << paste->risk << endl;
+                    << "Age group: " << paste->person->age_group << endl;
+            outfile << "Name: " << paste->person->name;
+            outfile << "Profession: " << paste->person->profession << endl;
+            outfile << "Risk status: " << paste->status->risk << endl;
             if (treating)
             {
-                TIME = paste->appointment->time - paste->timestamp;
+                TIME = paste->treatment->time - paste->registration->timestamp;
                 outfile << "Waiting time from registration to treatment: "
                         << floor(TIME / 24) << " days and " << TIME % 24 << " hours."
                         << endl;
             }
             else
             {
-                TIME = timeoffset - paste->timestamp;
+                TIME = timeoffset - paste->registration->timestamp;
                 outfile << "Waiting time until now: " << floor(TIME / 24)
                         << " days and " << TIME % 24 << " hours." << endl;
             }
@@ -341,14 +350,8 @@ relation* Report_system::Sorting(blist* ptr, int Choice_2, int length, int Choic
     Block* head = ptr->head;
     Block* count_for_total_number = head;
     int total_number = 0;
-    do
-    {
-        while (int i = 0; i < count_for_total_number->number; i++)
-        {
-            total_number += 1;
-        }
-    }
-    block* temp = new block[length * ];
+
+    relation* temp = new relation[length * ];
     int i = 0;
 
     switch (Choice_2)
