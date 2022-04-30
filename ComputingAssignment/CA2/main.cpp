@@ -17,7 +17,7 @@ int main()
     Local* local[2];
     local[0] = new Local; // cout << "Create new local"
     local[1] = new Local; // cout << "Create new local"
-    Heap* h = new Heap;
+    fibonacci::Heap* h = new fibonacci::Heap;
     queue* q = new queue; // central
     Alist alist;
     Hlist hlist;
@@ -69,7 +69,7 @@ int main()
                 cin >> f;
             } while (f < 1 && f > 2);
             local[f - 1]->readfile(filename, f);
-            cout << "This queue has " << local[f - 1]->Queue->num << " items now\n";
+            cout << "This queue has " << local[f - 1] << " items now\n";
             break;
         }
         case 2:

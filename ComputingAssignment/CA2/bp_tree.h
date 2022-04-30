@@ -8,7 +8,6 @@
 // TODO: 调整Fibonacci Tree的namespace
 namespace bp_tree
 {
-    template<class T>
     class Node
     {
     public:
@@ -16,26 +15,27 @@ namespace bp_tree
         ~Node();
 
         std::vector<char*> key;
-        std::vector<bp_tree::Node<T>*> children;
-        // Block*
-        bp_tree::Node<T>* parent;
+        std::vector<bp_tree::Node*> children;
+        bp_tree::Node* parent;
         bool is_leaf;
+        // for leaf node, pointing to the block
+        Block* block;
     };
 
-    template<class T>
     class Tree
     {
     public:
         Tree();
         ~Tree();
 
-        int insert_node(T key);
-        int delete_node(T key);
-        int find_node(T key);
+        int insert_node(char* key);
+        int delete_node(char* key);
+        bp_tree::Node* find_node(char* key);
+        int keycmp(bp_tree::Node* node1, bp_tree::Node* node2);
 
     private:
-        // int degree;
-        bp_tree::Node<T>* root_node;
+        int max_degree;
+        bp_tree::Node* root_node;
     };
 }
 
