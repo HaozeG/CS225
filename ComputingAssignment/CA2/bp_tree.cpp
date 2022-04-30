@@ -1,4 +1,4 @@
-#include "b_tree.h"
+#include "bp_tree.h"
 #include <iostream>
 #include <stdio.h>
 #include <vector>
@@ -25,7 +25,7 @@ int b_tree::Tree<T>::find_node(T key)
 template<class T>
 b_tree::Node<T>::Node()
 {
-    key = std::vector<Data*>();
+    key = std::vector<relation*>();
     children = std::vector<Node<T>*>();
     parent = nullptr;
     is_leaf = true;

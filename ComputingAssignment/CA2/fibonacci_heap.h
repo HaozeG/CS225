@@ -29,7 +29,7 @@ namespace fibonacci
         ~Heap();
         Node* highest; // pointer to the highest priority node
         int n; // record the number of nodes in this heap
-        // TODO: record the type of the heap based on treatment 
+        // TODO: record the type of the heap based on treatment
         int type; // record the treatment type of the heap
 
         void insert(relation* relation); // insert new node with given data

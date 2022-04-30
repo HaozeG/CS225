@@ -6,7 +6,7 @@
 #include "data.h"
 
 // TODO: 调整Fibonacci Tree的namespace
-namespace b_tree
+namespace bp_tree
 {
     template<class T>
     class Node
@@ -15,9 +15,10 @@ namespace b_tree
         Node();
         ~Node();
 
-        std::vector<Data*> key;
-        std::vector<b_tree::Node<T>*> children;
-        b_tree::Node<T>* parent;
+        std::vector<char*> key;
+        std::vector<bp_tree::Node<T>*> children;
+        // Block*
+        bp_tree::Node<T>* parent;
         bool is_leaf;
     };
 
@@ -26,15 +27,15 @@ namespace b_tree
     {
     public:
         Tree();
-        ~Tree(T);
+        ~Tree();
 
         int insert_node(T key);
         int delete_node(T key);
         int find_node(T key);
 
     private:
-        int degree;
-        b_tree::Node<T>* root_node;
+        // int degree;
+        bp_tree::Node<T>* root_node;
     };
 }
 
