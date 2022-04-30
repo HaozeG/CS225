@@ -1,6 +1,6 @@
 #ifndef data_h
 #define data_h
-#include "fibonacci_heap.h"
+// #include "fibonacci_heap.h"
 using namespace std;
 
 /*class Contact
@@ -123,6 +123,7 @@ public:
     ~Registration();
 
     int timestamp;
+    bool withdrawn;
     char* key();
 };
 
@@ -137,7 +138,10 @@ public:
     char* key();
 };
 
-// class fibonacci::Node;
+namespace fibonacci
+{
+    class Node;
+}
 
 class relation
 {
