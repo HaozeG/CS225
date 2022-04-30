@@ -1,3 +1,6 @@
+#ifndef base_cpp
+#define base_cpp
+using namespace std;
 #include <stdio.h>
 #include <iostream>
 #include <cstdlib>
@@ -24,6 +27,7 @@ Person::Person()
 
 Status::Status()
 {
+    id = new char[10];
     risk = 0;
     priority = -1;
     type = 1;
@@ -31,11 +35,13 @@ Status::Status()
 
 Registration::Registration()
 {
+    id = new char[10];
     timestamp = 0;
 }
 
 Treatment::Treatment()
 {
+    id = new char[10];
     time = 0;
     hospital_id = 0;
 }
@@ -48,9 +54,9 @@ relation::relation()
     treatment = new Treatment();
 }
 
-Block::Block()
+template <class T> Block<T>::Block()
 {
-    block = new relation*[9];
+    block = new T*[9];
     for (int i = 0; i < 9; i++) block[i] = NULL;
     number = 0;
     overflow = 0;
@@ -61,7 +67,7 @@ Block::Block()
     parent = NULL;
 }
 
-blist::blist()
+template <class T> blist<T>::blist()
 {
     head = NULL;
     //numitems = 0;
@@ -74,35 +80,29 @@ char* Person::key()
 
 char* Status::key()
 {
-    char* a = new char [10];
-    sprintf(a,"%d",this->priority);
-    return a;//return this->priority;
+   return this->id;
 }
 
 char* Registration::key()
 {
-    char* a = new char [10];
-    sprintf(a,"%d",this->timestamp);
-    return a;//return this->timestamp;
+    return this->id;
 }
 
 char* Treatment::key()
 {
-    char* a = new char [10];
+    /*char* a = new char [10];
     sprintf(a,"%d",this->time);
-    return a;//return this->time;
+    return a;//return this->time;*/
+    return this->id;
 }
 
-class blist;
 
-int relation::key()
+char* relation::key()
 {
-    if (this->status->type == 0) return this->registration->timestamp;
-    else if (this->status->type == 1) return this->status->risk;
-    else return this->status->priority;
+    return this->person->id;
 }
 
-void Block::sort() // Need to add parts to update pointers in tree
+template <class T> void Block<T>::sort() // Need to add parts to update pointers in tree
 {
     for (int i = 3; i < this->length; i++) // clear the empty spaces in ordered place
     {
@@ -122,9 +122,9 @@ void Block::sort() // Need to add parts to update pointers in tree
         for (int j = i + 1; j < this->length; j++)
         {
             if (this->block[j] == NULL) break;
-            if (strcmp(this->block[i]->person->id, this->block[j]->person->id) > 0) 
+            if (strcmp(this->block[i]->key(), this->block[j]->key()) > 0) 
             {
-                relation* temp = this->block[i];
+                T* temp = this->block[i];
                 this->block[i] = this->block[j];
                 this->block[j] = temp;
             }
@@ -133,12 +133,12 @@ void Block::sort() // Need to add parts to update pointers in tree
     this->overflow = 0;
 }
 
-relation* Block::split(relation* item)
+template <class T> T* Block<T>::split(T* item)
 {
     Block* newblock = new Block();
     int newnum = this->number / 2 + 3;
-    relation* mid;
-    if (strcmp(this->block[newnum-1]->person->id, item->person->id) > 0) // left side
+    T* mid;
+    if (strcmp(this->block[newnum-1]->key(), item->key()) > 0) // left side
     {
         mid = this->block[newnum-1];
         this->block[newnum-1] = item;
@@ -150,9 +150,9 @@ relation* Block::split(relation* item)
         }
         this->sort();
     }
-    else if (strcmp(this->block[newnum]->person->id, item->person->id) < 0) // right side
+    else if (strcmp(this->block[newnum]->key(), item->key()) < 0) // right side
     {
-        mid = this->block[newnum];cout<<newnum<<" "<<mid->person->id<<"\n";
+        mid = this->block[newnum];
         this->block[newnum] = item;
         for (int i = newnum; i < this->length; i++)
         {
@@ -176,15 +176,14 @@ relation* Block::split(relation* item)
     newblock->prev = this;
     if (this->next != NULL) this->next->prev = newblock;
     this->next = newblock;
-    //blist::numitems++;
     return mid;
 }
 
-void Block::insert(relation* item)
-{//cout<<"ha\n";//cout<<this->number<<"ha\n";
+template <class T> void Block<T>::insert(T* item)
+{
     if (this->number == this->length - 3) 
     {
-        relation* mid = this->split(item);
+        T* mid = this->split(item);
         this->insert(mid); // need to be modified when implementing trees
     }
     else
@@ -197,13 +196,13 @@ void Block::insert(relation* item)
     }
 }
 
-void Block::bdelete(const char* id)
+template <class T> void Block<T>::bdelete(const char* id) // no consideration about merging
 {
     if (this->number == 0) return;
     for (int i =0; i < this->length; i++)
     {
         if (this->block[i] == NULL) continue;
-        if (strcmp(this->block[i]->person->id, id) == 0) 
+        if (strcmp(this->block[i]->key(), id) == 0) 
         {
             this->block[i] = NULL;
             this->number--;
@@ -213,13 +212,13 @@ void Block::bdelete(const char* id)
     return;
 }
 
-relation* Block::retrieval(const char* id) 
+template <class T> T* Block<T>::retrieval(const char* id) 
 {
     if (this->number == 0) return NULL;
     for (int i =0; i < this->overflow; i++)
     {
         if (this->block[i] == NULL) break;
-        if (strcmp(this->block[i]->person->id, id) == 0)
+        if (strcmp(this->block[i]->key(), id) == 0)
         {
             return this->block[i];
         }
@@ -236,8 +235,8 @@ relation* Block::retrieval(const char* id)
                 while (this->block[mid] == NULL && mid > low) mid--;
             if (this->block[mid] == NULL) return NULL;
         }
-        if (strcmp(this->block[mid]->person->id, id) == 0) return this->block[mid];
-        else if (strcmp(this->block[mid]->person->id, id) > 0)
+        if (strcmp(this->block[mid]->key(), id) == 0) return this->block[mid];
+        else if (strcmp(this->block[mid]->key(), id) > 0)
         {
             int tem = mid;
             mid = mid - (mid - low) / 2;
@@ -253,11 +252,13 @@ relation* Block::retrieval(const char* id)
     return NULL;
 }
 
-void blist::merge(Block* block1, Block* block2) // the final index should be the same as block1
+template <class T> void blist<T>::merge(Block<T>* block1, Block<T>* block2) // the final index should be the same as block1
 {
-    for (int i = 0; i < block2->number; i++)
+    for (int i = 0; i < block2->number + 3; i++)
+    {    
+        if (block2->block[i] == NULL) continue;
         block1->insert(block2->block[i]);
-    //this->numitems--;
+    }
     if (block2->prev == NULL) this->head = block2->next;
     else if (block2->next == NULL) block2->prev->next = NULL;
     else 
@@ -267,3 +268,118 @@ void blist::merge(Block* block1, Block* block2) // the final index should be the
     }
     return;
 }
+
+/*Local::Local()
+{
+    local = new blist<relation>;
+}
+
+int Local::readfile(const char* filename)
+{
+     FILE *fp;
+    fp = fopen(filename , "r");
+    if(fp == NULL) {
+     perror("打开文件时发生错误");
+     return(-1);
+    }
+    Block<relation>* block = new Block<relation>();
+    if (this->local->head == NULL) this->local->head = block; 
+    fgets (str, 60, fp);
+    str[1] = '\0';
+    int i = atoi(str);
+    for (; i>0; i--)
+    {
+        relation* data = new relation();
+        if( fgets (data->person->id, 60, fp)!=NULL )
+        { 
+            data->person->id[10]='\0';
+            strcpy(data->status->id, data->person->id);
+            strcpy(data->registration->id, data->person->id);
+            strcpy(data->treatment->id, data->person->id);
+        }
+        else return 0;
+        if( fgets (data->person->name, 60, fp)==NULL )
+            return 0;
+        if( fgets (str, 60, fp)!=NULL ) 
+        {
+            int a = sizeof(str);
+            str[a-1]='\0';
+            a = atoi(str);
+            data->person->addx = a;
+        } 
+        else return 0;
+        if( fgets (str, 60, fp)!=NULL ) 
+        {
+            int a = sizeof(str);
+            str[a-1]='\0';
+            a = atoi(str);
+            data->person->addy = a;
+        } 
+        else return 0;
+        if( fgets (data->person->phone, 60, fp)!=NULL )
+            data->person->phone[11]='\0';
+        else return 0;
+        if( fgets (data->person->WeChat, 60, fp)==NULL ) 
+            return 0;
+        if( fgets (data->person->email, 60, fp)==NULL ) 
+            return 0;
+        if( fgets (str, 60, fp)!=NULL ) 
+        {
+            str[1]='\0';
+            int a = atoi(str);
+            data->person->profession = a;
+        } 
+        else return 0;
+        if( fgets (data->person->birth, 60, fp)!=NULL ) 
+            data->person->birth[8]='\0';
+        else return 0;
+        if( fgets (str, 60, fp)!=NULL ) 
+        {
+            str[1]='\0';
+            int a = atoi(str);
+            data->status->risk = a;
+        } 
+        else return 0;
+        if( fgets (str, 60, fp)!=NULL ) 
+        {
+            int a = sizeof(str);
+            str[a-1]='\0';
+            a = atoi(str);
+            data->registration->timestamp = a;
+        } 
+        else return 0;
+        if( fgets (str, 60, fp)!=NULL ) 
+        {
+            str[1]='\0';
+            int a = atoi(str);
+            data->person->age_group = a;
+        } 
+        else return 0;
+        if( fgets (str, 60, fp)!=NULL ) 
+        {
+            int a = sizeof(str);
+            str[a-1]='\0';
+            a = atoi(str);
+            data->status->priority = a;
+        } 
+        else return 0;
+        if( fgets (str, 60, fp)!=NULL ) // new parts!!!
+        {
+            int a = sizeof(str);
+            str[a-1]='\0';
+            a = atoi(str);
+            data->status->type = a;
+        } 
+        else return 0;
+        block->insert(data);//cout<<i<<"\n";
+    }
+    fclose(fp);
+    return 1;
+}
+
+Block<relation>* Local::update()
+{
+    Block<relation>* head = local->head;
+    return head;
+}*/
+#endif
