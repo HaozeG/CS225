@@ -17,6 +17,7 @@ public:
     void Week(blist* ptr, int Choice, int Choice_2, long timeoffset, int length, bool treating);
     void Month(blist* ptr, long timeoffset);
     relation* Sorting(blist* head, int Choice_2, int length, int Choice);
+    void time_calculator(bool treating, relation *paste);
     // static bool cmp_age(Data a, Data b);
     // static bool cmp_profession(Data a, Data b);
     // static bool cmp_name(Data a, Data b);

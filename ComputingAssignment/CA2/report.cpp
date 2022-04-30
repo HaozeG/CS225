@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstring>
+#include <fstream>
 #include <new>
 #include <typeinfo>
 using namespace std;
@@ -257,19 +258,23 @@ void Report_system::Week(blist* ptr, int User_Choice, int Choice_2, long timeoff
             outfile << "Profession: " << paste->person->profession << "\n";
             outfile << "Age: " << paste->person->age_group << "\n";
             outfile << "Risk status: " << paste->status->risk << "\n";
+            outfile << "Priority rule: " << paste->status->type << "\n";
+            outfile.close();
             //判断时间是否锁定
-            if (treating)
-            {
-                TIME = paste->treatment->time - paste->registration->timestamp;
-                outfile << "Waiting time from registration to treatment: "
-                        << floor(TIME / 24) << " days and " << TIME % 24 << " hours." << endl;
-            }
-            else
-            {
-                TIME = timeoffset - paste->registration->timestamp;
-                outfile << "Waiting time until now: " << floor(TIME / 24)
-                        << " days and " << TIME % 24 << " hours." << endl;
-            }
+            // if (treating)
+            // {
+            //     TIME = paste->treatment->time - paste->registration->timestamp;
+            //     outfile << "Waiting time from registration to treatment: "
+            //             << floor(TIME / 24) << " days and " << TIME % 24 << " hours." << endl;
+            // }
+            // else
+            // {
+            //     TIME = timeoffset - paste->registration->timestamp;
+            //     outfile << "Waiting time until now: " << floor(TIME / 24)
+            //             << " days and " << TIME % 24 << " hours." << endl;
+            // }
+            time_calculator(treating, paste);
+            outfile.open("./report/Week.txt", ios::out | ios::app);
             paste = paste->next;
         }
         break;
@@ -290,19 +295,23 @@ void Report_system::Week(blist* ptr, int User_Choice, int Choice_2, long timeoff
             outfile << "Name: " << paste->person->name;
             outfile << "Age: " << paste->person->age_group << "\n";
             outfile << "Risk status: " << paste->status->risk << "\n";
-            if (treating)
-            {
-                TIME = paste->treatment->time - paste->registration->timestamp;
-                outfile << "Waiting time from registration to treatment: "
-                        << floor(TIME / 24) << " days and " << TIME % 24 << " hours."
-                        << endl;
-            }
-            else
-            {
-                TIME = timeoffset - paste->registration->timestamp;
-                outfile << "Waiting time until now: " << floor(TIME / 24)
-                        << " days and " << TIME % 24 << " hours." << endl;
-            }
+            outfile << "Priority rule: " << paste->status->type << "\n";
+            outfile.close();
+            // if (treating)
+            // {
+            //     TIME = paste->treatment->time - paste->registration->timestamp;
+            //     outfile << "Waiting time from registration to treatment: "
+            //             << floor(TIME / 24) << " days and " << TIME % 24 << " hours."
+            //             << endl;
+            // }
+            // else
+            // {
+            //     TIME = timeoffset - paste->registration->timestamp;
+            //     outfile << "Waiting time until now: " << floor(TIME / 24)
+            //             << " days and " << TIME % 24 << " hours." << endl;
+            // }
+            time_calculator(treating, paste);
+            outfile.open("./report/Week.txt", ios::out | ios::app);
             paste = paste->next;
         }
         break;
@@ -322,25 +331,29 @@ void Report_system::Week(blist* ptr, int User_Choice, int Choice_2, long timeoff
             outfile << "Name: " << paste->person->name;
             outfile << "Profession: " << paste->person->profession << endl;
             outfile << "Risk status: " << paste->status->risk << endl;
-            if (treating)
-            {
-                TIME = paste->treatment->time - paste->registration->timestamp;
-                outfile << "Waiting time from registration to treatment: "
-                        << floor(TIME / 24) << " days and " << TIME % 24 << " hours."
-                        << endl;
-            }
-            else
-            {
-                TIME = timeoffset - paste->registration->timestamp;
-                outfile << "Waiting time until now: " << floor(TIME / 24)
-                        << " days and " << TIME % 24 << " hours." << endl;
-            }
+            outfile << "Priority rule: " << paste->status->type << "\n";
+            outfile.close();
+            // if (treating)
+            // {
+            //     TIME = paste->treatment->time - paste->registration->timestamp;
+            //     outfile << "Waiting time from registration to treatment: "
+            //             << floor(TIME / 24) << " days and " << TIME % 24 << " hours."
+            //             << endl;
+            // }
+            // else
+            // {
+            //     TIME = timeoffset - paste->registration->timestamp;
+            //     outfile << "Waiting time until now: " << floor(TIME / 24)
+            //             << " days and " << TIME % 24 << " hours." << endl;
+            // }
+            time_calculator(treating, paste);
+            outfile.open("./report/Week.txt", ios::out | ios::app);
             paste = paste->next;
         }
         break;
 
     default:
-        cout << "It seems that you did not user_choice a proper order." << endl;
+        cout << "Error." << endl;
     }
     outfile.close();
 }
@@ -457,4 +470,31 @@ bool Report_system::cmp_profession(Data a, Data b)
 bool Report_system::cmp_age(Data a, Data b)
 {
     return a.age_group < b.age_group;
+}
+
+void Report_system::time_calculator(bool treating, relation* paste)
+{
+    ofstream outfile;
+    outfile.open("./report/Week.txt", ios::out | ios::app);
+    if (!outfile.is_open())
+    {
+        cout << "Error in Week" << endl;
+        return;
+    }
+
+    if (treating)
+    {
+        TIME = paste->treatment->time - paste->registration->timestamp;
+        outfile << "Waiting time from registration to treatment: "
+                << floor(TIME / 24) << " days and " << TIME % 24 << " hours."
+                << endl;
+    }
+    else
+    {
+        TIME = timeoffset - paste->registration->timestamp;
+        outfile << "Waiting time until now: " << floor(TIME / 24)
+                << " days and " << TIME % 24 << " hours." << endl;
+    }
+    outfile.close();
+    return;
 }
