@@ -123,7 +123,6 @@ public:
     ~Registration();
 
     int timestamp;
-    bool withdrawn;
     char* key();
 };
 
@@ -149,6 +148,7 @@ public:
     relation();
     ~relation();
 
+    Appointment* appoint;
     Person* person;
     Status* status;
     Registration* registration;
