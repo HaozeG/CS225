@@ -94,7 +94,7 @@ public:
     int profession;
     char* birth;
     int age_group;
-    int addx; 
+    int addx;
     int addy;
     char* phone;
     char* WeChat;
@@ -142,7 +142,6 @@ public:
     bool appo;
     bool treated;
     bool withdrawn;
-
 };
 
 class relation
@@ -151,7 +150,7 @@ public:
     relation();
     ~relation();
 
-    Appointment *appoint;
+    Appointment* appoint;
     Person* person;
     Status* status;
     Registration* registration;
@@ -190,7 +189,6 @@ public:
     Block* head;
     //static int numitems;
     void merge(Block* block1, Block* block2);
-    
 };
 
 class Local
