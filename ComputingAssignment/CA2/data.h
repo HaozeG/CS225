@@ -136,12 +136,22 @@ public:
     char* key();
 };
 
+class Appointment
+{
+public:
+    bool appo;
+    bool treated;
+    bool withdrawn;
+
+};
+
 class relation
 {
 public:
     relation();
     ~relation();
 
+    Appointment *appoint;
     Person* person;
     Status* status;
     Registration* registration;

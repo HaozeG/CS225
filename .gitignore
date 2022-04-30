@@ -1,3 +1,4 @@
 *.o
 .vscode/settings.json
 ./ComputingAssignment/CA1/report/*.txt
+.DS_Store
