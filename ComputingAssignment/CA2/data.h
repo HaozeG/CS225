@@ -1,6 +1,5 @@
 #ifndef data_h
 #define data_h
-// #include "fibonacci_heap.h"
 using namespace std;
 
 /*class Contact
@@ -109,6 +108,7 @@ public:
     Status();
     ~Status();
 
+    char* id;
     int risk;
     int priority;
     int type; // treatment type, leading to different priority rule
@@ -122,6 +122,7 @@ public:
     Registration();
     ~Registration();
 
+    char* id;
     int timestamp;
     char* key();
 };
@@ -132,6 +133,7 @@ public:
     Treatment();
     ~Treatment();
 
+    char* id;
     int time;
     int hospital_id;
     char* key();
@@ -149,36 +151,35 @@ namespace fibonacci
 {
     class Node;
 }
-
 class relation
 {
 public:
     relation();
     ~relation();
 
-    Appointment* appoint;
     Person* person;
     Status* status;
     Registration* registration;
     Treatment* treatment;
-    int key(); // return the associated key value according to the sorting type
+    char* key(); // return the associated key value according to the sorting type
     // TODO: pointer to Node in Fibonacci Heap
     fibonacci::Node* f_node;
 
     relation* next;
 };
 
+template<class T>
 class Block // 0-2 is overflow block
 {
 public:
     Block();
     ~Block();
 
-    relation** block; // place holder == NULL
-    void insert(relation* item);
+    T** block; // place holder == NULL
+    void insert(T* item);
     void sort();
     void bdelete(const char* id);
-    relation* retrieval(const char* id); // search through the block and return the block+index
+    T* retrieval(const char* id); // search through the block and return the block+index
     int number;
     int overflow;
     int length;
@@ -187,18 +188,19 @@ public:
     Block* next;
     Block* children;
     Block* parent;
-    relation* split(relation* item);
+    T* split(T* item);
 };
 
+template<class T>
 class blist
 {
 public:
     blist();
     ~blist();
 
-    Block* head;
+    Block<T>* head;
     //static int numitems;
-    void merge(Block* block1, Block* block2);
+    void merge(Block<T>* block1, Block<T>* block2);
 };
 
 class Local
@@ -207,9 +209,10 @@ public:
     Local();
     ~Local();
 
-    blist* local;
+    blist<relation>* local;
     int readfile(const char* filename);
     char str[60];
+    Block<relation>* update();
 };
 
 #endif
