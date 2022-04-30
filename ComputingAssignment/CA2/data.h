@@ -157,6 +157,7 @@ public:
     relation();
     ~relation();
 
+    Appointment* appoint;
     Person* person;
     Status* status;
     Registration* registration;
