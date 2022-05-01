@@ -187,7 +187,7 @@ public:
     int index; // address in blist, beginning from 1
     Block* prev;
     Block* next;
-    Block* children;
+    //     Block* children;
     Block* parent;
     T* split(T* item);
 };
