@@ -22,27 +22,39 @@ bp_tree::Tree::~Tree()
     delete root_node;
 }
 
-// BFS display
+// Go through the block list
 void bp_tree::Tree::display(bp_tree::Node* root)
 {
-    cout << "abab";
-    queue<bp_tree::Node*> l;
-    l.push(root);
-    while (!l.empty())
+    // find the minimum
+    char* c = 0;
+    bp_tree::Node* node = search_node(root_node, c);
+    while (nullptr != node)
     {
-        bp_tree::Node* temp = l.front();
-        l.pop();
-        // cout << temp-;
-        cout << temp->children.size() << "tetetst";
-        for (int i = 0; i < temp->children.size(); i++)
+        for (int i = 0; i < node->key.size(); i++)
         {
-            //     cout << temp->children.size() << " hughrughrug";
-            if (i < temp->key.size())
-                cout << temp->key.at(i);
-            l.push(temp->children.at(i));
+            cout << node->key.at(i) << "\n";
         }
-        cout << "\n";
+        node = node->right;
     }
+
+    cout << "abab";
+    //     queue<bp_tree::Node*> l;
+    //     l.push(root);
+    //     while (!l.empty())
+    //     {
+    //         bp_tree::Node* temp = l.front();
+    //         l.pop();
+    //         // cout << temp-;
+    //         cout << temp->children.size() << "tetetst";
+    //         for (int i = 0; i < temp->children.size(); i++)
+    //         {
+    //             //     cout << temp->children.size() << " hughrughrug";
+    //             if (i < temp->key.size())
+    //                 cout << temp->key.at(i);
+    //             l.push(temp->children.at(i));
+    //         }
+    //         cout << "\n";
+    //     }
 }
 
 // search for the leaf node that points to the block suitable for key
@@ -78,7 +90,7 @@ void bp_tree::Tree::insert(char* key, Block<relation>* block)
     // iterate through to find an approriate branch
     while (i < node->key.size() && nullptr != node->key.at(i) && keycmp(key, node->key.at(i)) >= 0)
     {
-        cout << i;
+        // cout << node->key.at(i) << " ";
         i++;
     }
     // insert block pointer and key
@@ -119,7 +131,10 @@ bp_tree::Node* bp_tree::Node::split_node()
         new_node->is_leaf = node->is_leaf;
         new_node->parent = node->parent;
         new_node->right = node->right;
-        new_node->right->left = new_node;
+        // check for the right end of the root list
+        // root nodes do not connect head and tail
+        if (nullptr != new_node->right)
+            new_node->right->left = new_node;
         node->right = new_node;
         new_node->left = node;
         char* new_key = node->key.at(mid);
@@ -148,7 +163,7 @@ bp_tree::Node* bp_tree::Node::split_node()
             new_root->children.push_back(node);
             new_root->children.push_back(new_node);
             new_root->key.push_back(new_key);
-            // TODO: 更新bp tree的root_node指针
+            // 更新bp tree的root_node指针
             return new_root;
         }
         else
