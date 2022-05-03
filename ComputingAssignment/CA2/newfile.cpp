@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <stdio.h>
 #include <iostream>
 #include <cstdlib>
@@ -5,12 +6,14 @@
 #include <stdlib.h>
 #include <cstring>
 #include "base.cpp"
+#include "bp_tree.h"
 using std::cin;
 using std::cout;
 
 Local::Local()
 {
     local = new blist<relation>;
+    cout << "Create new local\n";
 }
 
 int Local::readfile(const char* filename)
@@ -123,7 +126,7 @@ int Local::readfile(const char* filename)
         }
         else
             return 0;
-        block->insert(data); //cout<<i<<"\n";
+        block->insert(data);
     }
     fclose(fp);
     return 1;

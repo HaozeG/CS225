@@ -217,7 +217,7 @@ public:
     ~Local();
 
     blist<relation>* local;
-    int readfile(const char* filename, bp_tree::Tree* tree);
+    int readfile(const char* filename);
     char str[60];
     Block<relation>* update();
 };
