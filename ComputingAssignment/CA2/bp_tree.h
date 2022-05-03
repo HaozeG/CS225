@@ -1,8 +1,9 @@
 #ifndef b_tree_h
 #define b_tree_h
 
-#include <vector>
+#include <array>
 #include "data.h"
+const int max_degree = 3;
 
 // TODO: 调整Fibonacci Tree的namespace
 namespace bp_tree
@@ -14,10 +15,10 @@ namespace bp_tree
         ~Node();
 
         // leaf 1 extra space for split
-        std::vector<char*> key; // mex_degree
-        std::vector<bp_tree::Node*> children; // max_degree + 1
+        std::array<char*, max_degree>* key; // max_degree
+        std::array<bp_tree::Node*, max_degree + 1>* children; // max_degree + 1
         // for leaf node, store pointers to blocks
-        std::vector<Block<relation>*> blocks; // max_degree + 1
+        std::array<Block<relation>*, max_degree + 1>* blocks; // max_degree + 1
         bp_tree::Node* parent;
         bp_tree::Node* left;
         bp_tree::Node* right;
@@ -26,9 +27,6 @@ namespace bp_tree
         void insert_key(char* key, bp_tree::Node* new_node);
         bp_tree::Node* split_node();
         // int merge_node();
-
-    private:
-        int max_degree;
     };
 
     class Tree

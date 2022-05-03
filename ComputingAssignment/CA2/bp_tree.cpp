@@ -6,10 +6,11 @@
 #include <cstring>
 #include <iostream>
 #include <stdio.h>
-#include <vector>
-#include <queue>
+#include <array>
+// #include <queue>
 using std::cin;
 using std::cout;
+// const int max_degree = 3;
 
 bp_tree::Tree::Tree()
 {
@@ -26,35 +27,18 @@ bp_tree::Tree::~Tree()
 void bp_tree::Tree::display(bp_tree::Node* root)
 {
     // find the minimum
-    char* c = 0;
-    bp_tree::Node* node = search_node(root_node, c);
+    bp_tree::Node* node = search_node(root_node, (char*)"0");
+    cout << "Keys in root nodes:\n";
     while (nullptr != node)
     {
-        for (int i = 0; i < node->key.size(); i++)
+        for (int i = 0; i < node->key->size(); i++)
         {
-            cout << node->key.at(i) << "\n";
+            if (nullptr != node->key->at(i))
+                cout << node->key->at(i) << " - ";
         }
         node = node->right;
+        cout << "\n->\n";
     }
-
-    cout << "abab";
-    //     queue<bp_tree::Node*> l;
-    //     l.push(root);
-    //     while (!l.empty())
-    //     {
-    //         bp_tree::Node* temp = l.front();
-    //         l.pop();
-    //         // cout << temp-;
-    //         cout << temp->children.size() << "tetetst";
-    //         for (int i = 0; i < temp->children.size(); i++)
-    //         {
-    //             //     cout << temp->children.size() << " hughrughrug";
-    //             if (i < temp->key.size())
-    //                 cout << temp->key.at(i);
-    //             l.push(temp->children.at(i));
-    //         }
-    //         cout << "\n";
-    //     }
 }
 
 // search for the leaf node that points to the block suitable for key
@@ -65,44 +49,63 @@ bp_tree::Node* bp_tree::Tree::search_node(bp_tree::Node* node, char* key)
     // stop when finding an empty space in vector key
     int i = 0;
     // iterate through to find an approriate branch
-    while (i < node->key.size() && nullptr != node->key.at(i) && keycmp(key, node->key.at(i)) >= 0)
+    while (i < max_degree && nullptr != node->key->at(i) && keycmp(key, node->key->at(i)) > 0)
     {
         i++;
     }
     //     if (node->is_leaf)
-    //         return node->children.at(i);
+    //         return node->children->at(i);
     //     else if (!node->is_leaf)
     //         return nullptr;
     //     else
-    return search_node(node->children.at(i), key);
+    return search_node(node->children->at(i), key);
 }
 
 // Block<relation>;
 
 void bp_tree::Tree::insert(char* key, Block<relation>* block)
 {
-    //     cout << "hhghg\n";
     bp_tree::Node* node = root_node;
     // go to appropriate leaf node
     node = search_node(node, key);
     // find place to insert block
     int i = 0;
     // iterate through to find an approriate branch
-    while (i < node->key.size() && nullptr != node->key.at(i) && keycmp(key, node->key.at(i)) >= 0)
+    while (i < node->key->size() && nullptr != node->key->at(i) && keycmp(key, node->key->at(i)) > 0)
     {
-        // cout << node->key.at(i) << " ";
+        // cout << node->key->at(i) << " ";
         i++;
     }
     // insert block pointer and key
-    node->key.insert(node->key.begin() + i, key);
-    node->blocks.insert(node->blocks.begin() + i, block);
+    if (nullptr != node->blocks->at(1) || i != 1)
+    {
+        for (int j = int(node->key->size()) - 1; j > i; j--)
+        {
+            node->key->at(j) = node->key->at(j - 1);
+        }
+        node->key->at(i) = key;
+    }
+    for (int j = int(node->blocks->size()) - 1; j > i; j--)
+    {
+        node->blocks->at(j) = node->blocks->at(j - 1);
+    }
+    node->blocks->at(i) = block;
+    // node->key->insert(node->key->begin() + i, key);
+    //     node->blocks->insert(node->blocks->begin() + i, block);
+    cout << "Insert Block successful\n";
     // check for split
-    bp_tree::Node* new_root;
-    if (0 == node->key.capacity() - node->key.size())
+    bp_tree::Node* new_root = nullptr;
+    //     cout << node->blocks->size() << "\n";
+    //     cout << node->blocks->capacity() << "  " << node->blocks->size() << "\n";
+    if (nullptr != node->blocks->at(max_degree - 1))
         new_root = node->split_node();
-    if (nullptr == new_root)
-        this->root_node = new_root;
-    cout << "Insert key successful\n";
+    //     cout << (new_root == nullptr);
+    this->root_node = (nullptr == new_root ? this->root_node : new_root);
+    //     if (nullptr != new_root)
+    //     {
+    //         cout << "tete\n";
+    //         this->root_node = new_root;
+    //     }
 }
 
 /*
@@ -124,45 +127,64 @@ int bp_tree::keycmp(char* key1, char* key2)
 bp_tree::Node* bp_tree::Node::split_node()
 {
     bp_tree::Node* node = this;
-    while (0 == node->key.capacity() - node->key.size())
+    while (nullptr != node->key->at(max_degree - 1))
     {
-        int mid = node->key.capacity() / 2;
+        int mid = max_degree / 2;
         bp_tree::Node* new_node = new bp_tree::Node();
         new_node->is_leaf = node->is_leaf;
         new_node->parent = node->parent;
-        new_node->right = node->right;
-        // check for the right end of the root list
-        // root nodes do not connect head and tail
-        if (nullptr != new_node->right)
-            new_node->right->left = new_node;
-        node->right = new_node;
-        new_node->left = node;
-        char* new_key = node->key.at(mid);
+        char* new_key = node->key->at(mid);
         if (node->is_leaf)
         {
-            new_node->key.assign(node->key.begin() + mid, node->key.end());
-            node->key.erase(node->key.begin() + mid, node->key.end());
-            new_node->children.assign(node->children.begin() + mid, node->children.end());
-            node->children.erase(node->children.begin() + mid, node->children.end());
-            new_node->blocks.assign(node->blocks.begin() + mid, node->blocks.end());
-            node->blocks.erase(node->blocks.begin() + mid, node->blocks.end());
+            // connect nodes
+            new_node->right = node->right;
+            // check for the right end of the root list
+            // root nodes do not connect head and tail
+            if (nullptr != node->right)
+                new_node->right->left = new_node;
+            node->right = new_node;
+            new_node->left = node;
+            // split keys and blocks
+            int i = 0;
+            while (i < max_degree - mid)
+            {
+                new_node->key->at(i) = node->key->at(mid + i);
+                node->key->at(mid + i) = nullptr;
+                new_node->blocks->at(i) = node->blocks->at(mid + i);
+                node->blocks->at(mid + i) = nullptr;
+                i++;
+            }
+            new_node->blocks->at(i) = node->blocks->at(mid + i);
+            node->blocks->at(mid + i) = nullptr;
         }
         else
         {
-            new_node->key.assign(node->key.begin() + mid + 1, node->key.end());
-            node->key.erase(node->key.begin() + mid, node->key.end());
-            new_node->children.assign(node->children.begin() + mid + 1, node->children.end());
-            node->children.erase(node->children.begin() + mid + 1, node->children.end());
+            // split keys and children
+            int i = 0;
+            while (i < max_degree - mid)
+            {
+                new_node->key->at(i) = node->key->at(mid + i);
+                node->key->at(mid + i) = nullptr;
+                new_node->children->at(i) = node->children->at(mid + i);
+                node->children->at(mid + i) = nullptr;
+                i++;
+            }
+            new_node->children->at(i) = node->children->at(mid + i);
+            node->children->at(mid + i) = nullptr;
         }
-
         cout << "Split one node\n";
+
         if (nullptr == node->parent)
         {
+            // create new root node
             bp_tree::Node* new_root = new bp_tree::Node();
             new_root->is_leaf = false;
-            new_root->children.push_back(node);
-            new_root->children.push_back(new_node);
-            new_root->key.push_back(new_key);
+            new_root->children->at(0) = node;
+            new_root->children->at(1) = new_node;
+            new_root->key->at(0) = new_key;
+            node->parent = new_root;
+            new_node->parent = new_root;
+            cout << "Create new root node\n";
             // 更新bp tree的root_node指针
             return new_root;
         }
@@ -176,23 +198,27 @@ bp_tree::Node* bp_tree::Node::split_node()
 
 void bp_tree::Node::insert_key(char* key, bp_tree::Node* new_node)
 {
-    int i = 0;
+    int i = max_degree - 1;
     // iterate through to find an approriate place
-    while (i < this->key.size() && nullptr != this->key.at(i) && bp_tree::keycmp(key, this->key.at(i)) >= 0)
+    while (i > 0 && ((nullptr != this->key->at(i) && bp_tree::keycmp(key, this->key->at(i)) <= 0) || nullptr == this->key->at(i)))
     {
-        i++;
+        this->key->at(i) = this->key->at(i - 1);
+        this->children->at(i + 1) = this->children->at(i);
+        i--;
     }
-    this->key.insert(this->key.begin() + i, key);
-    this->children.insert(this->children.begin() + i, new_node);
-    cout << "Insert a key\n";
+    this->key->at(i) = key;
+    this->children->at(i + 1) = new_node;
+    //     cout << "Insert a key\n";
 }
 
 bp_tree::Node::Node()
 {
-    max_degree = 3;
-    key = std::vector<char*>(max_degree);
-    children = std::vector<Node*>(max_degree + 1);
-    blocks = std::vector<Block<relation>*>(max_degree + 1);
+    key = new std::array<char*, max_degree>{};
+    //     cout << "key size is " << key->size();
+    children = new std::array<Node*, max_degree + 1>{};
+    //     cout << "children size is " << children->size();
+    blocks = new std::array<Block<relation>*, max_degree + 1>{};
+    //     cout << "blocks size is " << blocks->size();
     parent = nullptr;
     is_leaf = true;
     //     block = nullptr;
