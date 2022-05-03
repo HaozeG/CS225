@@ -1,5 +1,6 @@
 #ifndef data_h
 #define data_h
+// #include "bp_tree.h"
 using namespace std;
 
 /*class Contact
@@ -177,7 +178,7 @@ public:
     ~Block();
 
     T** block; // place holder == NULL
-    void insert(T* item);
+    T* insert(T* item);
     void sort();
     void bdelete(const char* id);
     T* retrieval(const char* id); // search through the block and return the block+index
@@ -204,6 +205,11 @@ public:
     void merge(Block<T>* block1, Block<T>* block2);
 };
 
+namespace bp_tree
+{
+    class Tree;
+}
+
 class Local
 {
 public:
@@ -211,7 +217,7 @@ public:
     ~Local();
 
     blist<relation>* local;
-    int readfile(const char* filename);
+    int readfile(const char* filename, bp_tree::Tree* tree);
     char str[60];
     Block<relation>* update();
 };
