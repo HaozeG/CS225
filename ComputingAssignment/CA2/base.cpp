@@ -64,7 +64,7 @@ Block<T>::Block()
     length = 9;
     prev = NULL;
     next = NULL;
-    children = NULL;
+    //     children = NULL;
     parent = NULL;
 }
 
@@ -187,12 +187,14 @@ T* Block<T>::split(T* item)
 }
 
 template<class T>
-void Block<T>::insert(T* item)
+T* Block<T>::insert(T* item)
 {
     if (this->number == this->length - 3)
     {
         T* mid = this->split(item);
         this->insert(mid); // need to be modified when implementing trees
+        // TODO: 我想要指向新创建的Block的指针
+        return mid;
     }
     else
     {
@@ -201,7 +203,7 @@ void Block<T>::insert(T* item)
         this->overflow++;
         if (this->overflow == 3)
             this->sort();
-        return;
+        return nullptr;
     }
 }
 
