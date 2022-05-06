@@ -2,3 +2,4 @@
 .vscode/settings.json
 ./ComputingAssignment/CA1/report/*.txt
 .DS_Store
+ComputingAssignment/CA2/test.cpp
