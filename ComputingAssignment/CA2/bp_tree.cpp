@@ -15,6 +15,7 @@ using std::cout;
 bp_tree::Tree::Tree()
 {
     root_node = new bp_tree::Node;
+    root_node->is_leaf = true;
     cout << "Create bp_tree\n";
 }
 
@@ -76,7 +77,7 @@ void bp_tree::Tree::insert(char* key, Block<relation>* block)
         i++;
     }
     // insert block pointer and key
-    if (nullptr != node->blocks->at(1) || i != 1)
+    if (nullptr != node->blocks->at(node->key->size()) || i != node->key->size())
     {
         for (int j = int(node->key->size()) - 1; j > i; j--)
         {
@@ -96,7 +97,7 @@ void bp_tree::Tree::insert(char* key, Block<relation>* block)
     bp_tree::Node* new_root = nullptr;
     //     cout << node->blocks->size() << "\n";
     //     cout << node->blocks->capacity() << "  " << node->blocks->size() << "\n";
-    if (nullptr != node->blocks->at(max_degree - 1))
+    if (nullptr != node->blocks->at(max_degree))
         new_root = node->split_node();
     //     cout << (new_root == nullptr);
     this->root_node = (nullptr == new_root ? this->root_node : new_root);
@@ -204,6 +205,10 @@ void bp_tree::Node::insert_key(char* key, bp_tree::Node* new_node)
         this->key->at(i) = this->key->at(i - 1);
         this->children->at(i + 1) = this->children->at(i);
         i--;
+    }
+    if (nullptr != this->key->at(i) && bp_tree::keycmp(key, this->key->at(i)) > 0)
+    {
+        i++;
     }
     this->key->at(i) = key;
     this->children->at(i + 1) = new_node;
@@ -465,19 +470,19 @@ void bp_tree::Tree::remove(char* key, Block<relation>* block)
 // count the number of keys
 int bp_tree::Node::count_blocks()
 {
-    int i = 0;
-    while (i < max_degree && nullptr != this->blocks->at(i))
-        i++;
-    return i;
+    //     int i = 0;
+    //     while (i < max_degree && nullptr != this->blocks->at(i))
+    //         i++;
+    return this->blocks->size();
 }
 
 // count the number of keys
 int bp_tree::Node::count_key()
 {
-    int i = 0;
-    while (i < max_degree && nullptr != this->key->at(i))
-        i++;
-    return i;
+    //     int i = 0;
+    //     while (i < max_degree && nullptr != this->key->at(i))
+    // i++;
+    return this->key->size();
 }
 
 // recursively update key starting at node
