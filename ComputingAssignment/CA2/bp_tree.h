@@ -14,7 +14,7 @@ namespace bp_tree
         Node();
         ~Node();
 
-        // leaf 1 extra space for split
+        // leave 1 extra space for split
         std::array<char*, max_degree>* key; // max_degree
         std::array<bp_tree::Node*, max_degree + 1>* children; // max_degree + 1
         // for leaf node, store pointers to blocks
@@ -26,6 +26,10 @@ namespace bp_tree
 
         void insert_key(char* key, bp_tree::Node* new_node);
         bp_tree::Node* split_node();
+        void remove_key(char* key);
+        bp_tree::Node* merge_node();
+        int count_key();
+        int count_blocks();
         // int merge_node();
     };
 
@@ -37,8 +41,10 @@ namespace bp_tree
 
         bp_tree::Node* root_node;
 
-        bp_tree::Node* search_node(bp_tree::Node* node, char* key); // return certain block that can store the key
+        bp_tree::Node* search_node(bp_tree::Node* root_node, char* key); // return certain block that can store the key
         void insert(char* key, Block<relation>* block);
+        void remove(char* key, Block<relation>* block);
+        void update_key(char* old_key, char* new_key, bp_tree::Node* node);
 
         // int delete_node(char* key);
         void display(bp_tree::Node* root);
