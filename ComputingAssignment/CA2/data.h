@@ -139,6 +139,10 @@ public:
 class Appointment
 {
 public:
+    bool in_alist = false;  // whether in Alist or not
+    long time;
+    int hospital_id;
+
     bool appo;
     bool treated;
     bool withdrawn;
