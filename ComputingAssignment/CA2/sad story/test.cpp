@@ -5,14 +5,14 @@
 #include <cstring>
 #include "data.h"
 #include "timeoffset.h"
-#include "BPlusTree.h"
+#include "bp_tree.h"
 using std::cin;
 using std::cout;
 long timeoffset = 0;
 
 int main()
 {
-    BPlusTree* pTree = new BPlusTree;
+    bp_tree::Tree* bp_tree = new bp_tree::Tree;
     Local* abc = new Local;
     Local* abc1 = new Local;
     const char* a = "testfile.txt";
@@ -23,14 +23,30 @@ int main()
     cout << "test\n";
     for (int i = 0; i < 1; i++)
     {
-        (void)pTree->Insert(abc->local->head->block[3]->key(), abc->local->head);
-        (void)pTree->Insert(abc->local->head->next->block[3]->key(), abc->local->head->next);
-        (void)pTree->Insert(abc1->local->head->block[3]->key(), abc1->local->head);
-        (void)pTree->Insert(abc1->local->head->next->block[3]->key(), abc1->local->head->next);
+        bp_tree->insert(abc->local->head->block[3]->key(), abc->local->head);
+        bp_tree->insert(abc->local->head->next->block[3]->key(), abc->local->head->next);
     }
-    //     pTree->Delete(abc->local->head->block[3]->key());
-    //     pTree->Delete(abc->local->head->next->block[3]->key());
-    pTree->PrintTree();
+    bp_tree->insert(abc1->local->head->next->block[3]->key(), abc1->local->head->next);
+    bp_tree->insert(abc1->local->head->block[3]->key(), abc1->local->head);
+    bp_tree->insert(abc1->local->head->next->block[3]->key(), abc1->local->head->next);
+    bp_tree->insert(abc1->local->head->next->block[3]->key(), abc1->local->head->next);
+    cout << bp_tree->root_node->key->at(0) << " \n";
+    //     bp_tree->insert(abc->local->head->block[3]->key(), abc->local->head);
+    //     bp_tree->insert(abc->local->head->next->block[3]->key(), abc->local->head->next);
+    //     bp_tree->insert(abc->local->head->next->block[3]->key(), abc->local->head->next);
+    //     bp_tree->insert(abc->local->head->next->block[3]->key(), abc->local->head->next);
+    //     bp_tree->insert(abc->local->head->next->block[3]->key(), abc->local->head->next);
+    //     bp_tree->insert(abc->local->head->block[3]->key(), abc->local->head);
+    bp_tree->display(bp_tree->root_node);
+    //     bp_tree->remove(abc->local->head->next->block[3]->key(), abc->local->head->next);
+    bp_tree->display(bp_tree->root_node);
+    //     bp_tree->display(bp_tree->root_node);
+    //     bp_tree->remove(abc->local->head->next->block[3]->key(), abc->local->head->next);
+    //     bp_tree->display(bp_tree->root_node);
+    //     bp_tree->insert(abc->local->head->next->block[3]->key(), abc->local->head->next);
+    //     bp_tree->insert(abc->local->head->next->block[3]->key(), abc->local->head->next);
+    //     bp_tree->insert(abc->local->head->next->block[3]->key(), abc->local->head->next);
+    //     bp_tree->insert(abc->local->head->next->block[0]->key(), abc->local->head->next);
     return 0;
     int i = 1;
     const char* x = "3200000002";

@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <cstring>
 #include "base.cpp"
-#include "bp_tree.h"
 using std::cin;
 using std::cout;
 
