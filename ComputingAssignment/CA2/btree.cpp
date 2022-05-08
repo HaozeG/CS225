@@ -6,9 +6,10 @@
 #include "data.h"
 using namespace std;
 
-Btree::Btree(int temp)
+Btree::Btree(int order, int mode)
 {
-    n = temp;
+    compare_mode = mode;
+    n = order;
     maxkey = n - 1;
     minkey = ceil(n / 2) - 1;
     root = nullptr;
@@ -26,7 +27,6 @@ void Btree::insert(relation* relation)
 
 Node* Btree::search(Node* start_node, relation* relation)
 {
-    // TODO: 重载==,>,<的比较
     Node* current_node = start_node;
     // 到达叶子节点，返回当前node
     if (current_node->children.empty())
@@ -34,18 +34,18 @@ Node* Btree::search(Node* start_node, relation* relation)
     // 找到相同relation，返回当前node
     for (int i = 0; i < current_node->key.size(); i++)
     {
-        if (relation == current_node->key[i])
+        if (r_compare(relation, current_node->key[i]) == 0)
             return current_node;
     }
     // 与key比较进入下一层search，如此递归
     for (int j = 0; j < current_node->key.size(); j++)
     {
-        if (relation < current_node->key[j])
+        if (r_compare(relation, current_node->key[j]) == -1)
             search(current_node->children[j], relation);
     }
-    if (relation > current_node->key.back())
+    if (r_compare(relation, current_node->key.back()) == 1)
         search(current_node->children.back(), relation);
-    return;
+    return current_node;
 }
 
 Node* Btree::split(Node* node, int m)
@@ -73,6 +73,7 @@ Node* Btree::split(Node* node, int m)
         it1++;
         it2++;
     }
+    return l_node;
 }
 
 void Btree::part_insert(relation* r, Node* node)
@@ -82,7 +83,7 @@ void Btree::part_insert(relation* r, Node* node)
     {
         for (int i = 0; i < node->key.size(); i++)
         {
-            if (r < node->key[i])
+            if (r_compare(r, node->key[i]) == -1)
             {
                 node->key.insert(node->key.begin() + i, r);
                 return;
@@ -102,7 +103,7 @@ void Btree::part_insert(relation* r, Node* node)
     relation* r_m = node->key[m];
     Node* l_node = split(node, m);
     int n = p_node->children.size();
-    if (l_node->key[0] > p_node->children[n-1]->key[0])
+    if (r_compare(l_node->key[0], p_node->children[n - 1]->key[0]) == 1)
     {
         p_node->children.insert(p_node->children.end(), l_node);
         p_node->children.insert(p_node->children.end(), node);
@@ -111,7 +112,7 @@ void Btree::part_insert(relation* r, Node* node)
     {
         for (int i = 0; i < p_node->children.size(); i++)
         {
-            if (l_node->key[0]<p_node->children[i]->key[0])
+            if (r_compare(l_node->key[0], p_node->children[i]->key[0]) == -1)
             {
                 p_node->children.insert(p_node->children.begin() + i, l_node);
                 p_node->children.insert(p_node->children.begin() + i, node);
@@ -121,4 +122,23 @@ void Btree::part_insert(relation* r, Node* node)
     }
     part_insert(r_m, p_node);
     return;
+}
+
+int Btree::r_compare(relation* r1, relation* r2)
+{
+    switch (compare_mode)
+    {
+    case 1: // priority
+        if (r1->status->priority > r2->status->priority)
+            return 1;
+        else if (r1->status->priority < r2->status->priority)
+            return -1;
+        else
+            return 0;
+        break;
+
+    default:
+        break;
+    }
+    return 0;
 }
