@@ -23,6 +23,8 @@ Definition (from http://www.seanster.com/BplusTree/BplusTree.html ):
    也有些人把阶定义为内部结点中键的最大数目，即2v。
    一般而言，叶子结点中最大数据个数和内部结点中最大键个数是一样的，也是2v。(我想这样做的目的是为了把内部结点和叶子结点统一到同一个结构中吧)
 */
+#include "data.h"
+#include <cstring>
 #define ORDER_V 2 /* 为简单起见，把v固定为2，实际的B+树v值应该是可配的。这里的v是内部节点中键的最小值 */
 
 #define MAXNUM_KEY (ORDER_V * 2) /* 内部结点中最多键个数，为2v */
@@ -30,8 +32,10 @@ Definition (from http://www.seanster.com/BplusTree/BplusTree.html ):
 #define MAXNUM_DATA (ORDER_V * 2) /* 叶子结点中最多数据个数，为2v */
 
 /* 键值的类型*/
-typedef int KEY_TYPE; /* 为简单起见，定义为int类型，实际的B+树键值类型应该是可配的 */
-/*备注： 为简单起见，叶子结点的数据也只存储键值*/
+typedef char* KEY_TYPE; /* 为简单起见，定义为int类型，实际的B+树键值类型应该是可配的 */
+// /*备注： 为简单起见，叶子结点的数据也只存储键值*/
+// 叶子结点的指向实际记录的指针类型
+typedef Block<relation>* DATA_TYPE;
 
 /* 结点类型 */
 enum NODE_TYPE
@@ -41,7 +45,7 @@ enum NODE_TYPE
     NODE_TYPE_LEAF = 3, // 叶子结点
 };
 
-#define NULL 0
+// #define NULL 0
 #define INVALID 0
 
 #define FLAG_LEFT 1
@@ -66,9 +70,11 @@ public:
     virtual KEY_TYPE GetElement(int i) { return 0; }
     virtual void SetElement(int i, KEY_TYPE value) {}
 
-    // 获取和设置某个指针，对中间结点指指针，对叶子结点无意义
+    // 获取和设置某个指针，对中间结点指指针，对叶子结点指数据指针
     virtual CNode* GetPointer(int i) { return NULL; }
+    DATA_TYPE GetData(int i);
     virtual void SetPointer(int i, CNode* pointer) {}
+    virtual void SetPointer(int i, DATA_TYPE pointer) {}
 
     // 获取和设置父结点
     CNode* GetFather() { return m_pFather; }
@@ -182,21 +188,36 @@ public:
         }
     }
 
-    // 获取和设置指针，对叶子结点无意义，只是实行父类的虚函数
-    CNode* GetPointer(int i)
+    // 获取和设置指针
+    DATA_TYPE GetDataPointer(int i)
     {
-        return NULL;
+        if ((i > 0) && (i <= MAXNUM_POINTER))
+        {
+            return m_Pointer[i - 1];
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+
+    void SetPointer(int i, DATA_TYPE data)
+    {
+        if ((i > 0) && (i <= MAXNUM_DATA))
+        {
+            m_Pointer[i - 1] = data;
+        }
     }
 
     // 插入数据
-    bool Insert(KEY_TYPE value);
+    bool Insert(KEY_TYPE value, DATA_TYPE data);
     // 删除数据
     bool Delete(KEY_TYPE value);
 
     // 分裂结点
-    KEY_TYPE Split(CNode* pNode);
+    KEY_TYPE Split(CLeafNode* pNode);
     // 结合结点
-    bool Combine(CNode* pNode);
+    bool Combine(CLeafNode* pNode);
 
 public:
     // 以下两个变量用于实现双向链表
@@ -205,6 +226,7 @@ public:
 
 protected:
     KEY_TYPE m_Datas[MAXNUM_DATA]; // 数据数组
+    DATA_TYPE m_Pointer[MAXNUM_DATA]; // 指向实际记录的指针数组
 };
 
 /* B+树数据结构 */
@@ -217,7 +239,7 @@ public:
     // 查找指定的数据
     bool Search(KEY_TYPE data, char* sPath);
     // 插入指定的数据
-    bool Insert(KEY_TYPE data);
+    bool Insert(KEY_TYPE data, DATA_TYPE ptr);
     // 删除指定的数据
     bool Delete(KEY_TYPE data);
 
