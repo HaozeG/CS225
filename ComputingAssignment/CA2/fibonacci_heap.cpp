@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
-#include "data.h"
+// #include "data.h"
+// #include "base.cpp"
 #include "timeoffset.h"
 #include "fibonacci_heap.h"
 using std::cout;

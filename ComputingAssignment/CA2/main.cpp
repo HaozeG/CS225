@@ -3,27 +3,84 @@
 #include "timeoffset.h"
 #include "fibonacci_heap.h"
 #include "data.h"
-#include "appoint.cpp"
-#include "report.cpp"
-#include "file.cpp"
+#include "BPlusTree.h"
+// #include "base.cpp"
+// #include "appoint.cpp"
+// #include "report.cpp"
+// #include "newfile.cpp"
 using std::cin;
 using std::cout;
 long timeoffset = 0;
 long timestart = 20220401;
 
+template<class T>
+blist<T>::~blist<T>()
+{
+}
+template<class T>
+T* Block<T>::retrieval(const char* id)
+{
+    if (this->number == 0)
+        return NULL;
+    for (int i = 0; i < this->overflow; i++)
+    {
+        if (this->block[i] == NULL)
+            break;
+        if (strcmp(this->block[i]->key(), id) == 0)
+        {
+            return this->block[i];
+        }
+    }
+    int low, high, mid;
+    mid = 3 + (this->number - this->overflow) / 2;
+    low = 3;
+    high = this->length - 1;
+    while (low <= mid && high >= mid)
+    {
+        if (this->block[mid] == NULL) // 再想想被删掉的情况
+        {
+            while (this->block[mid] == NULL && mid < high)
+                mid++;
+            if (this->block[mid] == NULL)
+                while (this->block[mid] == NULL && mid > low)
+                    mid--;
+            if (this->block[mid] == NULL)
+                return NULL;
+        }
+        if (strcmp(this->block[mid]->key(), id) == 0)
+            return this->block[mid];
+        else if (strcmp(this->block[mid]->key(), id) > 0)
+        {
+            int tem = mid;
+            mid = mid - (mid - low) / 2;
+            high = tem - 1;
+        }
+        else
+        {
+            int tem = mid;
+            mid = mid + (high - mid) / 2;
+            low = tem + 1;
+        }
+    }
+    return NULL;
+}
+
 int main()
 {
     int op = -1;
-    Local* local[2];
-    local[0] = new Local; // cout << "Create new local"
-    local[1] = new Local; // cout << "Create new local"
+    // TODO: 考虑取消local设计
+    //     Local* local[3];
+    Local* local = new Local; // cout << "Create new local"
+    //     local[1] = new Local; // cout << "Create new local"
+    //     local[2] = new Local; // cout << "Create new local"
     fibonacci::Heap* h = new fibonacci::Heap;
-    queue* q = new queue; // central
-    Alist alist;
-    Hlist hlist;
-    Hospital hospital1(100, 100, 1), hospital2(500, 500, 1);
-    hlist.addh(&hospital1);
-    hlist.addh(&hospital2);
+    BPlusTree* bpTree = new BPlusTree;
+    blist<relation>* c = new blist<relation>; // central
+    //     Alist alist;
+    //     Hlist hlist;
+    //     Hospital hospital1(100, 100, 1), hospital2(500, 500, 1);
+    //     hlist.addh(&hospital1);
+    //     hlist.addh(&hospital2);
     do
     {
         cout << "---NEW DAY---\n";
@@ -42,17 +99,20 @@ int main()
             cout << "6: manual reporting\n";
             cout << "7: GO TO NEXT DAY\n";
             cout << "8: print information about heap\n";
+            cout << "9: print information about B+ tree\n";
             cin >> op;
-        } while (op < 0 && op > 8);
+        } while (op < 0 && op > 9);
         switch (op)
         {
         case 0:
         {
             // destroy before exit
-            delete local[0];
-            delete local[1];
-            delete q;
+            //     delete local[0];
+            //     delete local[1];
+            //     delete local[2];
+            delete c;
             delete h;
+            delete bpTree;
             return 0;
         }
         case 1:
@@ -65,96 +125,148 @@ int main()
             // cout << filename << "hello\n";
             do
             {
-                cout << "Choose one local registry from 1 to 2:\n";
+                cout << "Choose one local registry from 1 to 3:\n";
                 cin >> f;
-            } while (f < 1 && f > 2);
-            local[f - 1]->readfile(filename, f);
-            cout << "This queue has " << local[f - 1] << " items now\n";
+            } while (f < 1 && f > 3);
+            local->readfile(filename);
+            cout << "Data stored\n";
+            // print
+            int i = 1;
+            const char* x = "3200000002";
+            //abc->local->head->bdelete(x);
+            //abc->local->merge(abc->local->head, abc->local->head->next);
+            //Block<relation>* tem = abc->local->head;
+            for (Block<relation>* tem = local->local->head; tem != NULL; tem = tem->next)
+            { //cout<<(tem->next == NULL)<<"\n";
+                cout << "Block" << i << "\n";
+                i++;
+                for (int j = 0; j < tem->length; j++)
+                {
+                    if (tem->block[j] == NULL)
+                        continue;
+                    cout << j << "\n";
+                    cout << "relation" << j << "\n";
+                    cout << "person"
+                         << " " << tem->block[j]->person->id << " " << tem->block[j]->person->name
+                         << " " << tem->block[j]->person->birth << " " << tem->block[j]->person->age_group
+                         << " " << tem->block[j]->person->phone << " " << tem->block[j]->person->WeChat
+                         << " " << tem->block[j]->person->email << "\n";
+                    cout << "status"
+                         << " " << tem->block[j]->status->risk << " " << tem->block[j]->status->priority
+                         << " " << tem->block[j]->status->type << "\n";
+                    cout << "registration"
+                         << " " << tem->block[j]->registration->timestamp << "\n";
+                    cout << "treatment"
+                         << " " << tem->block[j]->treatment->time << " " << tem->block[j]->treatment->hospital_id << "\n";
+                    cout << "\n";
+                }
+                //if (tem->retrieval(x) != NULL)
+                //cout<<"\n"<<tem->retrieval(x)->person->id<<"\n";
+            }
+            //     cout << "This queue has " << local[f - 1] << " items now\n";
             break;
         }
         case 2:
         {
-            int i = 0;
-            Data* temp = nullptr;
-            while (i < 2)
+            Block<relation>* pt = c->head;
+            while (pt != nullptr)
             {
-                while (local[i]->Queue->num != 0)
+                pt = pt->next;
+            }
+            int i = 0;
+            while (i < 3)
+            {
+                pt = local->update();
+                cout << pt->number << "\n";
+                while (pt != nullptr)
                 {
-                    temp = local[i]->Queue->pop();
-                    if (0 == q->num)
-                    {
-                        q->push(temp);
-                        h->insert(temp);
-                    }
-                    else
-                    {
-                        // check if it has registered
-                        Data* d_prev = q->head;
-                        Data* d = d_prev->next;
-                        // check the first data
-                        if (!strcmp(d_prev->id, temp->id) && (false == d_prev->appo))
-                        {
-                            if (true == d_prev->withdrawn)
-                                d_prev->twice = true;
-                            temp->priority = d_prev->priority;
-                            temp->withdrawn = d_prev->withdrawn;
-                            temp->locale = d_prev->locale;
-                            temp->next = d;
-                            q->head = temp;
-                            // if withdrawn, it need to be inserted into heap again
-                            if (nullptr == d_prev->node)
-                            {
-                                h->insert(temp);
-                            }
-                            else
-                            {
-                                d_prev->node->data = temp;
-                                temp->node = d_prev->node;
-                                h->update(*temp->node);
-                            }
-                            delete d_prev;
-                            continue;
-                        }
-                        while (nullptr != d)
-                        {
-                            if (!strcmp(d->id, temp->id) && (false == d->appo))
-                            {
-                                if (true == d_prev->withdrawn)
-                                    d_prev->twice = true;
-                                temp->priority = d_prev->priority;
-                                temp->withdrawn = d_prev->withdrawn;
-                                temp->locale = d_prev->locale;
-                                d_prev->next = temp;
-                                temp->next = d->next;
-                                // cout << d->node->data << "\n";
-                                // cout << d->node << "test\n";
-                                // if withdrawn, it need to be inserted into heap again
-                                if (nullptr == d->node)
-                                    h->insert(temp);
-                                else
-                                {
-                                    d->node->data = temp;
-                                    temp->node = d->node;
-                                    h->update(*temp->node);
-                                }
-                                delete d;
-                                break;
-                            }
-                            d_prev = d;
-                            d = d->next;
-                        }
-                        // if it is new data
-                        if (nullptr == d)
-                        {
-                            q->push(temp);
-                            h->insert(temp);
-                        }
-                    }
+                    bpTree->Insert(pt->block[3]->key(), pt);
+                    pt = pt->next;
                 }
+                // insert to fibonacci heap
                 i++;
             }
             cout << "Collect information from all local registries\n";
             break;
+            //     int i = 0;
+            //     Data* temp = nullptr;
+            //     while (i < 2)
+            //     {
+            //         while (local[i]->Queue->num != 0)
+            //         {
+            //             temp = local[i]->Queue->pop();
+            //             if (0 == q->num)
+            //             {
+            //                 q->push(temp);
+            //                 h->insert(temp);
+            //             }
+            //             else
+            //             {
+            //                 // check if it has registered
+            //                 Data* d_prev = q->head;
+            //                 Data* d = d_prev->next;
+            //                 // check the first data
+            //                 if (!strcmp(d_prev->id, temp->id) && (false == d_prev->appo))
+            //                 {
+            //                     if (true == d_prev->withdrawn)
+            //                         d_prev->twice = true;
+            //                     temp->priority = d_prev->priority;
+            //                     temp->withdrawn = d_prev->withdrawn;
+            //                     temp->locale = d_prev->locale;
+            //                     temp->next = d;
+            //                     q->head = temp;
+            //                     // if withdrawn, it need to be inserted into heap again
+            //                     if (nullptr == d_prev->node)
+            //                     {
+            //                         h->insert(temp);
+            //                     }
+            //                     else
+            //                     {
+            //                         d_prev->node->data = temp;
+            //                         temp->node = d_prev->node;
+            //                         h->update(*temp->node);
+            //                     }
+            //                     delete d_prev;
+            //                     continue;
+            //                 }
+            //                 while (nullptr != d)
+            //                 {
+            //                     if (!strcmp(d->id, temp->id) && (false == d->appo))
+            //                     {
+            //                         if (true == d_prev->withdrawn)
+            //                             d_prev->twice = true;
+            //                         temp->priority = d_prev->priority;
+            //                         temp->withdrawn = d_prev->withdrawn;
+            //                         temp->locale = d_prev->locale;
+            //                         d_prev->next = temp;
+            //                         temp->next = d->next;
+            //                         // cout << d->node->data << "\n";
+            //                         // cout << d->node << "test\n";
+            //                         // if withdrawn, it need to be inserted into heap again
+            //                         if (nullptr == d->node)
+            //                             h->insert(temp);
+            //                         else
+            //                         {
+            //                             d->node->data = temp;
+            //                             temp->node = d->node;
+            //                             h->update(*temp->node);
+            //                         }
+            //                         delete d;
+            //                         break;
+            //                     }
+            //                     d_prev = d;
+            //                     d = d->next;
+            //                 }
+            //                 // if it is new data
+            //                 if (nullptr == d)
+            //                 {
+            //                     q->push(temp);
+            //                     h->insert(temp);
+            //                 }
+            //             }
+            //         }
+            //         i++;
+            //     }
         }
         case 3:
         {
@@ -170,37 +282,25 @@ int main()
             str[8] = '\0';
             ddl = (atoi(str) - timestart) * 24;
 
-            // search queue to find data with certain id
-            Data* pNode = q->head;
-            if (nullptr == pNode)
+            // search blist to find relation data with certain id
+            Block<relation>* pBlock = c->head;
+            relation* ptr = nullptr;
+            while (nullptr != pBlock)
             {
-                cout << "data not found\n";
-                break;
+                ptr = pBlock->retrieval(a);
+                if (nullptr != ptr)
+                    break;
+                pBlock = pBlock->next;
             }
-            if (strcmp(q->tail->id, a) == 0)
+            if (nullptr != ptr)
             {
-                pNode = q->tail;
-                flag = true;
-            }
-            else
-            {
-                while (pNode->next != nullptr)
-                {
-                    if (strcmp(pNode->id, a) == 0)
-                    {
-                        flag = true;
-                        break;
-                    }
-                    pNode = pNode->next;
-                }
-            }
-            if (flag)
-            {
-                pNode->priority = ddl;
-                cout << pNode->name << "=>priority letter presented\n";
+                ptr->status->priority = ddl;
+                cout << ptr->person->name << "=>priority letter presented\n";
             }
             else
-                cout << "data not found\n";
+            {
+                cout << "ID not found\n";
+            }
             break;
         }
         case 4:
@@ -211,86 +311,96 @@ int main()
             cin >> a;
 
             // search queue to find data with certain id
-            Data* pNode = q->head;
-            if (pNode == nullptr)
+            Block<relation>* pBlock = c->head;
+            relation* ptr = nullptr;
+            while (nullptr != pBlock)
             {
-                cout << "data not found\n";
-                break;
+                ptr = pBlock->retrieval(a);
+                if (nullptr != ptr)
+                    break;
+                pBlock = pBlock->next;
             }
-            if (strcmp(q->tail->id, a) == 0)
-            {
-                pNode = q->tail;
-                flag = true;
-            }
-            else
-            {
-                while (pNode->next != nullptr)
-                {
-                    if (strcmp(pNode->id, a) == 0)
-                    {
-                        flag = true;
-                        break;
-                    }
-                    pNode = pNode->next;
-                }
-            }
+            //     // withdraw that data
+            //     if (nullptr != ptr)
+            //     {
+            //         if (ptr->appoint->in_alist)
+            //         {
+            //             alist.withdraw(ptr);
+            //             ptr->appoint->appo = false;
+            //         }
+            //         else if (ptr->f_node != nullptr)
+            //         {
+            //             ptr->appoint->withdrawn = true;
+            //             h->delete_node(*(ptr->f_node));
+            //         }
+            //         else
+            //             cout << "data not found\n";
+            //     }
+            //     else
+            //         cout << "data not found\n";
 
-            // withdraw that data
-            if (flag)
-            {
-                if (pNode->appointment->in_alist)
-                {
-                    alist.withdraw(pNode);
-                    pNode->appo = false;
-                }
-                else if (pNode->node != nullptr)
-                {
-                    pNode->withdrawn = true;
-                    h->delete_node(*(pNode->node));
-                }
-                else
-                    cout << "data not found\n";
-            }
-            else
-                cout << "data not found\n";
+            //     Data* pNode = q->head;
+            //     if (pNode == nullptr)
+            //     {
+            //         cout << "data not found\n";
+            //         break;
+            //     }
+            //     if (strcmp(q->tail->id, a) == 0)
+            //     {
+            //         pNode = q->tail;
+            //         flag = true;
+            //     }
+            //     else
+            //     {
+            //         while (pNode->next != nullptr)
+            //         {
+            //             if (strcmp(pNode->id, a) == 0)
+            //             {
+            //                 flag = true;
+            //                 break;
+            //             }
+            //             pNode = pNode->next;
+            //         }
+            //     }
+            // TODO: here
 
             break;
         }
         case 5:
         {
             // check for priority letter
-            Data* p = q->head;
-            while (nullptr != p)
-            {
-                // people with priority letter will receive appointment if it is <= 48 hours before the deadline
-                if ((nullptr != p->node) && (p->priority - timeoffset) <= 48 && -1 != p->priority)
-                {
-                    Data* new_data = new Data;
-                    new_data->name = p->name;
-                    new_data->profession = -1; // make sure it has the highest priority
-                    new_data->risk = 0;
-                    p->node->data = new_data;
+            //     Data* p = q->head;
+            //     while (nullptr != p)
+            //     {
+            //         // people with priority letter will receive appointment if it is <= 48 hours before the deadline
+            //         if ((nullptr != p->node) && (p->priority - timeoffset) <= 48 && -1 != p->priority)
+            //         {
+            //             Data* new_data = new Data;
+            //             new_data->name = p->name;
+            //             new_data->profession = -1; // make sure it has the highest priority
+            //             new_data->risk = 0;
+            //             p->node->data = new_data;
 
-                    // call decrease and delete_min
-                    h->update(*p->node);
-                    p->node->data = p;
-                    delete new_data;
-                }
-                p = p->next;
-            }
+            //             // call decrease and delete_min
+            //             h->update(*p->node);
+            //             p->node->data = p;
+            //             delete new_data;
+            //         }
+            //         p = p->next;
+            //     }
 
-            // input hospital information
-            cout << "tot_capacity = " << hlist.tot_capacity << "\n";
+            //     // input hospital information
+            //     cout << "tot_capacity = " << hlist.tot_capacity << "\n";
 
-            bool available = false;
-            cout << "alist.numitems = " << alist.numitems << "\n";
-            available = (alist.numitems < hlist.tot_capacity ? true : false);
-            while (available && h->n != 0)
-            {
-                alist.appoint(h, hlist);
-                available = (alist.numitems < hlist.tot_capacity ? true : false);
-                cout << "alist.numitems = " << alist.numitems << "\n";
-            }
+            //     bool available = false;
+            //     cout << "alist.numitems = " << alist.numitems << "\n";
+            //     available = (alist.numitems < hlist.tot_capacity ? true : false);
+            //     while (available && h->n != 0)
+            //     {
+            //         alist.appoint(h, hlist);
+            //         available = (alist.numitems < hlist.tot_capacity ? true : false);
+            //         cout << "alist.numitems = " << alist.numitems << "\n";
+            //     }
             break;
         }
         case 6:
@@ -303,63 +413,68 @@ int main()
             } while (c != 'w' && c != 'm');
             switch (c)
             {
-            case ('w'):
-            {
-                Report_system report;
-                report.Open_file(q->head, timeoffset, q->num);
-                break;
-            }
-            case ('m'):
-            {
-                Report_system report;
-                report.Month(q->head, timeoffset);
-            }
+                //     case ('w'):
+                //     {
+                //         Report_system report;
+                //         report.Open_file(q->head, timeoffset, q->num);
+                //         break;
+                //     }
+                //     case ('m'):
+                //     {
+                //         Report_system report;
+                //         report.Month(q->head, timeoffset);
+                //     }
             }
             break;
         }
         case 7:
         {
-            hlist.treat_done();
-            alist.clear();
+            //     hlist.treat_done();
+            //     alist.clear();
 
-            timeoffset += 24; // +24h
-            if ((timeoffset / 24) % 7 == 0 && 0 != timeoffset)
-            {
-                Report_system report;
-                report.Open_file(q->head, timeoffset, q->num);
-            }
-            if ((timeoffset / 24) % 30 == 0 && 0 != timeoffset)
-            {
-                Report_system report;
-                report.Month(q->head, timeoffset);
-            }
+            //     timeoffset += 24; // +24h
+            //     if ((timeoffset / 24) % 7 == 0 && 0 != timeoffset)
+            //     {
+            //         Report_system report;
+            //         report.Open_file(q->head, timeoffset, q->num);
+            //     }
+            //     if ((timeoffset / 24) % 30 == 0 && 0 != timeoffset)
+            //     {
+            //         Report_system report;
+            //         report.Month(q->head, timeoffset);
+            //     }
             break;
         }
         case 8:
         {
-            // print heap
-            if (nullptr == h->highest)
-            {
-                cout << "Heap already empty!\n";
-                break;
-            }
-            Node* p = h->highest->left;
-            // cout << p->left->data->name << "\n";
-            // cout << p->data->name << "\n";
-            // cout << h->highest->right->data->name << "\n";
-            cout << "Name of highest:\n"
-                 << h->highest->data->name << "\n";
-            cout << "Names in root list:\n";
-            int i = 0;
-            while (p != h->highest)
-            {
-                cout << p->data->name << "->\n";
-                p = p->left;
-                i++;
-                if (i > 10)
-                    break;
-            }
-            cout << p->data->name << "\n";
+            //     // print heap
+            //     if (nullptr == h->highest)
+            //     {
+            //         cout << "Heap already empty!\n";
+            //         break;
+            //     }
+            //     Node* p = h->highest->left;
+            //     // cout << p->left->data->name << "\n";
+            //     // cout << p->data->name << "\n";
+            //     // cout << h->highest->right->data->name << "\n";
+            //     cout << "Name of highest:\n"
+            //          << h->highest->data->name << "\n";
+            //     cout << "Names in root list:\n";
+            //     int i = 0;
+            //     while (p != h->highest)
+            //     {
+            //         cout << p->data->name << "->\n";
+            //         p = p->left;
+            //         i++;
+            //         if (i > 10)
+            //             break;
+            //     }
+            //     cout << p->data->name << "\n";
+            break;
+        }
+        case 9:
+        {
+            bpTree->PrintTree();
             break;
         }
         }

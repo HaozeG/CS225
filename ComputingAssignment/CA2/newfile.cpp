@@ -15,6 +15,10 @@ Local::Local()
     cout << "Create new local\n";
 }
 
+Local::~Local()
+{
+}
+
 int Local::readfile(const char* filename)
 {
     FILE* fp;

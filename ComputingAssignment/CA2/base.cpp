@@ -53,6 +53,10 @@ relation::relation()
     treatment = new Treatment();
 }
 
+relation::~relation()
+{
+}
+
 template<class T>
 Block<T>::Block()
 {
@@ -73,6 +77,11 @@ blist<T>::blist()
 {
     head = NULL;
     //numitems = 0;
+}
+
+template<class T>
+blist<T>::~blist<T>()
+{
 }
 
 char* Person::key()
@@ -193,7 +202,6 @@ T* Block<T>::insert(T* item)
     {
         T* mid = this->split(item);
         this->insert(mid); // need to be modified when implementing trees
-        // TODO: 我想要指向新创建的Block的指针
         return mid;
     }
     else
@@ -210,6 +218,7 @@ T* Block<T>::insert(T* item)
 template<class T>
 void Block<T>::bdelete(const char* id) // no consideration about merging
 {
+    // TODO: merge
     if (this->number == 0)
         return;
     for (int i = 0; i < this->length; i++)

@@ -11,7 +11,7 @@ namespace fibonacci
         Node();
         ~Node();
         //     Data* data;
-        relation* relation;
+        class relation* relation;
         // define four pointers for each node
         Node* parent;
         Node* child;

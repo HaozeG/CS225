@@ -205,10 +205,10 @@ public:
     void merge(Block<T>* block1, Block<T>* block2);
 };
 
-namespace bp_tree
-{
-    class Tree;
-}
+// namespace bp_tree
+// {
+//     class Tree;
+// }
 
 class Local
 {
