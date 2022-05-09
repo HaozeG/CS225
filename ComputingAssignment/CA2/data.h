@@ -1,5 +1,6 @@
 #ifndef data_h
 #define data_h
+// #include "bp_tree.h"
 using namespace std;
 
 /*class Contact
@@ -139,27 +140,45 @@ public:
     char* key();
 };
 
+class Appointment
+{
+public:
+    bool appo;
+    bool treated;
+    bool withdrawn;
+};
+
+namespace fibonacci
+{
+    class Node;
+}
 class relation
 {
 public:
     relation();
     ~relation();
 
+    Appointment* appoint;
     Person* person;
     Status* status;
     Registration* registration;
     Treatment* treatment;
     char* key(); // return the associated key value according to the sorting type
+    // TODO: pointer to Node in Fibonacci Heap
+    fibonacci::Node* f_node;
+
+    relation* next;
 };
 
-template <class T> class Block // 0-2 is overflow block
+template<class T>
+class Block // 0-2 is overflow block
 {
 public:
     Block();
     ~Block();
 
     T** block; // place holder == NULL
-    void insert(T* item);
+    T* insert(T* item);
     void sort();
     void bdelete(const char* id);
     T* retrieval(const char* id); // search through the block and return the block+index
@@ -169,12 +188,13 @@ public:
     int index; // address in blist, beginning from 1
     Block* prev;
     Block* next;
-    Block* children;
+    //     Block* children;
     Block* parent;
     T* split(T* item);
 };
 
-template <class T> class blist
+template<class T>
+class blist
 {
 public:
     blist();
@@ -183,8 +203,12 @@ public:
     Block<T>* head;
     //static int numitems;
     void merge(Block<T>* block1, Block<T>* block2);
-    
 };
+
+// namespace bp_tree
+// {
+//     class Tree;
+// }
 
 class Local
 {
