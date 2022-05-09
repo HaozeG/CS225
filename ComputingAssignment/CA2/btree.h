@@ -11,7 +11,7 @@ public:
     vector<Node*> children; // array of pointers to children nodes
     vector<Node*> parent; // array of pointers to father nodes
 
-    Node();
+    // Node();
 };
 
 class Btree
@@ -35,5 +35,7 @@ public:
     Node* split(Node* node,int m); // 返回左半部分node，原node变为右半部分，m为分割位置，注意使用前要先保存m位置的relation
     int r_compare(relation* r1, relation* r2); // > 1, = 0, < -1
 };
+
+// Node::Node(){};
 
 #endif
