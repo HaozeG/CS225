@@ -94,7 +94,7 @@ public:
     int profession;
     char* birth;
     int age_group;
-    int addx; 
+    int addx;
     int addy;
     char* phone;
     char* WeChat;
@@ -108,7 +108,6 @@ public:
     Status();
     ~Status();
 
-    char* id;
     int risk;
     int priority;
     int type; // treatment type, leading to different priority rule
@@ -122,7 +121,6 @@ public:
     Registration();
     ~Registration();
 
-    char* id;
     int timestamp;
     char* key();
 };
@@ -133,10 +131,18 @@ public:
     Treatment();
     ~Treatment();
 
-    char* id;
     int time;
     int hospital_id;
     char* key();
+};
+
+class Appointment
+{
+public:
+    bool appo;
+    bool treated;
+    bool withdrawn;
+
 };
 
 class relation
@@ -145,24 +151,27 @@ public:
     relation();
     ~relation();
 
+    Appointment *appoint;
     Person* person;
     Status* status;
     Registration* registration;
     Treatment* treatment;
-    char* key(); // return the associated key value according to the sorting type
+    int key(); // return the associated key value according to the sorting type
+
+    relation *next;
 };
 
-template <class T> class Block // 0-2 is overflow block
+class Block // 0-2 is overflow block
 {
 public:
     Block();
     ~Block();
 
-    T** block; // place holder == NULL
-    void insert(T* item);
+    relation** block; // place holder == NULL
+    void insert(relation* item);
     void sort();
     void bdelete(const char* id);
-    T* retrieval(const char* id); // search through the block and return the block+index
+    relation* retrieval(const char* id); // search through the block and return the block+index
     int number;
     int overflow;
     int length;
@@ -171,19 +180,19 @@ public:
     Block* next;
     Block* children;
     Block* parent;
-    T* split(T* item);
+    relation* split(relation* item);
 };
 
-template <class T> class blist
+class blist
 {
 public:
     blist();
     ~blist();
 
-    Block<T>* head;
+    Block* head;
     //static int numitems;
-    void merge(Block<T>* block1, Block<T>* block2);
-    
+    void merge(Block* block1, Block* block2);
+
 };
 
 class Local
@@ -192,12 +201,9 @@ public:
     Local();
     ~Local();
 
-    blist<relation>* local;
+    blist* local;
     int readfile(const char* filename);
     char str[60];
-    Block<relation>* update();
 };
-
-
 
 #endif

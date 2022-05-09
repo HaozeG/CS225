@@ -17,7 +17,8 @@ using namespace std;
     length：central中链表的长度
 
 */
-void Report_system::Open_file(blist* ptr, long timeoffset, int length)
+
+void Report_system::Open_file(blist<relation>* ptr, long timeoffset, int length)
 {
     string user_choice;
     int decision_type = 0;
@@ -97,12 +98,12 @@ void Report_system::Open_file(blist* ptr, long timeoffset, int length)
 */
 
 //缺locale的更改
-void Report_system::Month(blist* ptr, long timeoffset)
+void Report_system::Month(blist<relation>* ptr, long timeoffset)
 {
     ofstream outfile;
     int* keep = new int[9];
     //temp是Block，一个Block里有好几个relation，根据number计数
-    Block* temp = ptr->head;
+    Block<relation>* temp = ptr->head;
 
     // 0: How many people have registered?
     // 1: How many of them are waiting?（没有用到，一开始理解错误了）
@@ -222,7 +223,7 @@ void Report_system::Month(blist* ptr, long timeoffset)
     treating：判断是否治疗了，如果已经治疗了，那么等待时间已经固定
 
 */
-void Report_system::Week(blist* ptr, int User_Choice, int Choice_2, long timeoffset, int length, bool treating)
+void Report_system::Week(blist<relation>* ptr, int User_Choice, int Choice_2, long timeoffset, int length, bool treating)
 {
     //paste是relation，最基本的数据储存空间
     relation* paste;
@@ -358,10 +359,10 @@ void Report_system::Week(blist* ptr, int User_Choice, int Choice_2, long timeoff
     outfile.close();
 }
 //排序，先根据不同标准复制central中的链表到数组中，然后用sort进行排序
-relation* Report_system::Sorting(blist* ptr, int Choice_2, int length, int Choice)
+relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int length, int Choice)
 {
-    Block* head = ptr->head;
-    Block* count_for_total_number = head;
+    Block<relation>* head = ptr->head;
+    Block<relation>* count_for_total_number = head;
     int total_number = 0;
 
     relation* temp = new relation[length * ];
