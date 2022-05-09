@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "data.h"
+#include "base.cpp"
 #include <stdlib.h>
 using std::cin;
 using std::cout;
