@@ -14,4 +14,4 @@ file.o: newfile.cpp data.h base.cpp
 appoint.o: fibonacci_heap.h data.h
 	g++ $(flags) -c appoint.cpp -o appoint.o
 clean:
-	rm -rf $(objects) test
+	rm -rf $(objects) main
