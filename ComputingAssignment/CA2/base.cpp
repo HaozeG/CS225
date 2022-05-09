@@ -1,13 +1,10 @@
 #ifndef base_cpp
 #define base_cpp
-using namespace std;
 #include <stdio.h>
 #include <iostream>
 #include <cstdlib>
 #include "data.h"
 #include <stdlib.h>
-using std::cout;
-using std::cin;
 #include <cstring>
 
 
@@ -63,7 +60,6 @@ template <class T> Block<T>::Block()
     length = 9;
     prev = NULL;
     next = NULL;
-    children = NULL;
     parent = NULL;
 }
 
@@ -179,7 +175,7 @@ template <class T> T* Block<T>::split(T* item)
     return mid;
 }
 
-template <class T> void Block<T>::insert(T* item)
+template <class T> T* Block<T>::insert(T* item)
 {
     if (this->number == this->length - 3) 
     {

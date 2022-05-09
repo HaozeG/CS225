@@ -1,7 +1,6 @@
 #ifndef data_h
 #define data_h
 // #include "bp_tree.h"
-using namespace std;
 
 /*class Contact
 {

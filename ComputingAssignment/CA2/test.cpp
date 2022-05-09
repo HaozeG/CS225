@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <cstring>
 using std::cout;
-using std::cin;
 
 
 int main()
