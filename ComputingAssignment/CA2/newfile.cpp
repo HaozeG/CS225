@@ -3,12 +3,14 @@
 #include <cstdlib>
 #include "data.h"
 #include <stdlib.h>
+#include <cstring>
+#include "base.cpp"
 using std::cout;
 using std::cin;
 
 Local::Local()
 {
-    local = new blist();
+    local = new blist<relation>;
 }
 
 int Local::readfile(const char* filename)
@@ -19,7 +21,7 @@ int Local::readfile(const char* filename)
      perror("打开文件时发生错误");
      return(-1);
     }
-    Block* block = new Block();
+    Block<relation>* block = new Block<relation>();
     if (this->local->head == NULL) this->local->head = block; 
     fgets (str, 60, fp);
     str[1] = '\0';
@@ -28,7 +30,12 @@ int Local::readfile(const char* filename)
     {
         relation* data = new relation();
         if( fgets (data->person->id, 60, fp)!=NULL )
+        { 
             data->person->id[10]='\0';
+            strcpy(data->status->id, data->person->id);
+            strcpy(data->registration->id, data->person->id);
+            strcpy(data->treatment->id, data->person->id);
+        }
         else return 0;
         if( fgets (data->person->name, 60, fp)==NULL )
             return 0;
@@ -107,4 +114,10 @@ int Local::readfile(const char* filename)
     }
     fclose(fp);
     return 1;
+}
+
+Block<relation>* Local::update()
+{
+    Block<relation>* head = local->head;
+    return head;
 }
