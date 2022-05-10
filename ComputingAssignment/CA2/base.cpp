@@ -51,6 +51,8 @@ relation::relation()
     status = new Status();
     registration = new Registration();
     treatment = new Treatment();
+    appoint = new Appointment();
+    f_node = nullptr;
 }
 
 relation::~relation()
