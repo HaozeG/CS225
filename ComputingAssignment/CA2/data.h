@@ -143,9 +143,9 @@ public:
 class Appointment
 {
 public:
-    bool appo;
-    bool treated;
-    bool withdrawn;
+    bool appo = false;
+    bool treated = false;
+    bool withdrawn = false;
 };
 
 namespace fibonacci
@@ -201,6 +201,7 @@ public:
     ~blist();
 
     Block<T>* head;
+    // TODO: numitems
     //static int numitems;
     void merge(Block<T>* block1, Block<T>* block2);
 };
