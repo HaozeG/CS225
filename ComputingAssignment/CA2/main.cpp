@@ -13,58 +13,6 @@ using std::cout;
 long timeoffset = 0;
 long timestart = 20220401;
 
-template<class T>
-blist<T>::~blist<T>()
-{
-}
-template<class T>
-T* Block<T>::retrieval(const char* id)
-{
-    if (this->number == 0)
-        return NULL;
-    for (int i = 0; i < this->overflow; i++)
-    {
-        if (this->block[i] == NULL)
-            break;
-        if (strcmp(this->block[i]->key(), id) == 0)
-        {
-            return this->block[i];
-        }
-    }
-    int low, high, mid;
-    mid = 3 + (this->number - this->overflow) / 2;
-    low = 3;
-    high = this->length - 1;
-    while (low <= mid && high >= mid)
-    {
-        if (this->block[mid] == NULL) // 再想想被删掉的情况
-        {
-            while (this->block[mid] == NULL && mid < high)
-                mid++;
-            if (this->block[mid] == NULL)
-                while (this->block[mid] == NULL && mid > low)
-                    mid--;
-            if (this->block[mid] == NULL)
-                return NULL;
-        }
-        if (strcmp(this->block[mid]->key(), id) == 0)
-            return this->block[mid];
-        else if (strcmp(this->block[mid]->key(), id) > 0)
-        {
-            int tem = mid;
-            mid = mid - (mid - low) / 2;
-            high = tem - 1;
-        }
-        else
-        {
-            int tem = mid;
-            mid = mid + (high - mid) / 2;
-            low = tem + 1;
-        }
-    }
-    return NULL;
-}
-
 int main()
 {
     int op = -1;
@@ -73,7 +21,13 @@ int main()
     Local* local = new Local; // cout << "Create new local"
     //     local[1] = new Local; // cout << "Create new local"
     //     local[2] = new Local; // cout << "Create new local"
-    fibonacci::Heap* h = new fibonacci::Heap;
+    fibonacci::Heap* h[3];
+    h[0] = new fibonacci::Heap;
+    h[0]->type = 0;
+    h[1] = new fibonacci::Heap;
+    h[1]->type = 1;
+    h[2] = new fibonacci::Heap;
+    h[2]->type = 2;
     BPlusTree* bpTree = new BPlusTree;
     blist<relation>* c = new blist<relation>; // central
     //     Alist alist;
@@ -111,7 +65,9 @@ int main()
             //     delete local[1];
             //     delete local[2];
             delete c;
-            delete h;
+            delete h[0];
+            delete h[1];
+            delete h[2];
             delete bpTree;
             return 0;
         }
@@ -125,14 +81,14 @@ int main()
             // cout << filename << "hello\n";
             do
             {
-                cout << "Choose one local registry from 1 to 3:\n";
+                cout << "Choose one local registry from 1 to 2:\n";
                 cin >> f;
-            } while (f < 1 && f > 3);
+            } while (f < 1 && f > 2);
             local->readfile(filename);
-            cout << "Data stored\n";
+            cout << "Data stored: \n";
             // print
             int i = 1;
-            const char* x = "3200000002";
+            //     const char* x = "3200000002";
             //abc->local->head->bdelete(x);
             //abc->local->merge(abc->local->head, abc->local->head->next);
             //Block<relation>* tem = abc->local->head;
@@ -163,7 +119,7 @@ int main()
                 //if (tem->retrieval(x) != NULL)
                 //cout<<"\n"<<tem->retrieval(x)->person->id<<"\n";
             }
-            //     cout << "This queue has " << local[f - 1] << " items now\n";
+            // cout << "This queue has " << local-> << " items now\n";
             break;
         }
         case 2:
@@ -173,19 +129,43 @@ int main()
             {
                 pt = pt->next;
             }
-            int i = 0;
-            while (i < 3)
+            // connect to blist
+            pt = local->update();
+            //     cout << pt->number << "\n";
+            while (pt != nullptr)
             {
-                pt = local->update();
-                cout << pt->number << "\n";
-                while (pt != nullptr)
+                // insert to b+ tree
+                bpTree->Insert(pt->block[3]->key(), pt);
+                // insert to b-tree & fibonacci heap
+                for (int i = 0; i < pt->number; i++)
                 {
-                    bpTree->Insert(pt->block[3]->key(), pt);
-                    pt = pt->next;
+                    if (nullptr != pt->block[i])
+                    {
+                        // insert to fibonacci heap based on treatment type
+                        switch (pt->block[i]->status->type)
+                        {
+                        case 0:
+                        {
+                            h[0]->insert(pt->block[i]);
+                            break;
+                        }
+                        case 1:
+                        {
+                            h[1]->insert(pt->block[i]);
+                            break;
+                        }
+                        case 2:
+                        {
+                            h[2]->insert(pt->block[i]);
+                        }
+                        }
+                    }
                 }
-                // insert to fibonacci heap
-                i++;
+                pt = pt->next;
             }
+            // TODO:
+            // clear local data
+            local->local->head = nullptr;
             cout << "Collect information from all local registries\n";
             break;
             //     int i = 0;
@@ -283,15 +263,20 @@ int main()
             ddl = (atoi(str) - timestart) * 24;
 
             // search blist to find relation data with certain id
-            Block<relation>* pBlock = c->head;
+            Block<relation>* pBlock = bpTree->Search(a, nullptr);
             relation* ptr = nullptr;
-            while (nullptr != pBlock)
+            if (nullptr != pBlock)
             {
+                cout << a << "\n";
                 ptr = pBlock->retrieval(a);
-                if (nullptr != ptr)
-                    break;
-                pBlock = pBlock->next;
             }
+            //     while (nullptr != pBlock)
+            //     {
+            //         ptr = pBlock->retrieval(a);
+            //         if (nullptr != ptr)
+            //             break;
+            //         pBlock = pBlock->next;
+            //     }
             if (nullptr != ptr)
             {
                 ptr->status->priority = ddl;
@@ -368,10 +353,11 @@ int main()
         }
         case 5:
         {
-            // check for priority letter
-            //     Data* p = q->head;
+            //     //     check for priority letter
+            //     Block<relation>* p = c->head;
             //     while (nullptr != p)
             //     {
+
             //         // people with priority letter will receive appointment if it is <= 48 hours before the deadline
             //         if ((nullptr != p->node) && (p->priority - timeoffset) <= 48 && -1 != p->priority)
             //         {
@@ -447,29 +433,34 @@ int main()
         }
         case 8:
         {
-            //     // print heap
-            //     if (nullptr == h->highest)
-            //     {
-            //         cout << "Heap already empty!\n";
-            //         break;
-            //     }
-            //     Node* p = h->highest->left;
-            //     // cout << p->left->data->name << "\n";
-            //     // cout << p->data->name << "\n";
-            //     // cout << h->highest->right->data->name << "\n";
-            //     cout << "Name of highest:\n"
-            //          << h->highest->data->name << "\n";
-            //     cout << "Names in root list:\n";
-            //     int i = 0;
-            //     while (p != h->highest)
-            //     {
-            //         cout << p->data->name << "->\n";
-            //         p = p->left;
-            //         i++;
-            //         if (i > 10)
-            //             break;
-            //     }
-            //     cout << p->data->name << "\n";
+            for (int i = 0; i < 3; i++)
+            {
+                cout << "Fibonacci heap " << i << "\n";
+                // print heap
+                if (nullptr == h[i]->highest)
+                {
+                    cout << "Heap already empty!\n";
+                    continue;
+                }
+                fibonacci::Node* p = h[i]->highest->left;
+                fibonacci::Node* q = h[i]->highest->left;
+                // cout << p->left->data->name << "\n";
+                // cout << p->data->name << "\n";
+                // cout << h->highest->right->data->name << "\n";
+                cout << "Name of highest:\n"
+                     << h[i]->highest->data->person->name << "\n";
+                cout << "Names in root list:\n";
+                // int j = 0;
+                while (p != h[i]->highest)
+                {
+                    cout << p->data->person->name << "->\n";
+                    p = p->left;
+                    q = q->left->left;
+                    if (p == q)
+                        break;
+                }
+                cout << p->data->person->name << "\n";
+            }
             break;
         }
         case 9:
@@ -480,6 +471,59 @@ int main()
         }
     } while (op != 0);
     return 0;
+}
+
+template<class T>
+blist<T>::~blist<T>()
+{
+}
+
+template<class T>
+T* Block<T>::retrieval(const char* id)
+{
+    if (this->number == 0)
+        return NULL;
+    for (int i = 0; i < this->overflow; i++)
+    {
+        if (this->block[i] == NULL)
+            break;
+        if (strcmp(this->block[i]->key(), id) == 0)
+        {
+            return this->block[i];
+        }
+    }
+    int low, high, mid;
+    mid = 3 + (this->number - this->overflow) / 2;
+    low = 3;
+    high = this->length - 1;
+    while (low <= mid && high >= mid)
+    {
+        if (this->block[mid] == NULL) // 再想想被删掉的情况
+        {
+            while (this->block[mid] == NULL && mid < high)
+                mid++;
+            if (this->block[mid] == NULL)
+                while (this->block[mid] == NULL && mid > low)
+                    mid--;
+            if (this->block[mid] == NULL)
+                return NULL;
+        }
+        if (strcmp(this->block[mid]->key(), id) == 0)
+            return this->block[mid];
+        else if (strcmp(this->block[mid]->key(), id) > 0)
+        {
+            int tem = mid;
+            mid = mid - (mid - low) / 2;
+            high = tem - 1;
+        }
+        else
+        {
+            int tem = mid;
+            mid = mid + (high - mid) / 2;
+            low = tem + 1;
+        }
+    }
+    return NULL;
 }
 
 // above is the basic structure for main program
