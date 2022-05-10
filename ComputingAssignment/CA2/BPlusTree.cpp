@@ -1,4 +1,5 @@
 #include "BPlusTree.h"
+#include "data.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include <cstddef>
@@ -359,7 +360,6 @@ bool CLeafNode::Insert(KEY_TYPE value, DATA_TYPE data)
     for (i = 0; nullptr != m_Datas[i] && (strcmp(value, m_Datas[i]) > 0) && (i < m_Count); i++)
     {
     }
-    cout << "hfiuehfiehf\n";
 
     // 当前位置及其后面的数据依次后移，空出当前位置
     for (j = m_Count; j > i; j--)
@@ -462,7 +462,7 @@ BPlusTree::~BPlusTree()
 }
 
 // 在树中查找数据
-bool BPlusTree::Search(KEY_TYPE data, char* sPath)
+DATA_TYPE BPlusTree::Search(KEY_TYPE data, char* sPath)
 {
     int i = 0;
     int offset = 0;
@@ -487,11 +487,11 @@ bool BPlusTree::Search(KEY_TYPE data, char* sPath)
         {
         }
 
-        if (NULL != sPath)
-        {
-            (void)sprintf(sPath + offset, " %10s -->", pNode->GetElement(1));
-            offset += 8;
-        }
+        // if (NULL != sPath)
+        // {
+        //     (void)sprintf(sPath + offset, " %10s -->", pNode->GetElement(1));
+        //     offset += 8;
+        // }
 
         pNode = pNode->GetPointer(i);
     }
@@ -499,38 +499,39 @@ bool BPlusTree::Search(KEY_TYPE data, char* sPath)
     // 没找到
     if (NULL == pNode)
     {
-        return false;
+        return nullptr;
     }
 
-    if (NULL != sPath)
-    {
-        (void)sprintf(sPath + offset, "%10s", pNode->GetElement(1));
-        offset += 3;
-    }
-
+    //     if (NULL != sPath)
+    //     {
+    //         (void)sprintf(sPath + offset, "%10s", pNode->GetElement(1));
+    //         offset += 3;
+    //     }
     // 在叶子结点中继续找
+    CLeafNode* lNode = (CLeafNode*)pNode;
     bool found = false;
     for (i = 1; (i <= pNode->GetCount()); i++)
     {
-        if (strcmp(data, pNode->GetElement(i)) == 0)
+        if (strcmp(data, pNode->GetElement(i)) > 0)
         {
-            found = true;
+            return (1 != i ? lNode->GetDataPointer(i - 1) : lNode->GetDataPointer(i));
         }
     }
+    return nullptr;
 
-    if (NULL != sPath)
-    {
-        if (true == found)
-        {
-            (void)sprintf(sPath + offset, " ,successed.");
-        }
-        else
-        {
-            (void)sprintf(sPath + offset, " ,failed.");
-        }
-    }
+    //     if (NULL != sPath)
+    //     {
+    //         if (true == found)
+    //         {
+    //             (void)sprintf(sPath + offset, " ,successed.");
+    //         }
+    //         else
+    //         {
+    //             (void)sprintf(sPath + offset, " ,failed.");
+    //         }
+    //     }
 
-    return found;
+    //     return pNode->;
 }
 
 /* 在B+树中插入数据
@@ -570,7 +571,6 @@ bool BPlusTree::Insert(KEY_TYPE data, DATA_TYPE ptr) //
     if (pOldNode->GetCount() < MAXNUM_DATA)
     {
         return pOldNode->Insert(data, ptr);
-        cout << "sfawf\n";
     }
 
     // 原叶子结点已满，新建叶子结点，并把原结点后一半数据剪切到新结点

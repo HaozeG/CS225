@@ -237,7 +237,7 @@ public:
     virtual ~BPlusTree();
 
     // 查找指定的数据
-    bool Search(KEY_TYPE data, char* sPath);
+    DATA_TYPE Search(KEY_TYPE data, char* sPath);
     // 插入指定的数据
     bool Insert(KEY_TYPE data, DATA_TYPE ptr);
     // 删除指定的数据
