@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <cstring>
 #include "base.cpp"
+#include "timeoffset.h"
 using std::cin;
 using std::cout;
 
@@ -99,7 +100,7 @@ int Local::readfile(const char* filename)
             int a = sizeof(str);
             str[a - 1] = '\0';
             a = atoi(str);
-            data->registration->timestamp = a;
+            data->registration->timestamp = a + timestart * 100;
         }
         else
             return 0;
@@ -125,7 +126,9 @@ int Local::readfile(const char* filename)
             int a = sizeof(str);
             str[a - 1] = '\0';
             a = atoi(str);
+            // TODO: type读取有问题
             data->status->type = a;
+            cout << a << "here\n";
         }
         else
             return 0;
