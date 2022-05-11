@@ -462,7 +462,7 @@ BPlusTree::~BPlusTree()
 }
 
 // 在树中查找数据
-DATA_TYPE BPlusTree::Search(KEY_TYPE data, char* sPath)
+DATA_TYPE BPlusTree::SearchData(KEY_TYPE data, char* sPath)
 {
     int i = 0;
     int offset = 0;
@@ -509,7 +509,7 @@ DATA_TYPE BPlusTree::Search(KEY_TYPE data, char* sPath)
     //     }
     // 在叶子结点中继续找
     CLeafNode* lNode = (CLeafNode*)pNode;
-    bool found = false;
+    //     bool found = false;
     for (i = 1; (i <= pNode->GetCount()); i++)
     {
         if (strcmp(data, pNode->GetElement(i)) > 0)
@@ -534,6 +534,58 @@ DATA_TYPE BPlusTree::Search(KEY_TYPE data, char* sPath)
     //     return pNode->;
 }
 
+bool BPlusTree::SearchExistence(KEY_TYPE data)
+{
+    int i = 0;
+
+    CNode* pNode = GetRoot();
+    // 循环查找对应的叶子结点
+    while (NULL != pNode)
+    {
+        // 结点为叶子结点，循环结束
+        if (NODE_TYPE_LEAF == pNode->GetType())
+        {
+            break;
+        }
+
+        // 找到第一个键值大于等于key的位置
+        for (i = 1; (strcmp(data, pNode->GetElement(i)) >= 0) && (i <= pNode->GetCount()); i++)
+        {
+        }
+
+        // if (NULL != sPath)
+        // {
+        //     (void)sprintf(sPath + offset, " %10s -->", pNode->GetElement(1));
+        //     offset += 8;
+        // }
+
+        pNode = pNode->GetPointer(i);
+    }
+
+    // 没找到
+    if (NULL == pNode)
+    {
+        return false;
+    }
+
+    //     if (NULL != sPath)
+    //     {
+    //         (void)sprintf(sPath + offset, "%10s", pNode->GetElement(1));
+    //         offset += 3;
+    //     }
+    // 在叶子结点中继续找
+    CLeafNode* lNode = (CLeafNode*)pNode;
+    //     bool found = false;
+    for (i = 1; (i <= pNode->GetCount()); i++)
+    {
+        if (strcmp(data, pNode->GetElement(i)) == 0)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 /* 在B+树中插入数据
 插入数据首先要找到理论上要插入的叶子结点，然后分三种情况：
 (1) 叶子结点未满。直接在该结点中插入即可；
@@ -545,11 +597,12 @@ DATA_TYPE BPlusTree::Search(KEY_TYPE data, char* sPath)
 bool BPlusTree::Insert(KEY_TYPE data, DATA_TYPE ptr) //
 {
     // 检查是否重复插入
-    bool found = Search(data, NULL);
-    if (true == found)
+    bool found = SearchExistence(data);
+    if (found)
     {
         return false;
     }
+    cout << "Insert new key to B+ tree\n";
     // for debug
     //if (289 == data)
     //{
@@ -949,6 +1002,7 @@ void BPlusTree::PrintTree()
             }
         }
     }
+    printf("\n");
 }
 
 // 打印某结点
