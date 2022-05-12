@@ -74,11 +74,7 @@ void List<T>::deallocate()
     size = newsize;
 }
 
-<<<<<<< HEAD
-Hlist::Hlist() : List(20)
-=======
-Hlist::Hlist() : List(20)
->>>>>>> master
+Hlist::Hlist() : List(20) 
 {
     tot_capacity = 0;
 }

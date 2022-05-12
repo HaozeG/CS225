@@ -3,9 +3,8 @@
 #include "timeoffset.h"
 #include "fibonacci_heap.h"
 #include "data.h"
-#include "appoint.cpp"
-#include "report.cpp"
-#include "file.cpp"
+#include "appoint.h"
+#include "report.h"
 using std::cin;
 using std::cout;
 long timeoffset = 0;

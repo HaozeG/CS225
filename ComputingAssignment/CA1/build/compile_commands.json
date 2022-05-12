@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/haoze/cs225/ComputingAssignment/CA1/build",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/ca1.dir/main.cpp.o -c /home/haoze/cs225/ComputingAssignment/CA1/main.cpp",
-  "file": "/home/haoze/cs225/ComputingAssignment/CA1/main.cpp"
-}
-]

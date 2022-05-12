@@ -7,7 +7,7 @@
 #include "data.h"
 #include "timeoffset.h"
 using std::cout;
-// using std::cin;
+using std::cin;
 
 // identification number; name; address; phone; WeChat; email; profession; date of birth;
 // risk status; timestamp; age group;
@@ -107,7 +107,7 @@ Data* queue::pop()
 {
     if (num == 0)
     {
-        cout<<"queue is empty now!\n";
+        cout<<"queue is empty now!"<<endl;
         return nullptr;
     }
     num -= 1;
