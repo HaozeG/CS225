@@ -166,6 +166,7 @@ public:
     int number;
     int overflow;
     int length;
+    int overblock;
     int index; // address in blist, beginning from 1
     Block* prev;
     Block* next;
