@@ -4,7 +4,17 @@
 #include "data.h"
 #include <vector>
 
-class Node
+class Btreebase
+{
+public:
+    int n; // order
+    int maxkey; // n-1
+    int minkey; // [n/2]-1
+    int compare_mode;
+    int r_compare(relation* r1, relation* r2); // > 1, = 0, < -1
+};
+
+class Node : public Btreebase
 {
 public:
     vector<relation*> key; // array of relations(key=value)
@@ -12,28 +22,41 @@ public:
     vector<Node*> parent; // array of pointers to father nodes
 
     // Node();
+    int findKey(relation* r);
+    void deletion(relation* r);
+    void removeFromLeaf(int idx);
+    void removeFromNonLeaf(int idx);
+    relation* getPredecessor(int idx);
+    relation* getSuccessor(int idx);
+    void fill(int idx);
+    void borrowFromPrev(int idx);
+    void borrowFromNext(int idx);
+    void merge(int idx);
+    void traverse();
+    friend class Btree;
 };
 
-class Btree
+class Btree : public Btreebase
 {
 public:
-    int n; // order n
+    // int n; // order n
     Node* root;
-    int compare_mode; // take what properties to compare two relations
+    // int compare_mode; // take what properties to compare two relations
 
     // valid range of key numbers
-    int maxkey; // n-1
-    int minkey; // [n/2]-1
+    // int maxkey; // n-1
+    // int minkey; // [n/2]-1
 
     Btree(int order, int mode);
     
     void insert(relation* relation);
     void remove(relation* relation);
+    void traverse();
 
     void part_insert(relation* r, Node* node);
     Node* search(Node* start_node, relation* relation);
     Node* split(Node* node,int m); // 返回左半部分node，原node变为右半部分，m为分割位置，注意使用前要先保存m位置的relation
-    int r_compare(relation* r1, relation* r2); // > 1, = 0, < -1
+    // int r_compare(relation* r1, relation* r2); // > 1, = 0, < -1
 };
 
 // Node::Node(){};

@@ -29,11 +29,15 @@ int main()
             cout << "ID = "<<abc->local->head->block[i]->person->id<<"\n";
             // cout << "priority = " << abc->local->head->block[i]->status->priority << "\n";
             btree->insert(abc->local->head->block[i]);
+            btree->traverse();
+            cout << "\n";
         }
     }
+    btree->remove(abc->local->head->block[8]);
+    btree->traverse();
+    cout << "\n";
     // cout << "ID = "<<abc->local->head->next->block[3]->person->id<<"\n";
     // btree->insert(abc->local->head->next->block[3]);
-
 
     return 1;
 }
