@@ -1,3 +1,4 @@
+#include <cstring>
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
@@ -433,13 +434,14 @@ void fibonacci::Heap::delete_node(Node& node)
     relation* new_relation = new relation;
     // TODO: create a new node based on different priority rules
     // make sure it has the highest priority
-    new_relation->person->name = node.data->person->name;
-    if (1 == type)
+    strcpy(new_relation->person->name, node.data->person->name);
+    //     new_relation->person->name = node.data->person->name;
+    if (0 == type)
     {
         new_relation->person->profession = -1;
         new_relation->status->risk = 0;
     }
-    else if (2 == type)
+    else if (1 == type)
     {
         new_relation->person->profession = -1;
         new_relation->status->risk = 0;
@@ -456,11 +458,10 @@ void fibonacci::Heap::delete_node(Node& node)
     // call decrease and delete_min
     update(node);
     relation* p = highest->data;
+    cout << "Delete " << p->person->name << "\n";
     delete_highest();
     // keep the data unchanged
     delete new_relation;
-
-    cout << "Delete " << p->person->name << "\n";
 };
 
 /*
