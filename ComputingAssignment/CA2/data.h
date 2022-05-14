@@ -2,6 +2,8 @@
 #define data_h
 
 #include "string.h"
+#include <iostream>
+using std::cout;
 
 class Person
 {
@@ -107,14 +109,15 @@ public:
         overblock = 2;
         prev = nullptr;
         next = nullptr;
-        parent = nullptr;
+        key_in_bptree = nullptr;
     };
     ~Block();
 
     T** block; // place holder == nullptr
-    void insert(T* item);
+    Block<T>* insert(T* item);
     void sort();
-    void bdelete(const char* id);
+    char* bdelete(const char* id);
+    char* merge(Block<T>* block1, Block<T>* block2);
     T* retrieval(const char* id); // search through the block and return the block+index
     int number;
     int overflow;
@@ -124,7 +127,7 @@ public:
     Block* prev;
     Block* next;
     //     Block* children;
-    Block* parent;
+    char* key_in_bptree;
     T* split(T* item);
 };
 
@@ -140,9 +143,7 @@ public:
     ~blist(){};
 
     Block<T>* head;
-    // TODO: numitems
     //static int numitems;
-    void merge(Block<T>* block1, Block<T>* block2);
 };
 
 // namespace bp_tree
@@ -204,40 +205,40 @@ T* Block<T>::split(T* item)
     Block* newblock = new Block();
     int newnum = this->number / 2 + this->overblock;
     T* mid;
-    if (strcmp(this->block[newnum - 1]->key(), item->key()) > 0) // left side
+    //     if (strcmp(this->block[newnum - 1]->key(), item->key()) > 0) // left side
+    //     {
+    //         mid = this->block[newnum - 1];
+    //         this->block[newnum - 1] = item;
+    //         for (int i = newnum; i < this->length; i++)
+    //         {
+    //             newblock->insert(this->block[i]);
+    //             this->block[i] = nullptr;
+    //             this->number--;
+    //         }
+    //         this->sort();
+    //     }
+    //     if (strcmp(this->block[newnum]->key(), item->key()) < 0) // right side
+    //     {
+    mid = this->block[newnum];
+    this->block[newnum] = item;
+    for (int i = newnum; i < this->length; i++)
     {
-        mid = this->block[newnum - 1];
-        this->block[newnum - 1] = item;
-        for (int i = newnum; i < this->length; i++)
-        {
-            newblock->insert(this->block[i]);
-            this->block[i] = nullptr;
-            this->number--;
-        }
-        this->sort();
+        newblock->insert(this->block[i]);
+        this->block[i] = nullptr;
+        this->number--;
     }
-    else if (strcmp(this->block[newnum]->key(), item->key()) < 0) // right side
-    {
-        mid = this->block[newnum];
-        this->block[newnum] = item;
-        for (int i = newnum; i < this->length; i++)
-        {
-            newblock->insert(this->block[i]);
-            this->block[i] = nullptr;
-            this->number--;
-        }
-        newblock->sort();
-    }
-    else // mid
-    {
-        mid = item;
-        for (int i = newnum; i < this->length; i++)
-        {
-            newblock->insert(this->block[i]);
-            this->block[i] = nullptr;
-            this->number--;
-        }
-    }
+    newblock->sort();
+    //     }
+    //     else // mid
+    //     {
+    //         mid = item;
+    //         for (int i = newnum; i < this->length; i++)
+    //         {
+    //             newblock->insert(this->block[i]);
+    //             this->block[i] = nullptr;
+    //             this->number--;
+    //         }
+    //     }
     newblock->next = this->next;
     newblock->prev = this;
     if (this->next != nullptr)
@@ -247,13 +248,13 @@ T* Block<T>::split(T* item)
 }
 
 template<class T>
-void Block<T>::insert(T* item)
+Block<T>* Block<T>::insert(T* item)
 {
     if (this->number == this->length - this->overblock)
     {
         T* mid = this->split(item);
         this->insert(mid); // need to be modified when implementing trees
-        // TODO: insert into b+ tree
+        return this->next;
     }
     else
     {
@@ -262,15 +263,22 @@ void Block<T>::insert(T* item)
         this->overflow++;
         if (this->overflow == this->overblock)
             this->sort();
-        return;
+        return nullptr;
     }
 }
 
+/**
+ * @brief delete data with id from block, return the key to be deleted in B+ tree
+ *
+ * @tparam T
+ * @param id
+ * @return char*
+ */
 template<class T>
-void Block<T>::bdelete(const char* id) // no consideration about merging
+char* Block<T>::bdelete(const char* id)
 {
     if (this->number == 0)
-        return;
+        return nullptr;
     for (int i = 0; i < this->length; i++)
     {
         if (this->block[i] == nullptr)
@@ -279,10 +287,20 @@ void Block<T>::bdelete(const char* id) // no consideration about merging
         {
             this->block[i] = nullptr;
             this->number--;
-            return;
+            break;
         }
     }
-    return;
+    //     this->sort();
+    // check for merge
+    if (nullptr != this->prev && (this->number + this->prev->number) <= (this->length - this->overblock))
+    {
+        return merge(this->prev, this);
+    }
+    if (nullptr != this->next && (this->number + this->next->number) <= (this->length - this->overblock))
+    {
+        return merge(this, this->next);
+    }
+    return nullptr;
 }
 
 template<class T>
@@ -290,7 +308,8 @@ T* Block<T>::retrieval(const char* id)
 {
     if (this->number == 0)
         return nullptr;
-    for (int i = 0; i < this->overflow; i++)
+    int i = 0;
+    for (i = 0; i < this->overflow; i++)
     {
         if (this->block[i] == nullptr)
             break;
@@ -300,63 +319,53 @@ T* Block<T>::retrieval(const char* id)
         }
     }
     int low, high, mid;
-    mid = this->overblock + (this->number - this->overflow) / 2;
     low = this->overblock;
-    high = this->length - 1;
-    while (low <= mid && high >= mid)
+    high = (this->number - i) + low - 1;
+    while (low <= high)
     {
-        if (this->block[mid] == nullptr) // 再想想被删掉的情况
-        {
-            while (this->block[mid] == nullptr && mid < high)
-                mid++;
-            if (this->block[mid] == nullptr)
-                while (this->block[mid] == nullptr && mid > low)
-                    mid--;
-            if (this->block[mid] == nullptr)
-                return nullptr;
-        }
-        if (strcmp(this->block[mid]->key(), id) == 0)
+        mid = (low + high) / 2;
+        cout << this->block[2]->key() << "ghighiweg\n";
+        char* mid_key = this->block[mid]->key();
+        cout << mid << "mid\n";
+        if (strcmp(id, mid_key) == 0)
             return this->block[mid];
-        else if (strcmp(this->block[mid]->key(), id) > 0)
+        else if (strcmp(id, mid_key) > 0)
         {
-            int tem = mid;
-            if (mid - low == 1)
-                mid = mid - 1;
-            else
-                mid = mid - (mid - low) / 2;
-            high = tem;
+            low = mid + 1;
         }
         else
         {
-            int tem = mid;
-            if (high - mid == 1)
-                mid = mid + 1;
-            else
-                mid = mid + (high - mid) / 2;
-            low = tem;
+            high = mid - 1;
         }
     }
     return nullptr;
 }
+
+/**
+ * @brief merge block2 to block1
+ *
+ * @tparam T
+ * @param block1
+ * @param block2
+ * @return char*
+ */
 template<class T>
-void blist<T>::merge(Block<T>* block1, Block<T>* block2) // the final index should be the same as block1
+char* Block<T>::merge(Block<T>* block1, Block<T>* block2) // the final index should be the same as block1
 {
-    for (int i = 0; i < block2->number + block2->overblock; i++)
+    for (int i = 0; i < block2->length; i++)
     {
-        if (block2->block[i] == nullptr)
+        if (block2->block[i] != nullptr)
             continue;
         block1->insert(block2->block[i]);
+        block2->block[i] = nullptr;
     }
-    if (block2->prev == nullptr)
-        this->head = block2->next;
-    else if (block2->next == nullptr)
-        block2->prev->next = nullptr;
-    else
-    {
-        block2->prev->next = block2->next;
-        block2->next->prev = block2->prev;
-    }
-    return;
+    //     if (block2->prev == nullptr)
+    //         this->head = block2->next;
+    // TODO: 改成block1
+    if (block2->next != nullptr)
+        block2->next->prev = block1;
+    block1->next = block2->next;
+    return block2->key_in_bptree;
 }
 
 #endif
