@@ -267,42 +267,6 @@ Block<T>* Block<T>::insert(T* item)
     }
 }
 
-/**
- * @brief delete data with id from block, return the key to be deleted in B+ tree
- *
- * @tparam T
- * @param id
- * @return char*
- */
-template<class T>
-char* Block<T>::bdelete(const char* id)
-{
-    if (this->number == 0)
-        return nullptr;
-    for (int i = 0; i < this->length; i++)
-    {
-        if (this->block[i] == nullptr)
-            continue;
-        if (strcmp(this->block[i]->key(), id) == 0)
-        {
-            this->block[i] = nullptr;
-            this->number--;
-            break;
-        }
-    }
-    //     this->sort();
-    // check for merge
-    if (nullptr != this->prev && (this->number + this->prev->number) <= (this->length - this->overblock))
-    {
-        return merge(this->prev, this);
-    }
-    if (nullptr != this->next && (this->number + this->next->number) <= (this->length - this->overblock))
-    {
-        return merge(this, this->next);
-    }
-    return nullptr;
-}
-
 template<class T>
 T* Block<T>::retrieval(const char* id)
 {
@@ -330,13 +294,45 @@ T* Block<T>::retrieval(const char* id)
         if (strcmp(id, mid_key) == 0)
             return this->block[mid];
         else if (strcmp(id, mid_key) > 0)
-        {
             low = mid + 1;
-        }
         else
-        {
             high = mid - 1;
+    }
+    return nullptr;
+}
+
+/**
+ * @brief delete data with id from block, return the key to be deleted in B+ tree
+ *
+ * @tparam T
+ * @param id
+ * @return char*
+ */
+template<class T>
+char* Block<T>::bdelete(const char* id)
+{
+    if (this->number == 0)
+        return nullptr;
+    for (int i = 0; i < this->length; i++)
+    {
+        if (this->block[i] == nullptr)
+            continue;
+        if (strcmp(this->block[i]->key(), id) == 0)
+        {
+            this->block[i] = nullptr;
+            this->number--;
+            break;
         }
+    }
+    //     this->sort();
+    // check for merge
+    if (nullptr != this->prev && (this->number + this->prev->number) <= (this->length - this->overblock))
+    {
+        // return merge(this->prev, this);
+    }
+    if (nullptr != this->next && (this->number + this->next->number) <= (this->length - this->overblock))
+    {
+        // return merge(this, this->next);
     }
     return nullptr;
 }
