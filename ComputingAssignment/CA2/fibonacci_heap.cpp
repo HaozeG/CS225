@@ -261,7 +261,7 @@ void fibonacci::Heap::insert(relation* relation)
     link_root(node);
     Heap::n++;
     cout << "Insert one node to heap with treatment type " << this->type << "\n";
-};
+}
 
 /*
     changes to the heap if one node has changed
