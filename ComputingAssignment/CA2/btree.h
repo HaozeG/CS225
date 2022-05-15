@@ -7,10 +7,10 @@
 class Btreebase
 {
 public:
-    int n; // order
-    int maxkey; // n-1
-    int minkey; // [n/2]-1
-    int compare_mode;
+    int n = 3; // order
+    int maxkey=2; // n-1
+    int minkey=1; // [n/2]-1
+    int compare_mode = 1;
     int r_compare(relation* r1, relation* r2); // > 1, = 0, < -1
 };
 
@@ -47,10 +47,11 @@ public:
     // int maxkey; // n-1
     // int minkey; // [n/2]-1
 
-    Btree(int order, int mode);
+    Btree(int order);
     
     void insert(relation* relation);
     void remove(relation* relation);
+    void update(relation* r1, relation* r2);
     void traverse();
 
     void part_insert(relation* r, Node* node);

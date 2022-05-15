@@ -6,9 +6,9 @@
 #include "data.h"
 using namespace std;
 
-Btree::Btree(int order, int mode)
+Btree::Btree(int order)
 {
-    compare_mode = mode;
+    // compare_mode = mode;
     n = order;
     maxkey = n - 1;
     minkey = (n - 1) / 2;
@@ -26,12 +26,13 @@ void Btree::insert(relation* relation)
     cout << "Insert Person ID: " << relation->person->id << "\n";
     if (root == nullptr)
     {
+        cout << "ddddddd\n";
         root = new Node(); // TODO: 关于new的使用
         root->key.push_back(relation);
         return;
     }
     Node* pos_node = search(root, relation);
-    cout << "search success\n";
+    cout << "searched node first id = " << pos_node->key[0]->person->id << "\n";
     cout << "node's first person id = " << pos_node->key.front()->person->id << "\n";
     cout << "node's size = " << pos_node->key.size() << "\n";
     part_insert(relation, pos_node);
@@ -42,21 +43,31 @@ Node* Btree::search(Node* start_node, relation* relation)
     Node* current_node = start_node;
     // 到达叶子节点，返回当前node
     if (current_node->children.empty())
+    {
+        // cout << "Im here\n";
+        // cout << "current_node id = " << current_node->key[0]->person->id << "\n";
         return current_node;
+    }
     // 找到相同relation，返回当前node
     for (int i = 0; i < current_node->key.size(); i++)
     {
         if (r_compare(relation, current_node->key[i]) == 0)
             return current_node;
     }
+    // cout<< "this layer not found\n";
     // 与key比较进入下一层search，如此递归
     for (int j = 0; j < current_node->key.size(); j++)
     {
         if (r_compare(relation, current_node->key[j]) == -1)
-            search(current_node->children[j], relation);
+            return search(current_node->children[j], relation);
     }
     if (r_compare(relation, current_node->key.back()) == 1)
-        search(current_node->children.back(), relation);
+    {
+        // cout << "reach here!\n";
+        // cout << "id is " << current_node->children.back()->key[0]->person->id<<"\n";
+        // cout << current_node->children.back()->children.empty() << "\n";
+        return search(current_node->children.back(), relation);
+    }
     return current_node;
 }
 
@@ -126,17 +137,20 @@ void Btree::part_insert(relation* r, Node* node)
     if (r_compare(r, node->key.back()) != -1)
         node->key.insert(node->key.end(), r);
     cout << "node size = " << node->key.size() << "\n";
+    cout << "having parent? " << node->parent.empty() << "\n";
 
     Node* p_node;
     if (node->parent.empty())
     {
         p_node = new Node();
-        cout << "1\n";
+        root = p_node;
+        node->parent.push_back(root);
+        // cout << "1\n";
     }
     else
     {
         p_node = node->parent[0];
-        cout << "2\n";
+        // cout << "2\n";
     }
 
     int m = (node->key.size() - 1) / 2;
@@ -146,20 +160,20 @@ void Btree::part_insert(relation* r, Node* node)
     cout << "left node size = " << l_node->key.size() << " first id = " << l_node->key.front()->person->id << "\n";
     cout << "right node size = " << node->key.size() << " first id = " << node->key.front()->person->id << "\n";
 
-    int n = p_node->children.size();
-    if (n == 0)
+    int child_num = p_node->children.size();
+    if (child_num == 0)
     {
         p_node->children.insert(p_node->children.end(), l_node);
         p_node->children.insert(p_node->children.end(), node);
-        cout << "lala\n";
         part_insert(r_m, p_node);
     }
     else
     {
-        if (r_compare(l_node->key[0], p_node->children[n - 1]->key[0]) == 1)
+        // cout << "children number = " << child_num << "\n";
+        if (r_compare(l_node->key[0], p_node->children[child_num - 1]->key[0]) == 1)
         {
             p_node->children.insert(p_node->children.end(), l_node);
-            p_node->children.insert(p_node->children.end(), node);
+            // p_node->children.insert(p_node->children.end(), node);
         }
         else
         {
@@ -168,7 +182,7 @@ void Btree::part_insert(relation* r, Node* node)
                 if (r_compare(l_node->key[0], p_node->children[i]->key[0]) == -1)
                 {
                     p_node->children.insert(p_node->children.begin() + i, l_node);
-                    p_node->children.insert(p_node->children.begin() + i, node);
+                    // p_node->children.insert(p_node->children.begin() + i, node);
                     break;
                 }
             }
@@ -225,6 +239,7 @@ void Btree::remove(relation* relation)
 int Node::findKey(relation* r)
 {
     int idx = 0;
+    // bool flag = (r_compare(key[idx], r) == -1);
     while (idx < key.size() && (r_compare(key[idx], r) == -1))
         ++idx;
     return idx;
@@ -252,7 +267,7 @@ void Node::deletion(relation* r)
 
         bool flag = ((idx == key.size()) ? true : false);
 
-        if (children[idx]->key.size() < (n/2)) // <t
+        if (children[idx]->key.size() < (minkey + 1)) // 删了后就比minkey小的话
             fill(idx);
 
         if (flag && idx > key.size())
@@ -280,14 +295,14 @@ void Node::removeFromNonLeaf(int idx)
 {
     relation* r = key[idx];
 
-    if (children[idx]->key.size() >= (n/2)) // t
+    if (children[idx]->key.size() >= (minkey + 1)) // t
     {
         relation* pred = getPredecessor(idx);
-        key[idx] = pred; // TODO:是否可以直接赋值
+        key[idx] = pred;
         children[idx]->deletion(pred);
     }
 
-    else if (children[idx + 1]->key.size() >= (n/2)) // t
+    else if (children[idx + 1]->key.size() >= (minkey + 1)) // t
     {
         relation* succ = getSuccessor(idx);
         key[idx] = succ;
@@ -322,10 +337,10 @@ relation* Node::getSuccessor(int idx)
 
 void Node::fill(int idx)
 {
-    if (idx != 0 && children[idx - 1]->key.size() >= (n/2)) // t
+    if (idx != 0 && children[idx - 1]->key.size() >= (minkey + 1)) // 左边可以借
         borrowFromPrev(idx);
 
-    else if (idx != key.size() && children[idx + 1]->key.size() >= (n/2)) // t
+    else if (idx != key.size() && children[idx + 1]->key.size() >= (minkey + 1)) // 右边可以借
         borrowFromNext(idx);
 
     else
@@ -353,6 +368,9 @@ void Node::borrowFromPrev(int idx)
 
     key[idx - 1] = sibling->key[sibling->key.size() - 1];
 
+    // sibling->key.erase(sibling->key.end()); 为啥这个不行？？ dont understand
+    sibling->key.pop_back();
+
     return;
 }
 
@@ -369,7 +387,7 @@ void Node::borrowFromNext(int idx)
 
     key[idx] = sibling->key[0];
 
-    sibling->key.pop_back();
+    sibling->key.erase(sibling->key.begin());
 
     if (!sibling->children.empty())
     {
@@ -385,7 +403,8 @@ void Node::merge(int idx)
     Node* child = children[idx];
     Node* sibling = children[idx + 1];
 
-    child->key[minkey] = key[idx];
+    child->key.push_back(key[idx]);
+    // child->key[minkey] = key[idx];
 
     for (int i = 0; i < sibling->key.size(); ++i)
         child->key.push_back(sibling->key[i]);
@@ -397,7 +416,7 @@ void Node::merge(int idx)
     }
 
     key.erase(key.begin() + idx);
-    children.erase(children.begin()+idx+1);
+    children.erase(children.begin() + idx + 1);
 
     delete (sibling);
     return;
@@ -405,7 +424,7 @@ void Node::merge(int idx)
 
 void Btree::traverse()
 {
-    if (root!=NULL)
+    if (root != NULL)
         root->traverse();
 }
 
@@ -420,4 +439,10 @@ void Node::traverse()
     }
     if (!children.empty())
         children[i]->traverse();
+}
+
+void Btree::update(relation* r1, relation* r2)
+{
+    remove(r1);
+    insert(r2);
 }
