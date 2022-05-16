@@ -24,12 +24,12 @@ public:
 class Hospital
 {
 public:
-    Hospital(int x, int y, int c);
+    Hospital(int x, int y, int c1, int c2, int c3);
 
     int addx;
     int addy;
-    int capacity;
-    int numpatient;
+    int capacity[3]; // three type of treatment
+    int numpatient[3] = { 0 };
     int timeslot; // 医院默认早上8点开始工作，18点结束
 };
 
@@ -41,7 +41,7 @@ public:
     void removeh(int index); // remove a hospital from hlist
     void treat_done(); // clear numpatients in each hospital.
 
-    int tot_capacity;
+    int tot_capacity[3]={0};
 };
 
 class Alist : public List<relation*>
@@ -49,8 +49,8 @@ class Alist : public List<relation*>
 public:
     Alist();
 
-    void appoint(fibonacci::Heap* H, Hlist hlist); // appoint one person with highest priority
-    void withdraw(relation* data); // withdraw a person from alist
+    void appoint(Heap* H, Hlist hlist,int type); // appoint one person with highest priority
+    void withdraw(relation* relation); // withdraw a person from alist
     void clear(); // set treated = true and clear alist.
     // const int INFINITY = 10000;
 };
