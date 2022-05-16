@@ -138,10 +138,10 @@ int main()
                             continue;
                         if (is_included(withdrawn_list, insert_ptr))
                             insert_ptr->appoint->withdrawn = true;
-                        if (bpTree->SearchExistence(insert_ptr->key()))
+                        Block<relation>* target_block = bpTree->SearchData(insert_ptr->key());
+                        if (nullptr != target_block && nullptr != target_block->retrieval(insert_ptr->key()))
                         {
                             //     update
-                            Block<relation>* target_block = bpTree->SearchData(insert_ptr->key());
                             int j = 0;
                             for (j = 0; j < target_block->length; j++)
                             {
@@ -255,7 +255,11 @@ int main()
                 withdrawn_list->push_back(ptr);
                 char* key_delete = pBlock->bdelete(a);
                 if (nullptr != key_delete)
+                {
                     bpTree->Delete(key_delete);
+                    if (0 == central->head->number)
+                        central->head = central->head->next;
+                }
                 cout << ptr->key() << " withdrawn"
                      << "\n";
             }

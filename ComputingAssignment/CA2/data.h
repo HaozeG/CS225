@@ -2,6 +2,7 @@
 #define data_h
 
 #include "string.h"
+#include <cstddef>
 #include <iostream>
 using std::cout;
 
@@ -333,6 +334,15 @@ char* Block<T>::bdelete(const char* id)
     if (nullptr != this->next && (this->number + this->next->number) <= (this->length - this->overblock))
     {
         // return merge(this, this->next);
+    }
+    // delete if empty
+    if (0 == this->number)
+    {
+        if (this->prev != nullptr)
+            this->prev->next = this->next;
+        if (this->next != nullptr)
+            this->next->prev = this->prev;
+        return this->key_in_bptree;
     }
     return nullptr;
 }
