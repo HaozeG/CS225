@@ -41,7 +41,7 @@ public:
     void removeh(int index); // remove a hospital from hlist
     void treat_done(); // clear numpatients in each hospital.
 
-    int tot_capacity[3]={0};
+    int tot_capacity[3] = { 0 };
 };
 
 class Alist : public List<relation*>
@@ -49,7 +49,7 @@ class Alist : public List<relation*>
 public:
     Alist();
 
-    void appoint(Heap* H, Hlist hlist,int type); // appoint one person with highest priority
+    void appoint(fibonacci::Heap* H, Hlist hlist, int type); // appoint one person with highest priority
     void withdraw(relation* relation); // withdraw a person from alist
     void clear(); // set treated = true and clear alist.
     // const int INFINITY = 10000;

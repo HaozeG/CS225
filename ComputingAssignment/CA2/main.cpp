@@ -6,7 +6,8 @@
 #include "fibonacci_heap.h"
 #include "BPlusTree.h"
 // #include "base.cpp"
-// #include "appoint.cpp"
+#include "appoint.h"
+#include "btree.h"
 #include <vector>
 #include "report.h"
 using std::cin;
@@ -39,13 +40,16 @@ int main()
     h[2] = new fibonacci::Heap;
     h[2]->type = 2;
     BPlusTree* bpTree = new BPlusTree;
+    Btree* bTree = new Btree(3);
     blist<relation>* central = new blist<relation>; // central
     vector<relation*>* withdrawn_list = new vector<relation*>; // list that stores withdrawn records
-    //     Alist alist;
-    //     Hlist hlist;
-    //     Hospital hospital1(100, 100, 1), hospital2(500, 500, 1);
-    //     hlist.addh(&hospital1);
-    //     hlist.addh(&hospital2);
+    Alist alist;
+    Hlist hlist;
+    Hospital hospital1(100, 100, 1, 1, 1), hospital2(500, 500, 1, 1, 1);
+    hlist.addh(&hospital1);
+    hlist.addh(&hospital2);
+    //     cout << "hlist number = " << hlist.numitems << "\n";
+    //     cout << "capacity 1 = " << hlist.tot_capacity[0] << "\n";
     do
     {
         cout << "---NEW DAY---\n";
@@ -66,8 +70,9 @@ int main()
             cout << "8: print information about heap\n";
             cout << "9: print information about B+ tree\n";
             cout << "10: print information about blocks\n";
+            cout << "11: print information about B tree\n";
             cin >> op;
-        } while (op < 0 && op > 10);
+        } while (op < 0 && op > 11);
         switch (op)
         {
         case 0:
@@ -148,6 +153,7 @@ int main()
                                 if (nullptr != target_block->block[j] && (0 == strcmp(target_block->block[j]->key(), insert_ptr->key())))
                                     break;
                             }
+                            bTree->update(target_block->block[j], insert_ptr);
                             insert_ptr->f_node = target_block->block[j]->f_node;
                             target_block->block[j] = insert_ptr;
                             h[insert_ptr->status->type]->update(*(insert_ptr->f_node));
@@ -188,6 +194,7 @@ int main()
                                     bpTree->Insert(pt->block[i]->key(), new_block);
                                 }
                             }
+                            bTree->insert(pt->block[i]);
                             // insert to fibonacci heap based on treatment type
                             h[insert_ptr->status->type]->insert(insert_ptr);
                         }
@@ -249,9 +256,15 @@ int main()
             if (nullptr != ptr)
             {
                 ptr->appoint->withdrawn = true;
+                bTree->remove(ptr);
                 // TODO: if判断是否在Fibonacci heap中，判断alist和heap的delete操作
                 if (nullptr != ptr->f_node)
                     h[ptr->status->type]->delete_node(*(ptr->f_node));
+                else if (ptr->appoint->in_alist)
+                {
+                    // withdraw from alist
+                    alist.withdraw(ptr);
+                }
                 withdrawn_list->push_back(ptr);
                 char* key_delete = pBlock->bdelete(a);
                 if (nullptr != key_delete)
@@ -311,17 +324,32 @@ int main()
                 p = p->next;
             }
 
-            //     // input hospital information
-            //     cout << "tot_capacity = " << hlist.tot_capacity << "\n";
-
-            //     bool available = false;
-            //     cout << "alist.numitems = " << alist.numitems << "\n";
-            //     available = (alist.numitems < hlist.tot_capacity ? true : false);
-            //     while (available && h->n != 0)
-            //     {
-            //         alist.appoint(h, hlist);
-            //         available = (alist.numitems < hlist.tot_capacity ? true : false);
-            //         cout << "alist.numitems = " << alist.numitems << "\n";
+            //     input hospital information
+            bool available = false;
+            cout << "alist.numitems = " << alist.numitems << "\n";
+            int type_num[3] = { 0, 0, 0 };
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < alist.numitems; j++)
+                {
+                    if (alist.array[j]->status->type == i)
+                    {
+                        type_num[i]++;
+                    }
+                }
+                available = (type_num[i] < hlist.tot_capacity[i] ? true : false);
+                while (available && h[i]->n != 0)
+                {
+                    alist.appoint(h[i], hlist, i);
+                    type_num[i]++;
+                    cout << "type_num " << i << "=" << type_num[i] << "\n";
+                    cout << "tot c = " << hlist.tot_capacity[i] << "\n";
+                    available = (type_num[i] < hlist.tot_capacity[i] ? true : false);
+                    //     cout << "avai" << available << "\n";
+                    //     cout << "heap" << (h[i]->n != 0) << "\n";
+                    //     cout << "type_num " << i << "=" << type_num[i] << "\n";
+                }
+            }
             break;
         }
         case 6:
@@ -440,6 +468,11 @@ int main()
                 //if (tem->retrieval(x) != NULL)
                 //cout<<"\n"<<tem->retrieval(x)->person->id<<"\n";
             }
+            break;
+        }
+        case 11:
+        {
+            bTree->traverse();
             break;
         }
         }

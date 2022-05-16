@@ -68,6 +68,10 @@ public:
     Appointment();
     ~Appointment();
 
+    bool in_alist = false;
+    long time;
+    int hospital_id;
+
     bool appo;
     bool treated;
     bool withdrawn;
