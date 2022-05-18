@@ -248,7 +248,7 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
     {
         num_relation += count_block->length;
         count_block = count_block->next;
-    } while (block_head != count_block);
+    } while (nullptr != count_block);
 
     Block<relation>* temp_block = block_head;
     relation* result = new relation[num_relation];
