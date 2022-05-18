@@ -1,0 +1,40 @@
+————————————WEEK REPORT————————————
+
+-----People who have been treated-----
+-----Registered people with a set appointment-----
+
+Name: A1
+Profession: 1
+Age: 1
+Risk status: 0
+Priority rule: 1
+Waiting time until now: -8.42517e+07 days and -21 hours.
+
+Name: A3
+Profession: 1
+Age: 1
+Risk status: 0
+Priority rule: 1
+Waiting time until now: -8.42517e+07 days and -21 hours.
+
+Name: Ava
+Profession: 1
+Age: 1
+Risk status: 0
+Priority rule: 1
+Waiting time until now: -8.42517e+07 days and -21 hours.
+
+Name: Bella
+Profession: 1
+Age: 1
+Risk status: 0
+Priority rule: 1
+Waiting time until now: -8.42517e+07 days and -21 hours.
+-----Queueing people without a set appointment-----
+
+Name: A2
+Profession: 1
+Age: 1
+Risk status: 0
+Priority rule: 1
+Waiting time until now: -8.42517e+07 days and -21 hours.

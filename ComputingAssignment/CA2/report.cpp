@@ -112,13 +112,13 @@ void Report_system::Week(blist<relation>* ptr, int User_Choice, int Choice_2, lo
         cout << "Error in Week" << endl;
         return;
     }
-
+    // cout << "haha" << endl;
     switch (User_Choice)
     {
     //用户选择了按姓名排序
     case 1:
         paste = Sorting(ptr, Choice_2, 1);
-
+        // cout << "sorting passed" << endl;
         while (nullptr != paste)
         {
             //因为age——group
@@ -237,6 +237,7 @@ void Report_system::Week(blist<relation>* ptr, int User_Choice, int Choice_2, lo
 //排序，先根据不同标准复制central中的链表到数组中，然后用sort进行排序
 relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
 {
+    // cout << "enter sorting" << endl;
     // Block<relation>* block_head = ptr->head;
     Block<relation>* count_block = ptr->head;
     int num_relation = 0;
@@ -249,20 +250,24 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
     Block<relation>* temp_block = ptr->head;
     relation* result = new relation[num_relation];
     int index = 0;
-
+    // cout << num_relation << endl;
     switch (Choice_2)
     {
     // People who have been treated
     //            if (ptr->treated)
     case 4:
+        //遍历所有的block
         do
         {
             relation** relation_array = temp_block->block;
+            //遍历一个block里面的relation
+            cout << temp_block->length << endl;
             for (int j = 0; j < temp_block->length; j++)
             {
                 relation* temp_relation = relation_array[j];
                 if (nullptr == temp_relation)
                 {
+                    // cout << "loading block" << endl;
                     continue;
                 }
                 if (temp_relation->appoint->treated)
@@ -277,7 +282,10 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
                 }
             }
             temp_block = temp_block->next;
-        } while (ptr->head != temp_block);
+            // cout << index << endl;
+            // cout << "AA" << endl;
+        } while (nullptr != temp_block);
+        cout << "leave" << endl;
         break;
     // Registered people with a set appointment
     //            if (ptr->appo && !ptr->treated && !ptr->withdrawn)
@@ -304,7 +312,7 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
                 }
             }
             temp_block = temp_block->next;
-        } while (ptr->head != temp_block);
+        } while (nullptr != temp_block);
         break;
     // Queueing people without a set appointment
     //            if (!ptr->appo && !ptr->withdrawn)
@@ -331,9 +339,10 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
                 }
             }
             temp_block = temp_block->next;
-        } while (ptr->head != temp_block);
+        } while (nullptr != temp_block);
         break;
     }
+    //    cout << "loop passed" << endl;
 
     switch (Choice)
     {
@@ -427,9 +436,13 @@ void Report_system::Month(blist<relation>* ptr, long timeoffset)
     do
     {
         //内循环：遍历一个Block里的relation
-        for (int relation_index = 0; relation_index < temp->number;
+        for (int relation_index = 0; relation_index < temp->length;
              relation_index++)
         {
+            if (nullptr == temp->block[relation_index])
+            {
+                continue;
+            }
             //只要进入系统（只要有了relation）就算登记过
             keep[0] += 1;
             //已经预约 && 没有治疗 && 没有退出（不过没有用到）
@@ -468,7 +481,7 @@ void Report_system::Month(blist<relation>* ptr, long timeoffset)
         //移到下一个Block
         temp = temp->next;
         //因为是环，check是否结束
-    } while (ptr->head != temp);
+    } while (nullptr != temp);
 
     outfile.open("./report/Month.txt", ios::out | ios::trunc);
     if (!outfile.is_open())
