@@ -14,10 +14,8 @@ using namespace std;
 
     head: central中的头节点
     timeoffset： 当前时间（不是自然时间，程序中可以选择7让时间往后推一天）
-    length：central中链表的长度
 
 */
-
 void Report_system::Open_file(blist<relation>* head, long timeoffset)
 {
     string user_choice;
@@ -42,8 +40,6 @@ void Report_system::Open_file(blist<relation>* head, long timeoffset)
              0 != strcmp(two, user_choice.c_str()) &&
              0 != strcmp(three, user_choice.c_str()) &&
              0 != strcmp(zero, user_choice.c_str()));
-
-    //输入的char转换为int，采用sstream流的方法,选择0时中断报告
     ss << user_choice;
     ss >> decision_type;
     ss.clear();
@@ -94,7 +90,7 @@ void Report_system::Open_file(blist<relation>* head, long timeoffset)
 //用在open——file里面，进行关于name、profession还是age的分类
 /*
 
-    head： central中的头节点
+    ptr: central中的头节点
     choice：用户选择的顺序
     choice2: 用于区分不同的部分：treated ｜｜ appointed ｜｜ 啥事没干的
     time offset：当前时间，同上
@@ -241,7 +237,7 @@ void Report_system::Week(blist<relation>* ptr, int User_Choice, int Choice_2, lo
 //排序，先根据不同标准复制central中的链表到数组中，然后用sort进行排序
 relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
 {
-    Block<relation>* block_head = ptr->head;
+    // Block<relation>* block_head = ptr->head;
     Block<relation>* count_block = ptr->head;
     int num_relation = 0;
     do
@@ -250,12 +246,15 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
         count_block = count_block->next;
     } while (nullptr != count_block);
 
-    Block<relation>* temp_block = block_head;
+    Block<relation>* temp_block = ptr->head;
     relation* result = new relation[num_relation];
     int index = 0;
 
     switch (Choice_2)
     {
+    // People who have been treated
+    //            if (ptr->treated)
+    case 4:
         do
         {
             relation** relation_array = temp_block->block;
@@ -278,12 +277,7 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
                 }
             }
             temp_block = temp_block->next;
-        } while (block_head != temp_block);
-        break;
-    // People who have been treated
-    //            if (ptr->treated)
-    case 4:
-
+        } while (ptr->head != temp_block);
         break;
     // Registered people with a set appointment
     //            if (ptr->appo && !ptr->treated && !ptr->withdrawn)
@@ -310,7 +304,7 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
                 }
             }
             temp_block = temp_block->next;
-        } while (block_head != temp_block);
+        } while (ptr->head != temp_block);
         break;
     // Queueing people without a set appointment
     //            if (!ptr->appo && !ptr->withdrawn)
@@ -337,7 +331,7 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
                 }
             }
             temp_block = temp_block->next;
-        } while (block_head != temp_block);
+        } while (ptr->head != temp_block);
         break;
     }
 
