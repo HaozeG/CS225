@@ -1,4 +1,5 @@
 #include "BPlusTree.h"
+#include "data.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include <cstddef>
@@ -359,7 +360,6 @@ bool CLeafNode::Insert(KEY_TYPE value, DATA_TYPE data)
     for (i = 0; nullptr != m_Datas[i] && (strcmp(value, m_Datas[i]) > 0) && (i < m_Count); i++)
     {
     }
-    cout << "hfiuehfiehf\n";
 
     // 当前位置及其后面的数据依次后移，空出当前位置
     for (j = m_Count; j > i; j--)
@@ -462,15 +462,56 @@ BPlusTree::~BPlusTree()
 }
 
 // 在树中查找数据
-bool BPlusTree::Search(KEY_TYPE data, char* sPath)
+DATA_TYPE BPlusTree::SearchInsertPos(KEY_TYPE data)
 {
     int i = 0;
     int offset = 0;
-    if (NULL != sPath)
+
+    CNode* pNode = GetRoot();
+    // 循环查找对应的叶子结点
+    while (NULL != pNode)
     {
-        (void)sprintf(sPath + offset, "The serach path is:");
-        offset += 19;
+        // 结点为叶子结点，循环结束
+        if (NODE_TYPE_LEAF == pNode->GetType())
+        {
+            break;
+        }
+
+        // 找到第一个键值大于等于key的位置
+        for (i = 1; (nullptr != pNode->GetElement(i)) && (strcmp(data, pNode->GetElement(i)) >= 0) && (i <= pNode->GetCount()); i++)
+        {
+        }
+        pNode = pNode->GetPointer(i);
     }
+
+    // 没找到
+    if (NULL == pNode)
+    {
+        return nullptr;
+    }
+    // 在叶子结点中继续找
+    CLeafNode* lNode = (CLeafNode*)pNode;
+    //     bool found = false;
+    for (i = 1; i <= lNode->GetCount(); i++)
+    {
+        //     return lNode->GetDataPointer(i);
+        if (strcmp(data, lNode->GetElement(i)) <= 0)
+            break;
+    }
+    if (i > lNode->GetCount())
+        return nullptr;
+    else if (1 == i)
+        return lNode->GetDataPointer(1);
+    else
+        return lNode->GetDataPointer(i - 1);
+    //     return (1 != i ? lNode->GetDataPointer(i - 1) : lNode->GetDataPointer(1));
+    //     return lNode->GetDataPointer(i);
+}
+
+DATA_TYPE BPlusTree::SearchData(KEY_TYPE data)
+{
+    int i = 0;
+    int offset = 0;
 
     CNode* pNode = GetRoot();
     // 循环查找对应的叶子结点
@@ -486,12 +527,59 @@ bool BPlusTree::Search(KEY_TYPE data, char* sPath)
         for (i = 1; (strcmp(data, pNode->GetElement(i)) >= 0) && (i <= pNode->GetCount()); i++)
         {
         }
+        pNode = pNode->GetPointer(i);
+    }
 
-        if (NULL != sPath)
+    // 没找到
+    if (NULL == pNode)
+    {
+        return nullptr;
+    }
+
+    // 在叶子结点中继续找
+    CLeafNode* lNode = (CLeafNode*)pNode;
+    //     bool found = false;
+    for (i = 1; i <= lNode->GetCount(); i++)
+    {
+        //     return lNode->GetDataPointer(i);
+        // TODO: 调整
+        if (strcmp(data, lNode->GetElement(i)) == 0)
+            return lNode->GetDataPointer(i);
+        if (strcmp(data, lNode->GetElement(i)) < 0)
+            break;
+    }
+    if (i > lNode->GetCount())
+        return lNode->GetDataPointer(lNode->GetCount());
+    else if (1 == i)
+        return lNode->GetDataPointer(1);
+    else
+        return lNode->GetDataPointer(i - 1);
+}
+
+bool BPlusTree::SearchExistence(KEY_TYPE data)
+{
+    int i = 0;
+
+    CNode* pNode = GetRoot();
+    // 循环查找对应的叶子结点
+    while (NULL != pNode)
+    {
+        // 结点为叶子结点，循环结束
+        if (NODE_TYPE_LEAF == pNode->GetType())
         {
-            (void)sprintf(sPath + offset, " %10s -->", pNode->GetElement(1));
-            offset += 8;
+            break;
         }
+
+        // 找到第一个键值大于等于key的位置
+        for (i = 1; (nullptr != pNode->GetElement(i)) && (strcmp(data, pNode->GetElement(i)) >= 0) && (i <= pNode->GetCount()); i++)
+        {
+        }
+
+        // if (NULL != sPath)
+        // {
+        //     (void)sprintf(sPath + offset, " %10s -->", pNode->GetElement(1));
+        //     offset += 8;
+        // }
 
         pNode = pNode->GetPointer(i);
     }
@@ -502,35 +590,22 @@ bool BPlusTree::Search(KEY_TYPE data, char* sPath)
         return false;
     }
 
-    if (NULL != sPath)
-    {
-        (void)sprintf(sPath + offset, "%10s", pNode->GetElement(1));
-        offset += 3;
-    }
-
+    //     if (NULL != sPath)
+    //     {
+    //         (void)sprintf(sPath + offset, "%10s", pNode->GetElement(1));
+    //         offset += 3;
+    //     }
     // 在叶子结点中继续找
-    bool found = false;
+    CLeafNode* lNode = (CLeafNode*)pNode;
+    //     bool found = false;
     for (i = 1; (i <= pNode->GetCount()); i++)
     {
         if (strcmp(data, pNode->GetElement(i)) == 0)
         {
-            found = true;
+            return true;
         }
     }
-
-    if (NULL != sPath)
-    {
-        if (true == found)
-        {
-            (void)sprintf(sPath + offset, " ,successed.");
-        }
-        else
-        {
-            (void)sprintf(sPath + offset, " ,failed.");
-        }
-    }
-
-    return found;
+    return false;
 }
 
 /* 在B+树中插入数据
@@ -544,11 +619,13 @@ bool BPlusTree::Search(KEY_TYPE data, char* sPath)
 bool BPlusTree::Insert(KEY_TYPE data, DATA_TYPE ptr) //
 {
     // 检查是否重复插入
-    bool found = Search(data, NULL);
-    if (true == found)
+    bool found = SearchExistence(data);
+    if (found)
     {
         return false;
     }
+    ptr->key_in_bptree = data;
+    std::cout << "Insert new key to B+ tree\n";
     // for debug
     //if (289 == data)
     //{
@@ -570,7 +647,6 @@ bool BPlusTree::Insert(KEY_TYPE data, DATA_TYPE ptr) //
     if (pOldNode->GetCount() < MAXNUM_DATA)
     {
         return pOldNode->Insert(data, ptr);
-        cout << "sfawf\n";
     }
 
     // 原叶子结点已满，新建叶子结点，并把原结点后一半数据剪切到新结点
@@ -949,6 +1025,7 @@ void BPlusTree::PrintTree()
             }
         }
     }
+    printf("\n");
 }
 
 // 打印某结点

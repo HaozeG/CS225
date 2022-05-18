@@ -5,8 +5,7 @@
 #include "data.h"
 #include <stdlib.h>
 #include <cstring>
-#include "base.cpp"
-using std::cin;
+#include "timeoffset.h"
 using std::cout;
 
 Local::Local()
@@ -99,7 +98,7 @@ int Local::readfile(const char* filename)
             int a = sizeof(str);
             str[a - 1] = '\0';
             a = atoi(str);
-            data->registration->timestamp = a;
+            data->registration->timestamp = a + timestart * 100;
         }
         else
             return 0;

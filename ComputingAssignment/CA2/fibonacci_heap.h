@@ -11,7 +11,7 @@ namespace fibonacci
         Node();
         ~Node();
         //     Data* data;
-        class relation* relation;
+        relation* data;
         // define four pointers for each node
         Node* parent;
         Node* child;
@@ -40,7 +40,7 @@ namespace fibonacci
 
     private:
         void delete_highest();
-        void link_root(Node& node);
+        void link_root(Node* node);
         void consolidate();
         void update_degree(Node* node, int d);
         void cascaded_cut(Node* node);
