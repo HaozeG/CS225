@@ -194,6 +194,7 @@ void Report_system::Week(blist<relation>* ptr, int User_Choice, int Choice_2, lo
     outfile.close();
     return;
 }
+
 //排序，先根据不同标准复制central中的链表到数组中，然后用sort进行排序
 relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
 {
@@ -322,6 +323,7 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
     }
     return result;
 }
+
 // cmp函数，用于自定义sort函数
 bool Report_system::cmp_name(relation a, relation b)
 {

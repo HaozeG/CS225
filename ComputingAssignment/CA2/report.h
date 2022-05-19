@@ -24,14 +24,3 @@ public:
 };
 #endif
 
-/*
-
-
-    Brutal_node *Copied_list(Data *data);
-    Brutal_node *sort_by_name(Brutal_node *ptr, int number);
-    Data *sort_by_age(Brutal_node *ptr, int number, int length);
-    Brutal_node *sortList(Brutal_node *ptr);
-    Brutal_node *merge(Brutal_node *ptr1, Brutal_node *ptr2);
-    Brutal_node *split(Brutal_node *ptr);
-
-*/
