@@ -91,10 +91,9 @@ void Report_system::Open_file(blist<relation>* head, long timeoffset)
 /*
 
     ptr: central中的头节点
-    choice：用户选择的顺序
-    choice2: 用于区分不同的部分：treated ｜｜ appointed ｜｜ 啥事没干的
-    time offset：当前时间，同上
-    length：central链表长度
+    User_Choice：用户选择的顺序
+    Choice_2: 用于区分不同的部分：treated ｜｜ appointed ｜｜ 啥事没干的
+    timeoffset：当前时间，同上
     treating：判断是否治疗了，如果已经治疗了，那么等待时间已经固定
 
 */
@@ -136,19 +135,6 @@ void Report_system::Week(blist<relation>* ptr, int User_Choice, int Choice_2, lo
             outfile << "Risk status: " << paste->status->risk << "\n";
             outfile << "Priority rule: " << paste->status->type << "\n";
             outfile.close();
-            //判断时间是否锁定
-            // if (treating)
-            // {
-            //     TIME = paste->treatment->time - paste->registration->timestamp;
-            //     outfile << "Waiting time from registration to treatment: "
-            //             << floor(TIME / 24) << " days and " << TIME % 24 << " hours." << endl;
-            // }
-            // else
-            // {
-            //     TIME = timeoffset - paste->registration->timestamp;
-            //     outfile << "Waiting time until now: " << floor(TIME / 24)
-            //             << " days and " << TIME % 24 << " hours." << endl;
-            // }
             time_calculator(treating, paste, timeoffset);
             outfile.open("./report/Week.txt", ios::out | ios::app);
             paste = paste->next;
@@ -173,25 +159,12 @@ void Report_system::Week(blist<relation>* ptr, int User_Choice, int Choice_2, lo
             outfile << "Risk status: " << paste->status->risk << "\n";
             outfile << "Priority rule: " << paste->status->type << "\n";
             outfile.close();
-            // if (treating)
-            // {
-            //     TIME = paste->treatment->time - paste->registration->timestamp;
-            //     outfile << "Waiting time from registration to treatment: "
-            //             << floor(TIME / 24) << " days and " << TIME % 24 << " hours."
-            //             << endl;
-            // }
-            // else
-            // {
-            //     TIME = timeoffset - paste->registration->timestamp;
-            //     outfile << "Waiting time until now: " << floor(TIME / 24)
-            //             << " days and " << TIME % 24 << " hours." << endl;
-            // }
             time_calculator(treating, paste, timeoffset);
             outfile.open("./report/Week.txt", ios::out | ios::app);
             paste = paste->next;
         }
         break;
-
+    //用户选择以名字排序
     case 3:
         paste = Sorting(ptr, Choice_2, 3);
 
@@ -209,19 +182,6 @@ void Report_system::Week(blist<relation>* ptr, int User_Choice, int Choice_2, lo
             outfile << "Risk status: " << paste->status->risk << endl;
             outfile << "Priority rule: " << paste->status->type << "\n";
             outfile.close();
-            // if (treating)
-            // {
-            //     TIME = paste->treatment->time - paste->registration->timestamp;
-            //     outfile << "Waiting time from registration to treatment: "
-            //             << floor(TIME / 24) << " days and " << TIME % 24 << " hours."
-            //             << endl;
-            // }
-            // else
-            // {
-            //     TIME = timeoffset - paste->registration->timestamp;
-            //     outfile << "Waiting time until now: " << floor(TIME / 24)
-            //             << " days and " << TIME % 24 << " hours." << endl;
-            // }
             time_calculator(treating, paste, timeoffset);
             outfile.open("./report/Week.txt", ios::out | ios::app);
             paste = paste->next;
@@ -261,7 +221,7 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
         {
             relation** relation_array = temp_block->block;
             //遍历一个block里面的relation
-            cout << temp_block->length << endl;
+            // cout << temp_block->length << endl;
             for (int j = 0; j < temp_block->length; j++)
             {
                 relation* temp_relation = relation_array[j];
@@ -285,7 +245,7 @@ relation* Report_system::Sorting(blist<relation>* ptr, int Choice_2, int Choice)
             // cout << index << endl;
             // cout << "AA" << endl;
         } while (nullptr != temp_block);
-        cout << "leave" << endl;
+        // cout << "leave" << endl;
         break;
     // Registered people with a set appointment
     //            if (ptr->appo && !ptr->treated && !ptr->withdrawn)
@@ -404,13 +364,12 @@ void Report_system::time_calculator(bool treating, relation* paste, long timeoff
     return;
 }
 
+
 //用在main里面，管month report
 /*
     head：头节点
     time offset：当前时间（不是自然时间，同上）
 */
-
-//缺locale的更改
 void Report_system::Month(blist<relation>* ptr, long timeoffset)
 {
     ofstream outfile;

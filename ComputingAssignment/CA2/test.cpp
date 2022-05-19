@@ -6,7 +6,6 @@
 #include "data.h"
 #include "timeoffset.h"
 #include "BPlusTree.h"
-using std::cin;
 using std::cout;
 long timeoffset = 0;
 

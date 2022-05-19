@@ -4,38 +4,38 @@
 -----Registered people with a set appointment-----
 -----Queueing people without a set appointment-----
 
-Age group: 1
-Name: A2
-Profession: 1
-Risk status: 0
-Priority rule: 1
-Waiting time until now: -8.42517e+07 days and -21 hours.
-
-Age group: 1
-Name: A3
-Profession: 1
-Risk status: 0
-Priority rule: 1
-Waiting time until now: -8.42517e+07 days and -21 hours.
-
-Age group: 1
-Name: Ava
-Profession: 1
-Risk status: 0
-Priority rule: 1
-Waiting time until now: -8.42517e+07 days and -21 hours.
-
-Age group: 1
-Name: Bella
-Profession: 1
-Risk status: 0
-Priority rule: 1
-Waiting time until now: -8.42517e+07 days and -21 hours.
-
-Age group: 1
 Name: A1
 Profession: 1
+Age: 1
 Risk status: 0
 Priority rule: 1
-Waiting time until now: -8.42517e+07 days and -21 hours.
+Waiting time until now: -6.84188e+07 days and -21 hours.
+
+Name: A2
+Profession: 1
+Age: 1
+Risk status: 0
+Priority rule: 1
+Waiting time until now: -6.84188e+07 days and -21 hours.
+
+Name: A3
+Profession: 1
+Age: 1
+Risk status: 0
+Priority rule: 1
+Waiting time until now: -6.84188e+07 days and -21 hours.
+
+Name: Ava
+Profession: 1
+Age: 1
+Risk status: 0
+Priority rule: 1
+Waiting time until now: -6.84188e+07 days and -21 hours.
+
+Name: Bella
+Profession: 1
+Age: 1
+Risk status: 0
+Priority rule: 1
+Waiting time until now: -6.84188e+07 days and -21 hours.
 REPORT ENDS
