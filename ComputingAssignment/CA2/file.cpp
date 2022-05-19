@@ -98,7 +98,7 @@ int Local::readfile(const char* filename)
             int a = sizeof(str);
             str[a - 1] = '\0';
             a = atoi(str);
-            data->registration->timestamp = a + timestart * 100;
+            data->registration->timestamp = a - (timestart * 100) + 24 * (a / 100 - timestart) + 30 * 24 * (a / 10000 - timestart / 100);
         }
         else
             return 0;
