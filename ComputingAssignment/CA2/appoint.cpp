@@ -4,7 +4,6 @@
 #include "appoint.h"
 #include "data.h"
 #include "timeoffset.h"
-using std::cin;
 using std::cout;
 
 template<class T>
