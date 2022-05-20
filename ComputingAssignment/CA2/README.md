@@ -19,7 +19,7 @@ There is a _Makefile_ you can use:
 
 ## To use
 
-If you have the executable file _test_, you can run it.
+If you have the executable file _main_, you can run it.
 
 The interface you will see looks like this:
 
@@ -46,7 +46,8 @@ _Note: Here **risk status = 2** is interpreted that this people will have the sa
 
 ### queuing
 
-Queuing is performed when they are added to central registry(when you type in `2`).
+Queuing is performed when they are added to central registry(when you type in `2`). At the same time, data would be arranged by B tree and
+B+ tree based on selected key.
 _Note: two week penalty is **added to the timestamp** when judging priority, which means it could be ignored if the priority can be judged by more important criteria like profession._
 
 #### Present priority letter
@@ -61,8 +62,8 @@ Type in `4`, follow the instruction to type in ID.
 
 #### appointment
 
-Type in `5`, this system will make appointments for queuing people. Appointment information is displayed in terminal.
-_Note: To set the daily capacity of each hospital, you can change the underlined parameters in main.cpp as shown._
+Type in `5`, this system will make appointments for people queuing based on different treatment types. Appointment information is displayed in terminal.
+_Note: To set each treatment type's daily capacity of each hospital, you can change the underlined parameters in main.cpp as shown._
 ![daily capacity](./img/capacity.png)
 
 ### reporting
