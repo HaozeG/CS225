@@ -3,13 +3,14 @@
 
 #include "data.h"
 #include <vector>
+using namespace std;
 
 class Btreebase
 {
 public:
     int n = 3; // order
-    int maxkey=2; // n-1
-    int minkey=1; // [n/2]-1
+    int maxkey = 2; // n-1
+    int minkey = 1; // [n/2]-1
     int compare_mode = 1;
     int r_compare(relation* r1, relation* r2); // > 1, = 0, < -1
 };
@@ -48,7 +49,7 @@ public:
     // int minkey; // [n/2]-1
 
     Btree(int order);
-    
+
     void insert(relation* relation);
     void remove(relation* relation);
     void update(relation* r1, relation* r2);
@@ -56,7 +57,7 @@ public:
 
     void part_insert(relation* r, Node* node);
     Node* search(Node* start_node, relation* relation);
-    Node* split(Node* node,int m); // 返回左半部分node，原node变为右半部分，m为分割位置，注意使用前要先保存m位置的relation
+    Node* split(Node* node, int m); // 返回左半部分node，原node变为右半部分，m为分割位置，注意使用前要先保存m位置的relation
     // int r_compare(relation* r1, relation* r2); // > 1, = 0, < -1
 };
 

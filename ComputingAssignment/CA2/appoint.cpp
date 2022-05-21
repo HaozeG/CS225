@@ -4,7 +4,6 @@
 #include "appoint.h"
 #include "data.h"
 #include "timeoffset.h"
-using std::cin;
 using std::cout;
 
 template<class T>
@@ -70,7 +69,7 @@ void List<T>::deallocate()
 }
 
 Hlist::Hlist() :
-    List(20){}
+    List(20) {}
 
 void Hlist::addh(Hospital* value)
 {
@@ -79,8 +78,6 @@ void Hlist::addh(Hospital* value)
     {
         tot_capacity[i] += value->capacity[i];
     }
-    
-    
 }
 
 void Hlist::removeh(int index)
@@ -90,7 +87,6 @@ void Hlist::removeh(int index)
     {
         tot_capacity[i] -= array[index]->capacity[i];
     }
-    
 }
 
 void Hlist::treat_done()
@@ -108,7 +104,7 @@ void Hlist::treat_done()
 Alist::Alist() :
     List(20) {}
 
-void Alist::appoint(Heap* H, Hlist hlist,int type) // TODO: 按照type调整医院信息
+void Alist::appoint(fibonacci::Heap* H, Hlist hlist, int type) // TODO: 按照type调整医院信息
 {
     relation* relation = H->get_highest();
     if (relation != nullptr)
@@ -159,7 +155,7 @@ void Alist::withdraw(relation* relation) // withdraw在Alist里的元素
     int index = 0;
     for (int i = 0; i < numitems; i++)
     {
-        if (data->id == array[i]->id)
+        if (relation->person->id == array[i]->person->id)
         {
             index = i;
             break;
