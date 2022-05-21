@@ -82,6 +82,8 @@ int main()
             delete h[0];
             delete h[1];
             delete h[2];
+            delete withdrawn_list;
+            delete bTree;
             delete bpTree;
             return 0;
         }
@@ -226,7 +228,6 @@ int main()
             relation* ptr = nullptr;
             if (nullptr != pBlock)
             {
-                cout << a << "\n";
                 ptr = pBlock->retrieval(a);
             }
             if (nullptr != ptr)
@@ -273,7 +274,7 @@ int main()
                     if (0 == central->head->number)
                         central->head = central->head->next;
                 }
-                cout << ptr->key() << " withdrawn"
+                cout << ptr->person->name << " withdrawn"
                      << "\n";
             }
             else
