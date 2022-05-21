@@ -1,0 +1,67 @@
+5                       // number of input data in this file
+3200115555              // identification number
+Diana                   // name
+560                     // address (x coordinate)
+500                     // address (y coordinate)
+13982336788             // phone number
+4837959                 // WeChat number
+83797924@qq.com         // email
+8                       // profession (from 1 to 8)
+19450715                // birth date YYYYMMDD
+3                       // risk status (from 0 to 3)
+2022040108              // timestamp YYYYMMDDHH (2022040100 - 2022053123)
+7                       // age group (from 1 to 7 based on age)
+-1                      // priority letter (-1 for no, otherwise从2022.04.01 00:00开始的小时数)
+2			// treatment type
+3200116666
+Carol
+90
+70
+13788293746
+2342342
+21324324@qq.com
+5
+19490923
+2
+2022040108
+6
+-1
+3200117777
+Bella
+98
+78
+13788293746
+2342342
+21324324@qq.com
+5
+19490923
+2
+2022040122
+6
+-1
+3200118888
+Eilee
+989
+763
+13788293746
+2342342
+21324324@qq.com
+5
+19490923
+2
+2022040122
+6
+-1
+3200119999
+Ava
+501
+501
+13788293746
+2342342
+21324324@qq.com
+5
+19490923
+2
+2022040101
+6
+-1
