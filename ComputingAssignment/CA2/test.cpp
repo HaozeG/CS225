@@ -5,15 +5,14 @@
 #include <cstring>
 #include "data.h"
 #include "timeoffset.h"
-#include "btree.h"
+#include "BPlusTree.h"
 using std::cin;
 using std::cout;
 long timeoffset = 0;
 
 int main()
 {
-    Btree* btree = new Btree(3);
-    // BPlusTree* pTree = new BPlusTree;
+    BPlusTree* pTree = new BPlusTree;
     Local* abc = new Local;
     Local* abc1 = new Local;
     const char* a = "testfile.txt";
@@ -22,59 +21,59 @@ int main()
     abc1->readfile(b);
     //     abc->update();
     cout << "test\n";
-    for (int i = 4; i < 7; i++)
+    for (int i = 0; i < 1; i++)
     {
-        if (abc->local->head->block[i] != nullptr)
+        (void)pTree->Insert(abc->local->head->block[3]->key(), abc->local->head);
+        (void)pTree->Insert(abc->local->head->next->block[3]->key(), abc->local->head->next);
+        (void)pTree->Insert(abc1->local->head->block[3]->key(), abc1->local->head);
+        (void)pTree->Insert(abc1->local->head->next->block[3]->key(), abc1->local->head->next);
+    }
+    //     pTree->Delete(abc->local->head->block[3]->key());
+    //     pTree->Delete(abc->local->head->next->block[3]->key());
+    pTree->PrintTree();
+    return 0;
+    int i = 1;
+    const char* x = "3200000002";
+    //abc->local->head->bdelete(x);
+    //abc->local->merge(abc->local->head, abc->local->head->next);
+    //Block<relation>* tem = abc->local->head;
+    for (Block<relation>* tem = abc->local->head; tem != NULL; tem = tem->next)
+    { //cout<<(tem->next == NULL)<<"\n";
+        cout << "Block" << i << "\n";
+        i++;
+        for (int j = 0; j < tem->length; j++)
         {
-            cout << "ID = "<<abc->local->head->block[i]->person->id<<"\n";
-            // cout << "priority = " << abc->local->head->block[i]->status->priority << "\n";
-            btree->insert(abc->local->head->block[i]);
-            // cout << "root children number = " << btree->root->children.size() << "\n";
-            btree->traverse();
+            if (tem->block[j] == NULL)
+                continue;
+            cout << j << "\n";
+            cout << "relation" << j << "\n";
+            cout << "person"
+                 << " " << tem->block[j]->person->id << " " << tem->block[j]->person->name
+                 << " " << tem->block[j]->person->birth << " " << tem->block[j]->person->age_group
+                 << " " << tem->block[j]->person->phone << " " << tem->block[j]->person->WeChat
+                 << " " << tem->block[j]->person->email << "\n";
+            cout << "status"
+                 << " " << tem->block[j]->status->risk << " " << tem->block[j]->status->priority
+                 << " " << tem->block[j]->status->type << "\n";
+            cout << "registration"
+                 << " " << tem->block[j]->registration->timestamp << "\n";
+            cout << "treatment"
+                 << " " << tem->block[j]->treatment->time << " " << tem->block[j]->treatment->hospital_id << "\n";
             cout << "\n";
         }
+        //if (tem->retrieval(x) != NULL)
+        //cout<<"\n"<<tem->retrieval(x)->person->id<<"\n";
     }
-    // insert 8
-    cout << "ID = "<<abc->local->head->block[3]->person->id<<"\n";
-    // cout << "priority = " << abc->local->head->block[i]->status->priority << "\n";
-    btree->insert(abc->local->head->block[3]);
-    // cout << "root children number = " << btree->root->children.size() << "\n";
-    btree->traverse();
-    cout << "\n";
 
-    // insert 15
-    cout << "ID = "<<abc->local->head->block[7]->person->id<<"\n";
-    // cout << "priority = " << abc->local->head->block[i]->status->priority << "\n";
-    btree->insert(abc->local->head->block[7]);
-    // cout << "root children number = " << btree->root->children.size() << "\n";
-    btree->traverse();
-    cout << "\n";
-
-    // insert 20
-    cout << "ID = "<<abc->local->head->block[8]->person->id<<"\n";
-    // cout << "priority = " << abc->local->head->block[i]->status->priority << "\n";
-    btree->insert(abc->local->head->block[8]);
-    // cout << "root children number = " << btree->root->children.size() << "\n";
-    btree->traverse();
-    cout << "\n";
-
-    // cout << "root children number = " << btree->root->children.size() << "\n";
-    // cout << "remove key = " << abc->local->head->block[8]->status->priority << "\n";
-    // btree->remove(abc->local->head->block[8]);
-    // btree->traverse();
-    // cout << "\n";
-    cout << "remove key = " << abc->local->head->block[6]->status->priority << "\n";
-    btree->remove(abc->local->head->block[6]);
-    btree->traverse();
-    cout << "\n";
-    // cout << "root children number = " << btree->root->children.size() << "\n";
-    // cout << "remove key = " << abc->local->head->block[4]->status->priority << "\n";
-    // btree->remove(abc->local->head->block[4]);
-    // btree->traverse();
-    // cout << "\n";
-    // cout << "root children number = " << btree->root->children.size() << "\n";
-
-    return 1;
+    //char* c = new char [10];int i = 3201; sprintf(c,"%d",i);
+    //sprintf(c, "%d.bmp", i);
+    //for (int i = 0; i < ; i++)
+    //cout<<c<<"\n";
+    //const char* b = "3202";
+    //if (strcmp(c,b) < 0)
+    //cout<<strcmp(c,b)<<"\n";
+    //const char* a = new char [10];
+    //strcpy(a,b);
+    //cout<<a<<"\n";
+    return 0;
 }
-
-

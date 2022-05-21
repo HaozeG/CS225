@@ -1,15 +1,21 @@
+#include <cstddef>
 #include <stdio.h>
 #include <iostream>
 #include <cstdlib>
 #include "data.h"
-#include "base.cpp"
 #include <stdlib.h>
-using std::cin;
+#include <cstring>
+#include "timeoffset.h"
 using std::cout;
 
 Local::Local()
 {
-    local = new blist();
+    local = new blist<relation>;
+    cout << "Create new local\n";
+}
+
+Local::~Local()
+{
 }
 
 int Local::readfile(const char* filename)
@@ -21,7 +27,7 @@ int Local::readfile(const char* filename)
         perror("打开文件时发生错误");
         return (-1);
     }
-    Block* block = new Block();
+    Block<relation>* block = new Block<relation>();
     if (this->local->head == NULL)
         this->local->head = block;
     fgets(str, 60, fp);
@@ -31,7 +37,12 @@ int Local::readfile(const char* filename)
     {
         relation* data = new relation();
         if (fgets(data->person->id, 60, fp) != NULL)
+        {
             data->person->id[10] = '\0';
+            strcpy(data->status->id, data->person->id);
+            strcpy(data->registration->id, data->person->id);
+            strcpy(data->treatment->id, data->person->id);
+        }
         else
             return 0;
         if (fgets(data->person->name, 60, fp) == NULL)
@@ -87,7 +98,7 @@ int Local::readfile(const char* filename)
             int a = sizeof(str);
             str[a - 1] = '\0';
             a = atoi(str);
-            data->registration->timestamp = a;
+            data->registration->timestamp = a - (timestart * 100) + 24 * (a / 100 - timestart) + 30 * 24 * (a / 10000 - timestart / 100);
         }
         else
             return 0;
@@ -117,8 +128,14 @@ int Local::readfile(const char* filename)
         }
         else
             return 0;
-        block->insert(data); //cout<<i<<"\n";
+        block->insert(data);
     }
     fclose(fp);
     return 1;
+}
+
+Block<relation>* Local::update()
+{
+    Block<relation>* head = local->head;
+    return head;
 }

@@ -1,0 +1,7 @@
+MONTH REPORT
+How many people have registered? 5
+How many are waiting in total? 5
+How many treatment appointments have been made? 0
+Average waiting time: 0 days 0 hours.
+How many people had withdrew their registration? 0
+_____________ENDING_____________
