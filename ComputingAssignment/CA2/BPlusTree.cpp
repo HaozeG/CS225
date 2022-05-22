@@ -542,7 +542,6 @@ DATA_TYPE BPlusTree::SearchData(KEY_TYPE data)
     for (i = 1; i <= lNode->GetCount(); i++)
     {
         //     return lNode->GetDataPointer(i);
-        // TODO: 调整
         if (strcmp(data, lNode->GetElement(i)) == 0)
             return lNode->GetDataPointer(i);
         if (strcmp(data, lNode->GetElement(i)) < 0)

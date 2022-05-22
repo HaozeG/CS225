@@ -20,13 +20,13 @@ fibonacci::Node::Node()
     node_num = 1;
     mark = false;
     Written = false;
-    cout << "Create one node!\n";
+    //     cout << "Create one node!\n";
 };
 
 fibonacci::Node::~Node()
 {
     data->f_node = nullptr;
-    cout << "Delete one node!\n";
+    //     cout << "Delete one node!\n";
 }
 
 fibonacci::Heap::Heap()
@@ -323,7 +323,7 @@ void fibonacci::Heap::update(Node& node)
 
     // cascaded cut parent nodes
     cascaded_cut(parent_node);
-    cout << "Sucessfully update " << node.data->person->name << "\n";
+    //     cout << "Sucessfully update " << node.data->person->name << "\n";
 }
 
 /*
@@ -358,7 +358,7 @@ void fibonacci::Heap::delete_highest()
     {
         delete highest;
         highest = nullptr;
-        cout << "Finish delete highest node\n";
+        // cout << "Finish delete highest node\n";
         return;
     }
     // connect child nodes to root list
@@ -410,7 +410,7 @@ void fibonacci::Heap::delete_highest()
             node = node->left;
         }
     }
-    cout << "Finish delete highest node\n";
+    //     cout << "Finish delete highest node\n";
 
     // rebalance
     consolidate();
@@ -458,7 +458,7 @@ void fibonacci::Heap::delete_node(Node& node)
     // call decrease and delete_min
     update(node);
     relation* p = highest->data;
-    cout << "Delete " << p->person->name << "\n";
+    //     cout << "Delete " << p->person->name << "\n";
     delete_highest();
     // keep the data unchanged
     delete new_relation;
@@ -550,7 +550,7 @@ void fibonacci::Heap::consolidate()
     for (int i = 0; i <= maxdegree; i++)
         if (nullptr != m[i])
             link_root(m[i]);
-    cout << "Finish consolidate\n";
+    //     cout << "Finish consolidate\n";
 };
 
 /*
@@ -587,13 +587,13 @@ void fibonacci::Heap::cascaded_cut(Node* node)
     if (nullptr == parent)
     {
         node->mark = false;
-        cout << "Finish cascaded cut\n";
+        // cout << "Finish cascaded cut\n";
         return;
     }
     if (false == parent->mark)
     {
         node->mark = true;
-        cout << "Finish cascaded cut\n";
+        // cout << "Finish cascaded cut\n";
         return;
     }
     while (true == node->mark && nullptr != parent)
@@ -614,5 +614,5 @@ void fibonacci::Heap::cascaded_cut(Node* node)
         node = parent;
         parent = parent->parent;
     }
-    cout << "Finish cascaded cut\n";
+    //     cout << "Finish cascaded cut\n";
 }

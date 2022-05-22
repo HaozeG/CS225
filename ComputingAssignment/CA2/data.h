@@ -4,7 +4,7 @@
 #include "string.h"
 #include <cstddef>
 #include <iostream>
-using std::cout;
+// using std::cout;
 
 class Person
 {
@@ -293,9 +293,7 @@ T* Block<T>::retrieval(const char* id)
     while (low <= high)
     {
         mid = (low + high) / 2;
-        cout << this->block[2]->key() << "ghighiweg\n";
         char* mid_key = this->block[mid]->key();
-        cout << mid << "mid\n";
         if (strcmp(id, mid_key) == 0)
             return this->block[mid];
         else if (strcmp(id, mid_key) > 0)
