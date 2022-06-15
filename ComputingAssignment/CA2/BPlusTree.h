@@ -1,3 +1,6 @@
+// Code adapted from this example:
+// https://www.cnblogs.com/yangj-Blog/p/12992124.html
+
 /* BPlusTree.h
 
 B+树定义文件，本程序实行一个简单的B+树
