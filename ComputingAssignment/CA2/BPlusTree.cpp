@@ -1,3 +1,6 @@
+// Code adapted from this example:
+// https://www.cnblogs.com/yangj-Blog/p/12992124.html
+
 #include "BPlusTree.h"
 #include "data.h"
 #include "stdio.h"
