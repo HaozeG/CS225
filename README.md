@@ -1,5 +1,7 @@
 # CS225
 
+_Pay close attention to **academic integrity** issue! You may only take this as a reference_
+
 #### 介绍
 This respository is for Haowen Zheng, Yiheng Zhang, Wenpeng Zhang and Haoze Gao
 
